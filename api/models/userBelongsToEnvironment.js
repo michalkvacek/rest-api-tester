@@ -1,14 +1,14 @@
 /* jshint indent: 2 */
 
-module.exports = function (sequelize, DataTypes) {
-	return sequelize.define ('userBelongsToEnvironment', {
+module.exports = {
+	attributes: {
 		usersId: {
-			type: DataTypes.INTEGER,
+			type: Sequelize.INTEGER,
 			allowNull: false,
 			primaryKey: true
 		},
 		environmentsId: {
-			type: DataTypes.INTEGER,
+			type: Sequelize.INTEGER,
 			allowNull: false,
 			references: {
 				model: 'environments',
@@ -16,14 +16,13 @@ module.exports = function (sequelize, DataTypes) {
 			}
 		},
 		userRole: {
-			type: DataTypes.ENUM ('host', 'manager', 'tester'),
+			type: Sequelize.ENUM ('host', 'manager', 'tester'),
 			allowNull: false
 		},
 		createdAt: {
-			type: DataTypes.DATE,
+			type: Sequelize.DATE,
 			allowNull: false
 		}
-	}, {
-		tableName: 'userBelongsToEnvironment'
-	});
+	},
+	tableName: 'userBelongsToEnvironment'
 };

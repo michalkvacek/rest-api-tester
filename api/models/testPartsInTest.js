@@ -1,14 +1,13 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('testPartsInTest', {
+module.exports = {attributes:  {
     testsId: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true
     },
     testPartsId: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       references: {
         model: 'testParts',
@@ -16,10 +15,9 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     position: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false
     }
-  }, {
+  }, 
     tableName: 'testPartsInTest'
-  });
 };

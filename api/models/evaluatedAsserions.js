@@ -1,62 +1,61 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('evaluatedAsserions', {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    responsesId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'response',
-        key: 'id'
-      }
-    },
-    requestsId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'requests',
-        key: 'id'
-      }
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    assertionType: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    assertionName: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    assertionProperty: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    assertionExpectedValue: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    assertionExtraCode: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    recievedValue: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    passed: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    }
-  }, {
-    tableName: 'evaluatedAsserions'
-  });
+module.exports = {
+	attributes: {
+		id: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			primaryKey: true,
+			autoIncrement: true
+		},
+		responsesId: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'response',
+				key: 'id'
+			}
+		},
+		requestsId: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'requests',
+				key: 'id'
+			}
+		},
+		createdAt: {
+			type: Sequelize.DATE,
+			allowNull: true
+		},
+		assertionType: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
+		assertionName: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
+		assertionProperty: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		assertionExpectedValue: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		assertionExtraCode: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		recievedValue: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		passed: {
+			type: Sequelize.BOOLEAN,
+			allowNull: false
+		}
+	},
+	tableName: 'evaluatedAsserions'
 };

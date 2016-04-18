@@ -1,66 +1,65 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('requests', {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    usersId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    parentTestPartId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    versionsId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'versions',
-        key: 'id'
-      }
-    },
-    url: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    resourceName: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    methodName: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    httpMethod: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    environmentsId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    }
-  }, {
-    tableName: 'requests'
-  });
+module.exports = {
+	attributes: {
+		id: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			primaryKey: true,
+			autoIncrement: true
+		},
+		usersId: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		},
+		parentTestPartId: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		},
+		createdAt: {
+			type: Sequelize.DATE,
+			allowNull: true
+		},
+		updatedAt: {
+			type: Sequelize.DATE,
+			allowNull: true
+		},
+		name: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
+		description: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		versionsId: {
+			type: Sequelize.INTEGER,
+			allowNull: true,
+			references: {
+				model: 'versions',
+				key: 'id'
+			}
+		},
+		url: {
+			type: Sequelize.TEXT,
+			allowNull: false
+		},
+		resourceName: {
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		methodName: {
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		httpMethod: {
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		environmentsId: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		}
+	},
+	tableName: 'requests'
 };

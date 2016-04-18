@@ -1,45 +1,45 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('delays', {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 'nextval("testParts_id_seq"::regclass)'
-    },
-    usersId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    parentTestPartId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    seconds: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    environmentsId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    }
-  }, {
-    tableName: 'delays'
-  });
+module.exports = {
+	attributes: {
+		id: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			defaultValue: 'nextval("testParts_id_seq"::regclass)',
+			primaryKey: true
+		},
+		usersId: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		},
+		parentTestPartId: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		},
+		createdAt: {
+			type: Sequelize.DATE,
+			allowNull: true
+		},
+		updatedAt: {
+			type: Sequelize.DATE,
+			allowNull: true
+		},
+		name: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
+		description: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		seconds: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		},
+		environmentsId: {
+			type: Sequelize.INTEGER,
+			allowNull: true
+		}
+	},
+	tableName: 'delays'
 };

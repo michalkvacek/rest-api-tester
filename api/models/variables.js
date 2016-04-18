@@ -1,15 +1,14 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('variables', {
+module.exports = {attributes:  {
     id: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },
     usersId: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       references: {
         model: 'users',
@@ -17,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     testsId: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       references: {
         model: 'tests',
@@ -25,30 +24,29 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     requestsId: {
-      type: DataTypes.INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false
     },
     createdAt: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       allowNull: true
     },
     updatedAt: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       allowNull: true
     },
     name: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     },
     property: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: true
     },
     defaultValue: {
-      type: DataTypes.TEXT,
+      type: Sequelize.TEXT,
       allowNull: true
     }
-  }, {
+  }, 
     tableName: 'variables'
-  });
 };
