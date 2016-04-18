@@ -2,51 +2,24 @@
  * Connections
  * (sails.config.connections)
  *
- * `Connections` are like "saved settings" for your adapters.  What's the difference between
- * a connection and an adapter, you might ask?  An adapter (e.g. `sails-mysql`) is generic--
- * it needs some additional information to work (e.g. your database host, password, user, etc.)
- * A `connection` is that additional information.
+ * This config contains connection only to PostgreSQL via SEQUELIZE
  *
- * Each model must have a `connection` property (a string) which is references the name of one
- * of these connections.  If it doesn't, the default `connection` configured in `config/models.js`
- * will be applied.  Of course, a connection can (and usually is) shared by multiple models.
- * .
- * Note: If you're using version control, you should put your passwords/api keys
- * in `config/local.js`, environment variables, or use another strategy.
- * (this is to prevent you inadvertently sensitive credentials up to your repository.)
- *
- * For more information on configuration, check out:
- * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.connections.html
+ * Sequelize was used as described in article by at http://munkacsy.me/use-sequelize-with-sails-js/
  */
 
 module.exports.connections = {
-
-	/***************************************************************************
-	 *                                                                          *
-	 * Local disk storage for DEVELOPMENT ONLY                                  *
-	 *                                                                          *
-	 * Installed by default.                                                    *
-	 *                                                                          *
-	 ***************************************************************************/
-	localDiskDb: {
-		adapter: 'sails-disk'
-	},
-
-	/***************************************************************************
-	 *                                                                          *
-	 * PostgreSQL is another officially supported relational database.          *
-	 * http://en.wikipedia.org/wiki/PostgreSQL                                  *
-	 *                                                                          *
-	 * Run: npm install sails-postgresql                                        *
-	 *                                                                          *
-	 *                                                                          *
-	 ***************************************************************************/
 	postgreSQL: {
-		adapter: 'sails-postgresql',
-		host: '127.0.0.1',
-		// schema: true,
-		user: 'postgres', // optional
-		password: 'sql', // optional
-		database: 'test_rest_api' //optional
+		user: 'postgres',
+		password: 'sql',
+		database: 'test_rest_api',
+		options: {
+			host: 'localhost',
+			dialect: 'postgres',
+			pool: {
+				max: 5,
+				min: 0,
+				idle: 10000
+			}
+		}
 	}
 };
