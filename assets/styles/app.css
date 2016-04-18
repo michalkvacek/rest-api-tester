@@ -1,0 +1,214 @@
+.row {
+	max-width: 100% !important;
+}
+
+.row .row {
+	margin: auto;
+}
+
+.accordion-content, .accordion, .tabs, .tabs-content {
+	padding: 1rem 0 0;
+	border: none;
+	background: none;
+}
+
+.has-tip {
+	position: static;
+}
+
+#main-menu .title-bar-right .menu {
+	justify-content: flex-end;
+}
+
+nav .quick-search {
+	float: right;
+}
+
+.quick-search {
+	background: transparent url(img/search-icon.png) no-repeat 100% center;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	color: white;
+	width: 24px;
+	cursor: pointer;
+	-webkit-transition: width .5s;
+	-moz-transition: width .5s;
+	transition: width .5s;
+}
+
+.quick-search:focus, .quick-search:hover {
+	width: 100%;
+	border: none;
+	box-shadow: none;
+	outline: none;
+	border-bottom: solid 1px;
+	background-color: transparent;
+	-webkit-transition: width .5s;
+	-moz-transition: width .5s;
+	transition: width .5s;
+}
+
+.tabs-title {
+	font-weight: bold;
+}
+
+.empty {
+	font-style: italic;
+	font-size: 75%;
+	font-weight: normal;
+}
+
+.project .environments .label {
+	font-size: 70% !important;
+}
+
+.users .deactivated {
+	opacity: .4;
+	transition: opacity 0.5s;
+}
+
+.users .deactivated:hover {
+	opacity: 1;
+	transition: opacity 0.5s;
+}
+
+table .button {
+	margin: 0;
+}
+
+.label a {
+	color: white;
+}
+
+.result.progress {
+	background-color: red;
+}
+
+.has-controls .controls {
+	margin-top: 1em;
+	padding-top: .75em;
+	border-top: solid 1px #CCC;
+}
+
+.has-controls .controls .button, .has-controls .controls p {
+	margin: 0;
+}
+
+.dashboard .tests {
+	padding-bottom: .3em;
+	display: block;
+	white-space: nowrap;
+	overflow: auto;
+}
+
+.dashboard .small {
+	color: #CCC;
+	font-size: 75%;
+}
+
+.dashboard .failed-tests {
+	font-size: 75%;
+}
+
+.material-add-button {
+	position: fixed;
+	bottom: 1em;
+	right: 1em;
+	border-radius: 100%;
+	font-size: 2em;
+	padding: .3em .5em;
+	box-shadow: 3px 5px 10px #555;
+}
+
+.breadcrumbs {
+	margin: auto;
+	font-size: 120%;
+}
+
+.breadcrumbs a, .breadcrumbs li:not(:last-child)::after {
+	color: white;
+}
+
+.with-shadow {
+	margin: 1em 0 0 1em;
+	padding: 1em;
+	box-shadow: 0 0 10px #DDD;
+	background: #FAFAFA;
+	border-radius: 3px;
+}
+
+.with-shadow:last-child {
+	margin-right: 1em;
+}
+
+.with-shadow .with-shadow {
+	margin: 0;
+	padding: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+html, body {
+	background: #EEE;
+}
+
+.no-padding {
+	padding: 0;
+}
+
+.user-profile {
+	padding: 1em;
+	background: #CCC;
+}
+
+li.separator {
+	width: 3em;
+}
+
+.vertical li.separator {
+	height: 1em;
+}
+
+.user-profile img {
+	border: solid 1px;
+	border-radius: 50%;
+	margin: .3em;
+}
+
+#side-menu {
+	background: #DDD;
+}
+
+.dropdown li.is-submenu-item:hover {
+	background: #EEE;
+	transition: background 0.4s;
+}
+
+.dropdown li button i {
+	font-size: 150%;
+}
+
+.title-bar {
+	background: #C5C5C5;
+}
+
+#content {
+	height: 100%;
+}
+
+#content .header-spacer {
+	margin-top: 3.7em;
+}
+
+footer {
+	background: #3C3C3C;
+}
+
+.inline {
+	display: inline;
+}
+
+#notifications select {
+	width: auto;
+}
