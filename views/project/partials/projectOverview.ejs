@@ -1,0 +1,31 @@
+<%
+for (key in projects) {
+	if (!projects.hasOwnProperty (key)) continue;
+%>
+
+<div class="column no-padding">
+	<div class="with-shadow project text-center">
+		<h3><%= projects[key].name %></h3>
+
+		<p class="description">
+			<%= projects[key].description %>
+			&nbsp;
+		</p>
+
+		<p class="environments ">
+			<% if (projects[key].environments.length > 0) { %>
+			<% for (envKey in projects[key].environments) { %>
+			<% var env = projects[key].environments[envKey] %>
+			<span class="label"><a href="/tests/<%= env.id %>"><%= env.name %></a></span>
+			<% } %>
+			<% } else { %>
+			<span class="label secondary">No environments</span>
+			<% } %>
+		</p>
+
+
+		<a href="/dashboard/<%= projects[key].id %>" class="button primary"><i class="fi-graph-trend"></i> Dashboard</a>
+		<a href="/project_settings/<%= projects[key].id %>" class="button warning"><i class="fi-wrench"></i> Settings</a>
+	</div>
+</div>
+<% } %>

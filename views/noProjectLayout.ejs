@@ -24,11 +24,11 @@
 						<li class="menu-text">
 							<ul class="breadcrumbs">
 								<% for (breadcrumbPart in breadcrumbs) { %>
-									<% if (breadcrumbs[breadcrumbPart]) { %>
-										<li><a href="<%= breadcrumbs[breadcrumbPart] %>"><%= breadcrumbPart %></a></li>
-									<% } else { %>
-										<li><%= breadcrumbPart %></li>
-									<% } %>
+								<% if (breadcrumbs[breadcrumbPart]) { %>
+								<li><a href="<%= breadcrumbs[breadcrumbPart] %>"><%= breadcrumbPart %></a></li>
+								<% } else { %>
+								<li><%= breadcrumbPart %></li>
+								<% } %>
 								<% } %>
 							</ul>
 						</li>
@@ -68,8 +68,13 @@
 
 		<div class="header-spacer"></div>
 
+		<div class="row">
+			<%= req.flash ('success') %>
+			<%= req.flash ('error') %>
+		</div>
+
 		<!--<div class="content row">-->
-			<%- body %>
+		<%- body %>
 		<!--</div>-->
 
 	</div>

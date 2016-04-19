@@ -1,54 +1,12 @@
 <div class="row project-overview">
 
-	<%
-	for (key in projects) {
-		if (!projects.hasOwnProperty (key)) continue;
-	%>
+	<% var projects = ownProjects %>
+	<% include partials/projectOverview.ejs %>
+</div>
 
-	<div class="column no-padding">
-		<div class="with-shadow project text-center">
-			<h3><%= projects[key].name %></h3>
-
-			<p class="description">
-				<%= projects[key].description %>
-				&nbsp;
-			</p>
-
-			<p class="environments ">
-				<% if (projects[key].environments.length > 0) { %>
-					<% for (envKey in projects[key].environments) { %>
-					<span class="label success"><a href="tests.html">Production</a></span>
-					<% } %>
-				<% } else { %>
-				<span class="label secondary">No environments</span>
-				<% } %>
-			</p>
-
-
-			<a href="dashboard.html" class="button primary"><i class="fi-graph-trend"></i> Dashboard</a>
-			<a href="project_settings.html" class="button warning"><i class="fi-wrench"></i> Settings</a>
-		</div>
-	</div>
-	<% } %>
-
-	<!--<div class="column no-padding">-->
-	<!--<div class="with-shadow project text-center">-->
-	<!--<h3>Google Maps API</h3>-->
-
-	<!--<p class="description">-->
-	<!--Testing some methods of this well-known API.-->
-	<!--</p>-->
-
-	<!--<p class="environments ">-->
-	<!--<span class="label success"><a href="tests.html">Production</a></span>-->
-	<!--<span class="label success"><a href="tests.html">Testing</a></span>-->
-	<!--<span class="label alert"><a href="tests.html">Development</a></span>-->
-	<!--</p>-->
-
-	<!--<a href="dashboard.html" class="button primary"><i class="fi-graph-trend"></i> Dashboard</a>-->
-	<!--<a href="project_settings.html" class="button warning"><i class="fi-wrench"></i> Settings</a>-->
-	<!--</div>-->
-	<!--</div>-->
+<div class="row project-overview">
+	<% projects = managedProjects %>
+	<% include partials/projectOverview.ejs %>
 </div>
 
 <a data-open="new-project" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>

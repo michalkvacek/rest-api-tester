@@ -40,5 +40,36 @@ module.exports = {
 			defaultValue: true
 		}
 	},
-	tableName: 'tests'
+	options: {
+		tableName: 'tests',
+	},
+	// create relationships with other models
+	associations: function () {
+
+		/**
+		 * User who created test
+		 */
+		tests.belongsTo (users, {
+			foreignKey: {
+				name: 'usersId',
+				allowNull: false
+			}
+		});
+
+		/**
+		 * Users, who manages this environment
+		 */
+
+		tests.belongsToMany (testParts, {
+			through: testPartsInTest,
+			as: {
+				singular: 'testPart',
+				plural: 'testParts'
+			},
+			foreignKey: {
+				name: 'testsId',
+				allowNull: false
+			}
+		});
+	}
 };

@@ -2,17 +2,6 @@ var passport = require ('passport');
 // LocalStrategy = require ('passport-local').Strategy,
 // bcrypt = require ('bcryptjs');
 
-//helper functions
-function findById(id, fn) {
-	User.findOne (id).exec (function (err, user) {
-		if (err) {
-			return fn (null, null);
-		} else {
-			return fn (null, user);
-		}
-	});
-}
-
 // function findByUsername(u, fn) {
 // 	User.findOne ({
 // 		username: u
@@ -33,13 +22,17 @@ function findById(id, fn) {
 // this will be as simple as storing the user ID when serializing, and finding
 // the user by ID when deserializing.
 passport.serializeUser (function (user, done) {
-	done (null, user.id);
+	return done (null, user.id);
 });
 
 passport.deserializeUser (function (id, done) {
-	findById (id, function (err, user) {
+	console.log ('deserializuji uzivatele');
+	users.findById (id).then (function (user) {
 		delete user.password;
-		done (err, user);
+
+		return done (null, user);
+	}).catch (function (err) {
+		return done (err, null);
 	});
 });
 

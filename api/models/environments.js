@@ -49,7 +49,7 @@ module.exports = {
 
 		environments.belongsToMany(users, {
 			through: userBelongsToEnvironment,
-			as: 'team',
+			as: 'teamMemger',
 			foreignKey: {
 				name: 'environmentsId',
 				allowNull: false
@@ -67,6 +67,19 @@ module.exports = {
 		});
 	},
 	options: {
-		tableName: 'environments'
+		tableName: 'environments',
+		hooks: {
+			afterCreate: function (environment, options) {
+				// assign current user to this environment
+
+				userBelongsToEnvironment.create ({
+					usersId: environment.usersId,
+					environmentsId: environment.id,
+					userRole: 'manager'
+				}).then (function (err, userInEnv) {
+					if (err) console.error(err);
+				});
+			}
+		}
 	}
 };

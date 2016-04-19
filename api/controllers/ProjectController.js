@@ -8,20 +8,21 @@
 module.exports = {
 	index: function (req, res) {
 
-		Project.getAllUsersProjects (req.user, function (err, projects) {
+		users.getOwnProjects (req.user, function (err, ownProjects) {
+			users.getManagedProjects (req.user, function (err, managedProjects) {
 
-			console.log(projects);
-
-			return res.view ({
-				layout: "noProjectLayout",
-				projects: projects,
-				breadcrumbs: {
-					"Homepage": "/",
-					'Projects': false
-				},
-				search: true,
-				notifications: true,
-				apiAlert: false
+				return res.view ({
+					layout: "noProjectLayout",
+					ownProjects: ownProjects,
+					managedProjects: managedProjects,
+					breadcrumbs: {
+						"Homepage": "/",
+						'Projects': false
+					},
+					search: true,
+					notifications: true,
+					apiAlert: false
+				});
 			});
 		});
 	},
@@ -34,19 +35,19 @@ module.exports = {
 			return res.redirect ('/project?no-name');
 		}
 
-		Project.create ({
+		projects.create ({
 			name: name,
 			description: description,
 			usersId: req.user.id
-		}).exec (function (err, project) {
+		}).then (function (project) {
+			// ok
+			return res.redirect ('/project?ok');
+		}).catch (function (err) {
 			if (err) {
 				console.log (err);
 
 				return res.redirect ('/project?error');
 			}
-
-			// ok
-			return res.redirect ('/project?ok');
 		});
 	},
 };

@@ -10,10 +10,10 @@ var bcrypt = require ('bcryptjs');
 
 module.exports = {
 	process: function (req, res) {
-		User.findOne ({email: req.param ('email')}).exec (function (err, user) {
+		users.findOne ({email: req.param ('email')}).then (function (user) {
 		
 			// check if user exists or if any error occured
-			if (err || !user)
+			if (!user)
 				return res.redirect ('/login');
 		
 			// check passwords

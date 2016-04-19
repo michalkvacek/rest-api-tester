@@ -2,12 +2,6 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
 		usersId: {
 			type: Sequelize.INTEGER,
 			allowNull: true,
@@ -23,14 +17,6 @@ module.exports = {
 				model: 'testParts',
 				key: 'id'
 			}
-		},
-		createdAt: {
-			type: Sequelize.DATE,
-			allowNull: true
-		},
-		updatedAt: {
-			type: Sequelize.DATE,
-			allowNull: true
 		},
 		name: {
 			type: Sequelize.STRING,
@@ -49,5 +35,26 @@ module.exports = {
 			}
 		}
 	},
-	tableName: 'testParts'
+	options: {
+		tableName: 'testParts'
+	},
+	// create relationships with other models
+	associations: function () {
+		testParts.belongsTo (users, {
+			foreignKey: {
+				name: 'usersId',
+				as: 'author',
+				allowNull: false
+			}
+		});
+
+		testParts.belongsToMany (tests, {
+			through: testPartsInTest,
+			as: 'testParts',
+			foreignKey: {
+				name: 'testPartsId',
+				allowNull: false
+			}
+		});
+	}
 };
