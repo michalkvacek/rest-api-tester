@@ -9,7 +9,7 @@ var passport = require ('passport');
 var bcrypt = require ('bcryptjs');
 
 module.exports = {
-	process: function (req, res) {
+	passwordLogin: function (req, res) {
 		users.findOne ({email: req.param ('email')}).then (function (user) {
 		
 			// check if user exists or if any error occured
@@ -27,7 +27,7 @@ module.exports = {
 					return res.redirect ('/login');
 				}
 		
-				return res.redirect ('/project');
+				return res.redirect ('/projects');
 			});
 		});
 	}

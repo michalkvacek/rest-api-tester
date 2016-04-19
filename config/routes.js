@@ -30,7 +30,7 @@ module.exports.routes = {
 		view: "homepage"
 	},
 	'get /registration': {
-		view: "user/registration",
+		view: "users/registration",
 		locals: {
 			layout: "noProjectLayout",
 			breadcrumbs: {
@@ -47,7 +47,7 @@ module.exports.routes = {
 		action: "postRegistration"
 	},
 	'get /login': {
-		view: "user/login",
+		view: "users/login",
 		layout: "noProjectLayout",
 		breadcrumbs: {
 			"Homepage": "/",
