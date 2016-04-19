@@ -2,20 +2,6 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
-		createdAt: {
-			type: Sequelize.DATE,
-			allowNull: true
-		},
-		updatedAt: {
-			type: Sequelize.DATE,
-			allowNull: true
-		},
 		name: {
 			type: Sequelize.STRING,
 			allowNull: false
@@ -23,7 +9,7 @@ module.exports = {
 		email: {
 			type: Sequelize.STRING,
 			allowNull: false,
-			primaryKey: true
+			unique: true
 		},
 		password: {
 			type: Sequelize.STRING,
@@ -35,5 +21,24 @@ module.exports = {
 			defaultValue: false
 		}
 	},
-	tableName: 'users'
+	options: {
+		tableName: 'users'
+	},
+	associations: function () {
+		users.hasMany (environments, {
+			foreignKey: {
+				name: 'usersId',
+				allowNull: false
+			}
+		});
+
+		users.belongsToMany(environments, {
+			through: userBelongsToEnvironment,
+			as: 'team',
+			foreignKey: {
+				name: 'usersId',
+				allowNull: false
+			}
+		});
+	}
 };

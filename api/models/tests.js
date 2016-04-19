@@ -2,12 +2,6 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
 		environmentsId: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -23,15 +17,6 @@ module.exports = {
 				model: 'users',
 				key: 'id'
 			}
-		},
-		createdAt: {
-			type: Sequelize.DATE,
-			allowNull: true,
-			defaultValue: 'now()'
-		},
-		updatedAt: {
-			type: Sequelize.DATE,
-			allowNull: true
 		},
 		name: {
 			type: Sequelize.STRING,
