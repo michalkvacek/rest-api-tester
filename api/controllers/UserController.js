@@ -5,8 +5,16 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var crypto = require ('crypto');
 
 module.exports = {
+
+	/**
+	 * Registers user and send him email with password
+	 *
+	 * @param req
+	 * @param res
+	 */
 	postRegistration: function (req, res) {
 
 		// todo check required fields
@@ -15,19 +23,35 @@ module.exports = {
 		var email = req.param ('email');
 		var username = req.param ('username');
 
-		// todo add random password generator
-		var password = '123456';
+		crypto.randomBytes (4, function (err, buffer) {
 
-		// todo add email with password
+			// get random password
+			var password = buffer.toString ('hex');
 
-		User.create ({name: username, password: password, email: email}).exec(function(err) {
-			if (err) {
-				console.error(err);
-		
-				return res.send('cannot create user');
-			}
-		
-			return res.send('ok');
+			// create user
+			users.create ({name: username, password: password, email: email}).then (function (user) {
+
+				// try to send email
+				sails.hooks.email.send ('registration', {username: username, password: password}, {
+					to: email,
+					subject: 'User registration'
+				}, function (err) {
+
+					if (err) {
+						console.log (err);
+						req.flash ('error', 'nelze odeslat mail s heslem');
+						return res.redirect ('/registration');
+					}
+
+					req.flash ('success', 'registrace uspesna');
+					return res.redirect ('/login');
+				})
+
+			}).catch (function (error) {
+
+				req.flash ('error', 'nelze vytvorit uzivatele');
+				return res.redirect ('/registration');
+			});
 		});
 	},
 
