@@ -1,13 +1,13 @@
-<form action="/api/v1/login" method="post">
+<form ng-controller="LoginController as login" ng-submit="login.localAuth()">
 	<label>
 		E-mail
-		<input type="email" name="email" />
+		<input type="email" name="email" ng-model="formData.email" />
 	</label>
 
 	<label>
 		Password
 
-		<input type="password" name="password" />
+		<input type="password" name="password" ng-model="formData.password" />
 	</label>
 
 	<button type="submit" class="submit button">Login</button>
