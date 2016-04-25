@@ -1,5 +1,7 @@
 /* jshint indent: 2 */
 
+var bcrypt = require ('bcrypt');
+
 module.exports = {
 	attributes: {
 		name: {
@@ -23,31 +25,28 @@ module.exports = {
 	},
 	options: {
 		tableName: 'users',
-		classMethods: {
-			getManagedProjects: function (user, callback) {
-				if (typeof  callback != "function")
-					throw new Error ('Callback not a function');
+		hooks: {
+			/**
+			 * Hash password before creating new user in database
+			 *
+			 * @param user
+			 * @param options
+			 * @param next
+			 */
+			beforeCreate: function (user, options, next) {
+				bcrypt.genSalt (8, function (err, salt) {
+					if (err)
+						return next (err);
 
-				callback(null, []);
+					bcrypt.hash (user.password, salt, function (err, hash) {
+						if (err)
+							return next (err);
 
-			},
-			getOwnProjects: function (user, callback) {
+						user.password = hash;
 
-				if (typeof  callback != "function")
-					throw new Error ('Callback not a function');
-
-				// get projects model
-				var proj = sequelize.model ('projects');
-
-				// some warning is emitted here.. I don't know why..
-				// Warning: a promise was created in a handler but was not returned from it
-				// http://www.redotheweb.com/2013/02/20/sequelize-the-javascript-orm-in-practice.html
-				projects.findAll ({include: [environments]}).then (function (data) {
-					return callback (null, data);
-				}).catch (function (err) {
-					console.error (err);
-					return callback (err, null);
-				});
+						next ();
+					})
+				})
 			}
 		}
 	},
@@ -67,5 +66,5 @@ module.exports = {
 				allowNull: false
 			}
 		});
-	},
+	}
 };

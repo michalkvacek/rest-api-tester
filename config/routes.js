@@ -20,45 +20,21 @@
  * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
  */
 
-/*
- parametry v routach: pravdepodobne jen povinne,nebo zadne, pod stejnym jmenem dostupne napr. i z GETu. Parametr z routy
- ma prednost pred parametrem z GET
- */
-
 module.exports.routes = {
-	'get /': {
-		view: "homepage"
-	},
-	'get /registration': {
-		view: "users/registration",
-		locals: {
-			layout: "noProjectLayout",
-			breadcrumbs: {
-				"Homepage": "/",
-				'User registration': false
-			},
-			search: false,
-			notifications: false,
-			apiAlert: false
-		}
-	},
-	'post /registration': {
-		controller: "User",
-		action: "postRegistration"
-	},
-	'get /login': {
-		view: "users/login",
-		layout: "noProjectLayout",
-		breadcrumbs: {
-			"Homepage": "/",
-			'Login': false
-		},
-		search: false,
-		notifications: false,
-		apiAlert: false
-	},
-	'post /login': {
-		controller: "Auth",
-		action: "process"
-	}
+	'get /': 'app/Homepage.index',
+	'get /projects': 'app/Projects.index',
+	'get /projects/:projectId/environments': 'app/Dasboard.index',
+	'get /environments/:environmentId/tests': 'app/Tests.index',
+	'get /environments/:environmentId/statistics': 'app/Environments.statistics',
+
+	'get /api/v1/projects/:projectId/environments': 'api/v1/Environments.index',
+	'get /api/v1/projects': 'api/v1/Projects.index',
+
+	'get /api/v1/environments/:environmentId/statistics': 'api/v1/Environments.statistics',
+
+	'post /api/v1/registration': 'api/v1/Users.create',
+	'post /api/v1/login': "api/v1/Auth.passwordLogin",
+	'post /api/v1/projects': 'api/v1/Projects.create',
+	'post /api/v1/projects/:projectId/environments': 'api/v1/Environments.create',
+	'post /api/v1/tests/:environmentId': 'api/v1/Tests.create'
 };

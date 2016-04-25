@@ -55,6 +55,9 @@ process.chdir (__dirname);
 		}
 	}
 
+	var pg = require('pg');
+	delete pg.native;
+
 	// Start server
 	sails.lift (rc ('sails'));
 }) ();

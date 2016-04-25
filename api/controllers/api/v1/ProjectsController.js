@@ -6,20 +6,17 @@
  */
 
 module.exports = {
+	test: function (req, res) {
+		return res.send ('proslo to');
+	},
+
 	index: function (req, res) {
-		users.getOwnProjects (req.user, function (err, ownProjects) {
-			users.getManagedProjects (req.user, function (err, managedProjects) {
-				return res.view ({
-					layout: "noProjectLayout",
+
+		userProjects.own (req.token.id, function (err, ownProjects) {
+			userProjects.managedByUser (req.token.id, function (err, managedProjects) {
+				return res.json ({
 					ownProjects: ownProjects,
-					managedProjects: managedProjects,
-					breadcrumbs: {
-						"Homepage": "/",
-						'Projects': false
-					},
-					search: true,
-					notifications: true,
-					apiAlert: false
+					managedProjects: managedProjects
 				});
 			});
 		});
@@ -29,24 +26,19 @@ module.exports = {
 		var name = req.param ('name', false);
 		var description = req.param ('description', null);
 
-		if (!name) {
-			return res.redirect ('/projects');
-		}
-
 		projects.create ({
 			name: name,
 			description: description,
-			usersId: req.user.id
+			usersId: req.token.id
 		}).then (function (project) {
 			// ok
-			return res.redirect ('/projects');
+			return res.json(project);
 		}).catch (function (err) {
 			if (err) {
-				console.log (err);
-
-				return res.redirect ('/projects');
+				console.error(err);
+				return res.badRequest(err.errors);
 			}
 		});
-	},
+	}
 };
 

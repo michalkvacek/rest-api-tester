@@ -37,6 +37,7 @@ module.exports = {
 		 * User who created environment
 		 */
 		environments.belongsTo (users, {
+			as: 'author',
 			foreignKey: {
 				name: 'usersId',
 				allowNull: false
@@ -44,12 +45,12 @@ module.exports = {
 		});
 
 		/**
-		 * Users, who manages this environment
+		 * Users, who manage this environment
 		 */
 
-		environments.belongsToMany(users, {
+		environments.belongsToMany (users, {
 			through: userBelongsToEnvironment,
-			as: 'teamMemger',
+			as: 'teamMembers',
 			foreignKey: {
 				name: 'environmentsId',
 				allowNull: false
@@ -60,11 +61,13 @@ module.exports = {
 		 * Project, where environment belongs
 		 */
 		environments.belongsTo (projects, {
+			as: 'project',
 			foreignKey: {
 				name: "projectsId",
 				allowNull: false
 			}
-		});
+		})
+		;
 	},
 	options: {
 		tableName: 'environments',
@@ -77,7 +80,7 @@ module.exports = {
 					environmentsId: environment.id,
 					userRole: 'manager'
 				}).then (function (err, userInEnv) {
-					if (err) console.error(err);
+					if (err) console.error (err);
 				});
 			}
 		}

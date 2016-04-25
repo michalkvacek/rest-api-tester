@@ -9,11 +9,11 @@
 
 module.exports.connections = {
 	postgreSQL: {
-		user: 'postgres',
-		password: 'sql',
-		database: 'test_rest_api',
+		// user: sails.config.local.user,
+		// password: sails.config.local.password,
+		// database: sails.config.local.database,
 		options: {
-			host: 'localhost',
+			// host: sails.config.local.host,
 			dialect: 'postgres',
 			pool: {
 				max: 5,

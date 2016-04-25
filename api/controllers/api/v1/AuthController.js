@@ -5,29 +5,36 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var passport = require ('passport');
 var bcrypt = require ('bcryptjs');
 
 module.exports = {
+	/**
+	 * Method for local login. Requires "email" and "password" parameters.
+	 * 
+	 * Returns token for user.
+	 * 
+	 * @param req
+	 * @param res
+	 */
 	passwordLogin: function (req, res) {
 		users.findOne ({email: req.param ('email')}).then (function (user) {
-		
+
 			// check if user exists or if any error occured
 			if (!user)
-				return res.redirect ('/login');
-		
+				return res.badRequest ();
+
 			// check passwords
 			if (!bcrypt.compareSync (req.param ('password'), user.password))
-				return res.redirect ('/login');
-		
-			// everything seems to be fine, try to login
-			req.logIn (user, function (err) {
-				if (err) {
-					console.error (err);
-					return res.redirect ('/login');
-				}
-		
-				return res.redirect ('/projects');
+				return res.forbidden ('password');
+
+			// remove password from user model
+			user = user.toJSON ();
+			delete user.password;
+
+			// user successfully logged in
+			res.ok ({
+				user: user,
+				token: jwToken.issue ({id: user.id})
 			});
 		});
 	}

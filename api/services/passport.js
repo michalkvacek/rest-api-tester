@@ -26,7 +26,6 @@ passport.serializeUser (function (user, done) {
 });
 
 passport.deserializeUser (function (id, done) {
-	console.log ('deserializuji uzivatele');
 	users.findById (id).then (function (user) {
 		delete user.password;
 

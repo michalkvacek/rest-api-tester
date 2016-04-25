@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "bcryptjs": "^2.3.0",
     "continuation-local-storage": "^3.1.7",
     "crypto": "0.0.3",
@@ -22,6 +23,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.2.4",
     "include-all": "~0.1.6",
+    "jsonwebtoken": "^5.7.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pg": "^4.5.3",
