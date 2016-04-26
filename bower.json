@@ -1,0 +1,17 @@
+{
+  "name": "rest_api_tester",
+  "description": "a Sails application",
+  "main": "app.js",
+  "authors": [
+    "michal"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

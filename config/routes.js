@@ -22,11 +22,7 @@
 
 module.exports.routes = {
 	'get /': 'app/Homepage.index',
-	'get /projects': 'app/Projects.index',
-	'get /projects/:projectId/environments': 'app/Dasboard.index',
-	'get /environments/:environmentId/tests': 'app/Tests.index',
-	'get /environments/:environmentId/statistics': 'app/Environments.statistics',
-
+	
 	'get /api/v1/projects/:projectId/environments': 'api/v1/Environments.index',
 	'get /api/v1/projects': 'api/v1/Projects.index',
 

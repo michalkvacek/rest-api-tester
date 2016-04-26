@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html ng-app="restApiTester">
-  <head>
-    <title><%=typeof title == 'undefined' ? 'New Sails App' : title%></title>
+<head>
+	<title><%= typeof title == 'undefined' ? 'New Sails App' : title %></title>
 
-    <!-- Viewport mobile tag for sensible mobile support -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- Viewport mobile tag for sensible mobile support -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>REST API testing tool</title>
+	<link href='http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css' rel='stylesheet'
+	      type='text/css'>
 
-    <!--STYLES-->
-    <link rel="stylesheet" href="/styles/vendor/foundation/foundation-flex.css">
-    <link rel="stylesheet" href="/styles/app.css">
-    <!--STYLES END-->
-  </head>
+	<!--STYLES-->
+	<link rel="stylesheet" href="/styles/vendor/foundation/foundation-flex.css">
+	<link rel="stylesheet" href="/styles/app.css">
+	<!--STYLES END-->
+</head>
 
-  <body>
+<body>
 
-   <%- body %>
+<div ui-view></div>
 
-    <!--TEMPLATES-->
-    
-    <!--TEMPLATES END-->
+<!--TEMPLATES-->
+<script type="text/javascript" src="/jst.js"></script>
+<!--TEMPLATES END-->
 
-    <!--SCRIPTS-->
-    <script src="/js/dependencies/sails.io.js"></script>
-    <script src="/js/dependencies/jquery.min.js"></script>
-    <script src="/js/dependencies/angular/angular.min.js"></script>
-    <script src="/js/dependencies/angular-route/angular-route.min.js"></script>
-    <script src="/js/dependencies/foundation/foundation.js"></script>
-    <script src="/js/dependencies/foundation/vendor/what-input.min.js"></script>
-    <script src="/js/rest-api-tester/services/login/login-service.js"></script>
-    <script src="/js/app.js"></script>
-    <script src="/js/rest-api-tester/controllers/login-controller.js"></script>
-    <!--SCRIPTS END-->
-  </body>
+<!--SCRIPTS-->
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/dependencies/jquery.min.js"></script>
+<script src="/js/dependencies/angular/angular.min.js"></script>
+<script src="/js/dependencies/angular-breadcrumb/angular-breadcrumb.min.js"></script>
+<script src="/js/dependencies/angular-ui-router/angular-ui-router.min.js"></script>
+<script src="/js/dependencies/foundation/foundation.js"></script>
+<script src="/js/dependencies/foundation/vendor/what-input.min.js"></script>
+<script src="/js/dependencies/underscore-min.js"></script>
+<script src="/js/rest-api-tester/_init.js"></script>
+<script src="/js/rest-api-tester/services/login-service.js"></script>
+<script src="/js/rest-api-tester/services/projects-service.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/rest-api-tester/controllers/login-controller.js"></script>
+<script src="/js/rest-api-tester/controllers/projects-controller.js"></script>
+<!--SCRIPTS END-->
+</body>
 </html>

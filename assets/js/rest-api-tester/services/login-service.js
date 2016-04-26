@@ -1,4 +1,4 @@
-var app = angular.module ('restApiTester', []);
+var app = angular.module ('restApiTester');
 
 app.service ('loginService', ['$http', '$q', function ($http, $q) {
 	return {

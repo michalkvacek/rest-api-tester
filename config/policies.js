@@ -24,6 +24,7 @@ module.exports.policies = {
 	},
 	'api/v1/Projects': {
 		index: ['jwToken'],
+		create: ['jwToken'],
 		'*': ['jwToken', 'projectIdRequired']
 	},
 	'api/v1/Environments': {
