@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html ng-app="restApiTester">
 <head>
-	<title><%= typeof title == 'undefined' ? 'New Sails App' : title %></title>
-
 	<!-- Viewport mobile tag for sensible mobile support -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>REST API testing tool</title>
@@ -33,9 +31,11 @@
 <script src="/js/dependencies/foundation/vendor/what-input.min.js"></script>
 <script src="/js/dependencies/underscore-min.js"></script>
 <script src="/js/rest-api-tester/_init.js"></script>
+<script src="/js/rest-api-tester/services/environments-service.js"></script>
 <script src="/js/rest-api-tester/services/login-service.js"></script>
 <script src="/js/rest-api-tester/services/projects-service.js"></script>
 <script src="/js/app.js"></script>
+<script src="/js/rest-api-tester/controllers/dashboard-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/login-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/projects-controller.js"></script>
 <!--SCRIPTS END-->

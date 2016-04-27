@@ -1,32 +1,41 @@
-<div class="content" ng-controller="ProjectsController as con">
-	<div class="project-overview row">
+<div class="content">
+	<div class="project-overview row" data-equalizer>
 		<div class="column no-padding" ng-repeat="project in projects">
 
-			<div class="with-shadow project text-center">
-				<h3>{{project.name}}</h3>
+			<div class="with-shadow project text-center has-controls">
+				<div class="content" data-equalizer-watch>
+					<h3><a ui-sref="dashboard({projectId: project.id})">{{project.name}}</a></h3>
 
-				<p class="description">
-					{{project.description}}
-				</p>
+					<p class="description">
+						{{project.description}}
+					</p>
 
-				<p class="environments">
-					<span class="label" ng-repeat="environment in project.environments"><a
-							  ui-shref="tests/{{environment.id}}">{{environment.name}}</a></span>
+					<p class="column environments">
+						<span ng-repeat="environment in project.environments">
+							<a class="label curson-pointer"
+								ui-sref="tests({environmentId: environment.id})">{{environment.name}}</a>
+						</span>
+						<span ng-show="!project.environments.length" class="label secondary">No environments</span>
+					</p>
+				</div>
 
-					<span ng-show="!project.environments.length" class="label secondary">No environments</span>
-				</p>
+				<div class="row align-center controls">
+					<a ui-sref="dashboard({projectId: project.id})" class="button primary">
+						<i class="fi-graph-trend"></i>
+						Dashboard
+					</a>
+					&nbsp;
+					<a ui-sref="projects_settings({projectId: project.id})" class="button warning">
+						<i class="fi-wrench"></i>
+						Settings
+					</a>
+				</div>
 
-
-				<a href="/dashboard/" class="button primary"><i class="fi-graph-trend"></i>
-				Dashboard</a>
-				<a href="/project_settings" class="button warning"><i class="fi-wrench"></i>
-				Settings</a>
 			</div>
 		</div>
 
-		<div ng-show="!projects.length" class="callout warning">
-			nenalezeno
-		</div>
+		<div ng-show="!projects.length" class="callout warning">nenalezeno</div>
+		<script>$ (document).foundation ()</script>
 	</div>
 
 	<a data-open="new-project" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>
@@ -35,19 +44,12 @@
 
 		<h3>Add project</h3>
 
-		<form ng-submit="con.create()">
+		<form ng-submit="controller.create()">
 			<label>
 				Name
 
 				<input type="text" placeholder="Project name" ng-model="formData.name" />
 			</label>
-
-			<!--<label>-->
-			<!--API endpoint-->
-
-			<!--<input type="text" placeholder="https://api.example.com/api/v1" ng-model="formData.apiEndpoint" />-->
-			<!--</label>-->
-
 
 			<label>
 				Description

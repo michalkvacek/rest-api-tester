@@ -57,6 +57,14 @@ module.exports = {
 			}
 		});
 
+		environments.hasMany (tests, {
+			as: 'tests',
+			foreignKey: {
+				name: 'environmentsId',
+				allowNull: false
+			}
+		});
+
 		/**
 		 * Project, where environment belongs
 		 */

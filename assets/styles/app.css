@@ -95,6 +95,15 @@ table .button {
 	margin: 0;
 }
 
+.project {
+	min-width: 17em;
+}
+
+.curson-pointer {
+	cursor: pointer;
+}
+
+
 .dashboard .tests {
 	padding-bottom: .3em;
 	display: block;

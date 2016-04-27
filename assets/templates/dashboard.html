@@ -1,0 +1,89 @@
+<div class="row content align-center dashboard" data-equalizer>
+	<div class="column no-padding small-12 medium-6 large-4" ng-repeat="environment in environments">
+		<div class="environment with-shadow has-controls">
+
+			<div class="content-holder" data-equalizer-watch>
+				<h4 class="text-center">{{environment.name}}</h4>
+
+				<div class="row tests text-center">
+					<a href="test-result.html" ng-repeat="result in environment.results" data-ng-class="{'success': true, 'alert' : false }" data-tooltip aria-haspopup="true" class="has-tip badge success"
+						data-disable-hover="false" title="Address, 12.3 15:12"><i class="fi-check"></i></a>
+				</div>
+
+				<div class="row small">
+					<div class="column">
+						<i class="fi-arrow-left"></i> Older
+					</div>
+					<div class="column text-right">
+						Recent <i class="fi-arrow-right"></i>
+					</div>
+				</div>
+
+				<h5 ng-show="environment.results.length">Last failed tests</h5>
+				<div ng-show="environment.results.length" class="failed-tests">
+					<div class="row" ng-repeat="result in environment.results"> <!-- filter: {result.status: false} -->
+						<p>
+							<a href="test.html"><i class="fi-x badge alert"></i> Address</a>
+							<small>11.2. 16:00</small>
+						</p>
+					</div>
+
+
+				</div>
+			</div>
+			<div class="row controls align-right">
+				<a href="./tests.html" class="primary button has-tip tiny" data-tooltip aria-haspopup="true"
+					data-disable-hover="false"
+					title="Tests overview"><i class="fi-list"></i> All tests</a>
+
+				&nbsp;
+
+				<a href="./environment_settings.html" data-tooltip aria-haspopup="true" class="warning button has-tip tiny"
+					data-disable-hover="false"
+					title="Environment settings"><i class="fi-wrench"></i> Environment settings</a>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<a data-open="new-project" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>
+
+	<div class="reveal" id="new-project" data-reveal>
+
+		<h3>Add project</h3>
+
+		<form ng-submit="con.create()">
+			<label>
+				Name
+
+				<input type="text" placeholder="Project name" ng-model="formData.name" />
+			</label>
+
+			<label>
+			API endpoint
+
+			<input type="text" placeholder="https://api.example.com/api/v1" ng-model="formData.apiEndpoint" />
+			</label>
+
+
+			<label>
+				Description
+
+			<textarea rows="2" name="description" ng-model="formData.description"
+						 placeholder="Some brief description of this API"></textarea>
+			</label>
+
+			<button type="submit" class="button success float-right">Create new</button>
+		</form>
+
+		<!-- Close button -->
+		<button class="close-button" data-close aria-label="Close modal" type="button">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+
+
+</div>

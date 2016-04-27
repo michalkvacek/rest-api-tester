@@ -15,15 +15,34 @@ module.exports = {
 	 */
 	index: function (req, res) {
 		// get all environments assigned to this project
-		environments.find ({
+
+		var findCriterium = {
 			where: {projectsId: req.projectId},
-			include: [{
+			include: []
+		};
+
+		// include team members in each environment?
+		if (req.param ('withMembers', false)) {
+			findCriterium.include.push ({
 				model: users,
 				as: 'teamMembers',
-				where: {usersId: req.token.id}
-			}]
-		}).then (function (environments) {
-			return res.json(environments);
+				where: {id: req.token.id}
+			})
+		}
+
+		if (req.param ('withTests', false)) {
+			findCriterium.include.push ({
+				model: tests,
+				as: 'tests'
+			});
+		}
+
+		if (req.param('withResults', false)) {
+
+		}
+
+		environments.findAll (findCriterium).then (function (environments) {
+			return res.json (environments);
 		}).catch (function (err) {
 			console.error (err);
 		});
