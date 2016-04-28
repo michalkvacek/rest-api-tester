@@ -27,10 +27,11 @@ module.exports.routes = {
 	'get /api/v1/projects': 'api/v1/Projects.index',
 
 	'get /api/v1/environments/:environmentId/statistics': 'api/v1/Environments.statistics',
+	'get /api/v1/environments/:environmentId/tests': 'api/v1/Tests.index',
 
 	'post /api/v1/registration': 'api/v1/Users.create',
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",
 	'post /api/v1/projects': 'api/v1/Projects.create',
 	'post /api/v1/projects/:projectId/environments': 'api/v1/Environments.create',
-	'post /api/v1/tests/:environmentId': 'api/v1/Tests.create'
+	'post /api/v1/environments/:environmentId/tests': 'api/v1/Tests.create'
 };

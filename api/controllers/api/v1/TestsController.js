@@ -15,24 +15,34 @@ module.exports = {
 	 * @param res
 	 */
 	index: function (req, res) {
-		var envId = req.param ('environmentId', false);
+		tests.findAll ({where: {environmentsId: req.environmentId}}).then (function (data) {
 
-		// test if any environment was given
-		if (!envId) return res.redirect ('/projects');
+			if (req.param('withStatistics', false)) {
+				var testIds = [];
+				for (test in data) {
+					testIds.push(data[test].id)
+				}
 
-		tests.findAll ({where: {environmentsId: envId}}).then (function (data) {
-	
-			// pridat tabulku pro statistiky
+
+				// todo dodelat statistiky (pocet request + pocet assertions + "zdravi" = vsechny_testy/uspesne_testy)
+
+				console.log(testIds);
+			}
 
 			return res.json (data);
 		});
 	},
 
-	testParts: function (req, res) {
-		var testId = req.param('testId');
-
-
-
+	statistics: function (req, res) {
+		tests.count ({where: {environmentsId: req.environmentId}}).then (function (testsCount) {
+			return res.json ({
+				health: "94.45",
+				avgResponseTime: 132,
+				maxResponseTime: 10022,
+				requests: testsCount,
+				assertions: 2 * testsCount
+			})
+		});
 	},
 
 	/**
@@ -42,22 +52,15 @@ module.exports = {
 	 * @param res
 	 */
 	create: function (req, res) {
-		var envId = req.param ('environmentId', false);
-
-		// test if any environment was given
-		if (!envId) return res.redirect ('/projects');
-
 		var parameters = {
 			usersId: req.user.id,
-			environmentsId: envId,
+			environmentsId: req.environmentId
 		};
 		parameters.merge (req.allParams ());
 
 		// create new test
 		tests.create (parameters).then (function (test) {
-			
-		}).catch (function (error) {
-		
+			return res.created ({test: test});
 		});
 	}
 };

@@ -1,7 +1,6 @@
 <div class="content">
 	<div class="project-overview row" data-equalizer>
 		<div class="column no-padding" ng-repeat="project in projects">
-
 			<div class="with-shadow project text-center has-controls">
 				<div class="content" data-equalizer-watch>
 					<h3><a ui-sref="dashboard({projectId: project.id})">{{project.name}}</a></h3>
@@ -30,18 +29,18 @@
 						Settings
 					</a>
 				</div>
-
 			</div>
 		</div>
 
 		<div ng-show="!projects.length" class="callout warning">nenalezeno</div>
-		<script>$ (document).foundation ()</script>
 	</div>
+
+	<script>$ ('.project-overview').foundation ()</script>
+
 
 	<a data-open="new-project" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>
 
 	<div class="reveal" id="new-project" data-reveal>
-
 		<h3>Add project</h3>
 
 		<form ng-submit="controller.create()">
@@ -66,5 +65,4 @@
 			<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
-
 </div>

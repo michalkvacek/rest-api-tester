@@ -1,0 +1,225 @@
+<div class="row content">
+	<div class="column with-shadow has-controls">
+		<div class="row text-center">
+			<div class="column">
+				<h4>97 %</h4>
+				<small>Health</small>
+			</div>
+			<div class="column">
+				<h4>105ms</h4>
+				<small>Average response time</small>
+			</div>
+			<div class="column">
+				<h4>154ms</h4>
+				<small>Longest response time</small>
+			</div>
+			<div class="column">
+				<h4>10</h4>
+				tests
+			</div>
+		</div>
+
+		<div class="row controls align-right">
+			<a href="#" class="button secondary tiny">30 days</a>
+			&nbsp;
+			<a href="#" class="button primary tiny">7 days</a>
+			&nbsp;
+			<a href="#" class="button secondary tiny">last 24 hours</a>
+			&nbsp;
+			<a href="#" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
+		</div>
+	</div>
+</div>
+
+<div class="row" data-equalizer ng-init="controller.initTestOverview()">
+	<div class="column no-padding large-4 test" ng-repeat="test in controller.tests">
+		<div class="with-shadow has-controls">
+
+			<div class="content-holder" data-equalizer-watch>
+				<h5 class="text-center">{{test.name}}</h5>
+
+				<p class="clearfix"></p>
+
+				<div class="health-meter" ng-show="test.health">
+					<div class="row result success progress">
+						<div class="progress-meter" style="width: 85%">
+							<p class="progress-meter-text">Health: 85 %</p>
+						</div>
+					</div>
+
+					<div class="row align-right">
+						<p>
+							Show health for <a href="#">30d</a>, <a href="#"><strong>7d</strong></a>, <a href="#">today</a>
+						</p>
+					</div>
+				</div>
+
+				<div class="row align-right">
+					<span class="label success fi-check"> Passing</span>
+				</div>
+
+				<div class="row align-right">
+					<small><em>30 requests, 105 assertions</em></small>
+				</div>
+
+			</div>
+			<div class="row controls align-right">
+				<a href="./test.html" class="has-tip primary tiny button" data-tooltip aria-haspopup="true"
+					data-disable-hover="false"
+					title="Test detail"><i class="fi-magnifying-glass"></i> <span class="show-for-medium">Detail</span></a>
+				&nbsp;
+
+				<a href="#" class="has-tip success tiny button" data-tooltip aria-haspopup="true"
+					data-disable-hover="false"
+					title="Run now"><i class="fi-play"></i> <span class="show-for-medium">Run now</span></a>
+				&nbsp;
+				<a href="#" class="has-tip button tiny warning" data-open="schedule-test" data-tooltip
+					aria-haspopup="true"
+					data-disable-hover="false"
+					title="Schedule run"><i class="fi-calendar"></i> <span
+						  class="show-for-medium">Schedule</span></a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="reveal" id="schedule-test" data-reveal>
+
+	<form>
+		<div class="row">
+			<div class="column shrink">
+				Run...
+
+			</div>
+			<div class="column">
+				<label>
+					each 30 minutes
+					<input type="radio" name="schedule" />
+				</label>
+
+				<label>
+					each hour
+					<input type="radio" name="schedule" />
+				</label>
+
+				<label>
+					each 6 hours
+					<input type="radio" name="schedule" />
+				</label>
+
+				<label>
+					each day
+					<input type="radio" name="schedule" />
+				</label>
+				<label>
+					at
+					<input type="datetime" name="run-at" />
+
+				</label>
+			</div>
+		</div>
+
+		<button class="button success float-right" type="submit">Save</button>
+	</form>
+
+
+	<!-- Close button -->
+	<button class="close-button" data-close aria-label="Close modal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<!--Button for creating new resource-->
+<a data-open="new-test" id="add-test" class="button success material-add-button"><i
+		  class="fi-plus"></i></a>
+
+<div class="reveal large" id="new-test" data-reveal="">
+	<h3>New test</h3>
+
+	<form action="#" method="post">
+
+		<label>
+			Test name
+
+			<input type="text" />
+		</label>
+
+		<label>
+			Description
+
+			<textarea rows="2"></textarea>
+		</label>
+
+
+		<ul class="tabs" data-tabs id="add-request-tabs">
+			<li class="tabs-title is-active"><a href="#new-request" aria-selected="true">New request</a></li>
+			<li class="tabs-title"><a href="#existing-request">Existing requests</a></li>
+		</ul>
+		<div class="tabs-content" data-tabs-content="add-request-tabs">
+			<div class="tabs-panel is-active" id="new-request">
+
+				<div class="row">
+					<div class="column large-3">
+						<label>
+							Method
+
+							<select name="input-type">
+								<option>POST</option>
+								<option>GET</option>
+								<option>PUT</option>
+								<option>DELETE</option>
+								<option>PATCH</option>
+								<option>OPTION</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="column large-9">
+						<label>
+							URL
+
+							<input type="text" name="url"
+									 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="tabs-panel" id="existing-request">
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="column">
+				<button type="submit" class="button success float-right">Create</button>
+			</div>
+		</div>
+	</form>
+
+</div>

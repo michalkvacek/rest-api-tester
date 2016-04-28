@@ -22,9 +22,15 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		// routing
 		$urlRouterProvider.otherwise ("/");
 
-		$stateProvider.state ('/', {
-			url: "/login",
+		// login
+		// http://stackoverflow.com/questions/22537311/angular-ui-router-login-authentication
+		
+		$stateProvider.state ('homepage', {
+			url: "/",
 			template: window.JST['assets/templates/homepage.html']
+		}).state ('login', {
+			url: "/login",
+			template: window.JST['assets/templates/login.html']
 		}).state ('projects', {
 			url: '/projects',
 			template: window.JST['assets/templates/projects.html'],
@@ -48,6 +54,6 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		});
 	}]).run (function ($rootScope) {
 	$rootScope.$on ('$viewContentLoaded', function () {
-		$ (document).foundation ();
+		$ ('#loaded-view').foundation ();
 	});
 });

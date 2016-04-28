@@ -15,7 +15,100 @@
 
 <body>
 
-<div ui-view></div>
+<div class="column no-padding" data-sticky-container>
+	<header class="sticky" data-sticky data-options="marginTop:0;" style="width:100%">
+		<nav id="main-menu" class="row title-bar">
+			<div class="column">
+				<ul class="menu">
+					<li class="menu-text">
+						<ul class="breadcrumbs">
+							<li>Projects</li>
+						</ul>
+					</li>
+				</ul>
+
+			</div>
+
+			<div class="column shrink align-right">
+				<ul class="menu dropdown" data-disable-hover="true" data-dropdown-menu>
+					<li>
+						<form class="search">
+							<label>
+								<input type="search" class="quick-search">
+							</label>
+						</form>
+					</li>
+					<li class="separator"></li>
+					<li>
+						<button class="fi-sound"></button>
+						<ul class="menu" ng-controller="NotificationsController as notification">
+							<li ng-repeat="notify in notification.notificationsList">{{notify.message}}</li>
+							<li ng-show="!notification.notificationsList.length"><a>Zadne notifikace</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+</div>
+
+<div class="row" id="content">
+
+	<aside class="column no-padding large-2" id="side-menu">
+		<div class="user-profile" ng-controller="LoggedUserController as loggedUser">
+			<div class="row align-center" ng-show="loggedUser.avatar">
+				<img ng-src="{{loggedUser.avatar}}" alt="profile" />
+			</div>
+
+			<div class="row align-center">
+				<strong>{{loggedUser.name}}</strong>
+			</div>
+		</div>
+
+		<!--<div class="row">-->
+		<!--<ul class="menu dropdown vertical" data-disable-hover="true" data-dropdown-menu>-->
+		<!--<li><a href="#">Google Maps API</a>-->
+		<!--<ul class="menu">-->
+		<!--<li class="active"><a href="#">Google Maps API</a></li>-->
+		<!--<li><a href="#">Facebook API</a></li>-->
+
+		<!--<li><a href="#" class="button success">Add new</a></li>-->
+		<!--</ul>-->
+		<!--</li>-->
+		<!--<li><a href="#">Production</a>-->
+		<!--<ul class="menu">-->
+		<!--<li class="active"><a href="#">Production</a></li>-->
+		<!--<li><a href="#">Testing</a></li>-->
+		<!--<li><a href="#">Development</a></li>-->
+		<!--<li><a href="#" class="button success">Add new</a></li>-->
+		<!--</ul>-->
+		<!--</li>-->
+		<!--<li class="separator"></li>-->
+		<!--<li class="text-center">google.com/maps/api</li>-->
+		<!--<li class="separator"></li>-->
+		<!--<li><a href="#" class="button success"><i class="fi-play"> Run all tests</i></a></li>-->
+		<!--<li class="separator"></li>-->
+		<!--</ul>-->
+		<!--</div>-->
+
+		<div class="test-results" ng-controller="TestsResultsController as tests">
+			<h5 ng-show="tests.results.length" class="text-center">Last tests</h5>
+
+			<ul ng-show="tests.results.length" class="menu vertical">
+				<li ng-repeat="result in tests.results">
+					<a ui-sref="test.detail({testId: result.test.id})">
+						<span class="badge success fi-check"></span>
+						{{result.test.name}}
+					</a>
+				</li>
+
+			</ul>
+		</div>
+	</aside>
+
+	<div class="column" id="loaded-view" ui-view></div>
+</div>
+
 
 <!--TEMPLATES-->
 <script type="text/javascript" src="/jst.js"></script>
@@ -25,7 +118,6 @@
 <script src="/js/dependencies/sails.io.js"></script>
 <script src="/js/dependencies/jquery.min.js"></script>
 <script src="/js/dependencies/angular/angular.min.js"></script>
-<script src="/js/dependencies/angular-breadcrumb/angular-breadcrumb.min.js"></script>
 <script src="/js/dependencies/angular-ui-router/angular-ui-router.min.js"></script>
 <script src="/js/dependencies/foundation/foundation.js"></script>
 <script src="/js/dependencies/foundation/vendor/what-input.min.js"></script>
@@ -34,10 +126,15 @@
 <script src="/js/rest-api-tester/services/environments-service.js"></script>
 <script src="/js/rest-api-tester/services/login-service.js"></script>
 <script src="/js/rest-api-tester/services/projects-service.js"></script>
+<script src="/js/rest-api-tester/services/tests-service.js"></script>
 <script src="/js/app.js"></script>
 <script src="/js/rest-api-tester/controllers/dashboard-controller.js"></script>
+<script src="/js/rest-api-tester/controllers/logged-user-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/login-controller.js"></script>
+<script src="/js/rest-api-tester/controllers/notifications-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/projects-controller.js"></script>
+<script src="/js/rest-api-tester/controllers/tests-controller.js"></script>
+<script src="/js/rest-api-tester/controllers/tests-results-controller.js"></script>
 <!--SCRIPTS END-->
 </body>
 </html>
