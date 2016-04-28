@@ -6,7 +6,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		// interceptor
 		$httpProvider.interceptors.push (function ($q) {
 			return {
-				'request': function (config) {
+				request: function (config) {
 
 					var token = localStorage.getItem ('auth_token');
 
@@ -15,7 +15,19 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 					}
 
 					return config;
-				}
+				},
+				// requestError: function (rejection) {
+				// 	// console.log('requestError');
+				// 	// console.log(rejection);
+				// },
+				// response: function (config) {
+				// 	// console.log('response');
+				// 	// console.log(config);
+				// },
+				// responseError: function (neco) {
+				// 	// console.log('responseError');
+				// 	// console.log(neco);
+				// }
 			};
 		});
 
@@ -25,12 +37,15 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		// login
 		// http://stackoverflow.com/questions/22537311/angular-ui-router-login-authentication
 		
-		$stateProvider.state ('homepage', {
+		$stateProvider.state ('/', {
 			url: "/",
 			template: window.JST['assets/templates/homepage.html']
 		}).state ('login', {
 			url: "/login",
 			template: window.JST['assets/templates/login.html']
+		}).state ('registration', {
+			url: "/registration",
+			template: window.JST['assets/templates/registration.html']
 		}).state ('projects', {
 			url: '/projects',
 			template: window.JST['assets/templates/projects.html'],
@@ -49,6 +64,11 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		}).state ('tests', {
 			url: '/environment/{environmentId:int}/tests',
 			template: window.JST['assets/templates/tests.html'],
+			controller: 'TestsController',
+			controllerAs: 'controller'
+		}).state ('test_detail', {
+			url: '/tests/{testId:int}',
+			template: window.JST['assets/templates/test.html'],
 			controller: 'TestsController',
 			controllerAs: 'controller'
 		});

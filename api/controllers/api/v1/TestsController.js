@@ -17,16 +17,15 @@ module.exports = {
 	index: function (req, res) {
 		tests.findAll ({where: {environmentsId: req.environmentId}}).then (function (data) {
 
-			if (req.param('withStatistics', false)) {
+			if (req.param ('withStatistics', false)) {
 				var testIds = [];
 				for (test in data) {
-					testIds.push(data[test].id)
+					testIds.push (data[test].id)
 				}
-
 
 				// todo dodelat statistiky (pocet request + pocet assertions + "zdravi" = vsechny_testy/uspesne_testy)
 
-				console.log(testIds);
+				console.log (testIds);
 			}
 
 			return res.json (data);
@@ -42,6 +41,23 @@ module.exports = {
 				requests: testsCount,
 				assertions: 2 * testsCount
 			})
+		});
+	},
+
+	detail: function (req, res) {
+
+		var findCriterium = {where: {id: req.testId}, include: []};
+
+		if (req.param ('withRequests', false)) {
+			findCriterium.include.push ({
+				model: requests,
+				as: 'requests',
+				where: {testsId: req.testId}
+			});
+		}
+
+		tests.find (findCriterium).then (function (test) {
+			return res.json (test);
 		});
 	},
 

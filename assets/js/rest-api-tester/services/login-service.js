@@ -2,20 +2,18 @@ var app = angular.module ('restApiTester');
 
 app.service ('loginService', ['$http', '$q', function ($http, $q) {
 	return {
-		'postLogin': function (data) {
-			var defer = $q.defer ();
-			$http.post ('/api/v1/login', data).success (function (data) {
-				localStorage.setItem ('auth_token', data.token);
+		localAuth: function (data) {
+			var d = $q.defer ();
+			$http.post ('/api/v1/login', data).then (function (response) {
 
-				// redirect to list of projects
+				console.log(response.data);
 
-				return defer.resolve (data);
-			}).error (function (err) {
-				console.error (err);
-				return defer.reject (err);
-			});
+				localStorage.setItem ('auth_token', response.data.token);
 
-			return defer.promise;
+				return d.resolve (response);
+			}, d.reject);
+
+			return d.promise;
 		}
 	}
 }]);

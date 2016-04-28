@@ -23,7 +23,7 @@ module.exports = {
 	},
 
 	create: function (req, res) {
-		var name = req.param ('name', false);
+		var name = req.param ('name', null);
 		var description = req.param ('description', null);
 
 		projects.create ({
@@ -32,11 +32,11 @@ module.exports = {
 			usersId: req.token.id
 		}).then (function (project) {
 			// ok
-			return res.json(project);
+			return res.created(project);
 		}).catch (function (err) {
 			if (err) {
 				console.error(err);
-				return res.badRequest(err.errors);
+				return res.badRequest(err);
 			}
 		});
 	}

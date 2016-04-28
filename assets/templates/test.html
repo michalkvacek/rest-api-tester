@@ -1,0 +1,473 @@
+<div class="row content" ng-init="controller.initDetail()">
+	<div class="column with-shadow">
+		<div class="row">
+			<div class="column no-padding">
+				<h3>{{controller.detail.name}}</h3>
+
+				{{controller.detail.description}}
+			</div>
+			<div class="column shrink">
+				<button class="button success small fi-play"> Run now</button>
+				<a href="#" data-open="edit-test" class="button primary small fi-pencil"> Edit</a>
+				<br />
+				<span ng-show="controller.detail.passing" class="label success fi-check"> Passing</span>
+				<span ng-show="!controller.detail.passing" class="label alert fi-x"> Not passing</span>
+				<span ng-show="controller.detail.sheduled" class="label warning fi-calendar"> Scheduled: {{controller.detail.scheduled}}</span>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="column with-shadow has-controls">
+		<div class="row text-center">
+			<div class="column">
+				<h4>95 %</h4>
+				<small>Health</small>
+			</div>
+			<div class="column">
+				<h4>145ms</h4>
+				<small>Average response time</small>
+			</div>
+			<div class="column">
+				<h4>1054ms</h4>
+				<small>Longest response time</small>
+			</div>
+			<div class="column">
+				<h4>1</h4>
+				request
+			</div>
+			<div class="column">
+				<h4>10</h4>
+				assertions
+			</div>
+		</div>
+
+		<div class="row controls align-right">
+			<a href="#" class="button secondary tiny">30 days</a>
+			&nbsp;
+			<a href="#" class="button primary tiny">7 days</a>
+			&nbsp;
+			<a href="#" class="button secondary tiny">last 24 hours</a>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="column has-controls with-shadow">
+		<h4>Requests</h4>
+
+		<div ng-show="!controller.detail.requests.length" class="callout warning">Zadny request</div>
+
+		<div class="row content-holder" ng-show="controller.detail.requests.length">
+			<div class="column no-padding">
+				<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
+					<li class="accordion-item" data-accordion-item>
+						<a href="#" class="accordion-title">
+							<h5><span class="label fi-check success"> All addresses</span>
+								<small>(GET /address/all)</small>
+							</h5>
+							<small>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</small>
+						</a>
+						<div class="accordion-content" data-tab-content>
+							<ul class="tabs" data-tabs id="request-tabs-1">
+								<li class="tabs-title is-active"><a href="#request-1" aria-selected="true">Request</a>
+								</li>
+								<li class="tabs-title"><a href="#assertions-1">Assertions</a></li>
+								<li class="tabs-title"><a href="#response-1">Last response</a></li>
+							</ul>
+							<div class="tabs-content" data-tabs-content="request-tabs-1">
+								<div class="tabs-panel is-active" id="request-1">
+									<h4><a href="request.html"><i class="fi-magnifying-glass"></i> All addresses
+										<small>(Oauth 2.0)</small>
+									</a></h4>
+
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+
+									<h5>Headers</h5>
+
+									<ul>
+										<li><strong>Content-type</strong>: application/json</li>
+										<li><strong>X-Powered-By</strong>: some-value</li>
+									</ul>
+								</div>
+								<div class="tabs-panel" id="assertions-1">
+									<table>
+										<thead>
+										<tr>
+											<th></th>
+											<th>Assertion name</th>
+											<th>Property name</th>
+											<th>Expected value</th>
+											<th></th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<td><span class="badge success fi-check"></span></td>
+											<td>Status code</td>
+											<td></td>
+											<td>200</td>
+											<td>
+												<a href="#"><i class="fi-pencil" data-open="edit-assertion"></i></a>
+												<a href="#"><i class="fi-x"></i></a>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+									<button data-open="new-asset" class="button success float-right"
+											  id="add-assert-3"><i
+											  class="fi-plus"></i> Add assertion
+									</button>
+									<div class="clearfix"></div>
+								</div>
+								<div class="tabs-panel" id="response-1">
+
+									<div class="row">
+										<div class="column">
+											<h5>Status</h5>
+											<ul>
+												<li>Status code: 200</li>
+												<li>Response size: 123 kB</li>
+												<li>Response time: 100 ms</li>
+											</ul>
+										</div>
+										<div class="column">
+											<h5>Response headers</h5>
+
+											<ul>
+												<li><strong>Content-type</strong>: application/json</li>
+												<li><strong>X-Powered-By</strong>: some-value</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="column">
+
+
+											<h5>Response body</h5>
+
+											<code class="response">
+												{
+												"glossary": {
+												"title": "example glossary",
+												"GlossDiv": {
+												"title": "S",
+												"GlossList": {
+												"GlossEntry": {
+												"ID": "SGML",
+												"SortAs": "SGML",
+												"GlossTerm": "Standard Generalized Markup Language",
+												"Acronym": "SGML",
+												"Abbrev": "ISO 8879:1986",
+												"GlossDef": {
+												"para": "A meta-markup language, used to create markup languages such as
+												DocBook.",
+												"GlossSeeAlso": ["GML", "XML"]
+												},
+												"GlossSee": "markup"
+												}
+												}
+												}
+												}
+												}
+											</code>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row controls align-right">
+			<a href="#" class="has-tip success tiny button" data-open="new-request-window" data-tooltip
+				aria-haspopup="true"
+				data-disable-hover="false"
+				title="Add new request"><i class="fi-plus"></i> <span class="show-for-medium"> Add request</span></a>
+		</div>
+	</div>
+</div>
+<div class="row" ng-show="controller.detail.results.length">
+	<div class="column with-shadow">
+		<h4>Results</h4>
+
+
+		<div class="row">
+			<div class="column no-padding">
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.1</a>
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.2</a>
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.3</a>
+				<a href="./test-result.html" class="button tiny alert fi-x"> 21.4</a>
+				<a href="./test-result.html" class="button tiny alert fi-x"> 21.4</a>
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.5</a>
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.6</a>
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.7</a>
+				<a href="./test-result.html" class="button tiny success fi-check"> 21.8</a>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+
+<div class="reveal" id="edit-assertion" data-reveal>
+	<h3>Edit assertion</h3>
+
+	<form>
+		<label>
+			Assertion type
+
+			<select name="input-type">
+				<option>Status code</option>
+				<option>Contains</option>
+				<option>Property value</option>
+				<option>Exist key</option>
+				<option>...</option>
+			</select>
+		</label>
+
+		<label>
+			Property
+
+			<input type="text" name="property" placeholder="Property name" />
+		</label>
+
+		<label>
+			Value
+
+			<input type="text" name="value" placeholder="Property value" />
+		</label>
+
+		<button type="submit" class="button success">Edit</button>
+	</form>
+
+	<!-- Close button -->
+	<button class="close-button" data-close aria-label="Close modal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="reveal" id="new-asset" data-reveal>
+	<h3>Add new assertion</h3>
+
+	<form>
+		<label>
+			Assertion type
+
+			<select name="input-type">
+				<option>Status code</option>
+				<option>Contains</option>
+				<option>Property value</option>
+				<option>Exist key</option>
+				<option>...</option>
+			</select>
+		</label>
+
+		<label>
+			Property
+
+			<input type="text" name="property" placeholder="Property name" />
+		</label>
+
+		<label>
+			Value
+
+			<input type="text" name="value" placeholder="Property value" />
+		</label>
+
+		<button type="submit" class="button success">Create new</button>
+	</form>
+
+	<!-- Close button -->
+	<button class="close-button" data-close aria-label="Close modal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="reveal" id="new-parameter" data-reveal>
+	<h3>Add new parameter</h3>
+
+	<form>
+		<label>
+			Parameter name
+
+			<input type="text" name="parameter-name" placeholder="Parameter name" />
+		</label>
+
+		<label>
+			Input type
+
+			<select name="input-type">
+				<option>Number</option>
+				<option>String</option>
+				<option>Boolean</option>
+			</select>
+		</label>
+
+		<label>
+			Comment
+
+			<textarea name="parameter-comment" rows="2" placeholder="Description for this parameter"></textarea>
+		</label>
+
+		<button type="submit" class="button success">Create new</button>
+	</form>
+
+	<!-- Close button -->
+	<button class="close-button" data-close aria-label="Close modal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="reveal" id="new-request-window" data-reveal>
+
+	<h3>Add request</h3>
+
+
+	<ul class="tabs" data-tabs id="add-request-tabs">
+		<li class="tabs-title is-active"><a href="#new-request" aria-selected="true">New request</a></li>
+		<li class="tabs-title"><a href="#existing-request">Existing requests</a></li>
+	</ul>
+
+	<form action="#" method="post">
+
+		<div class="tabs-content" data-tabs-content="add-request-tabs">
+			<div class="tabs-panel is-active" id="new-request">
+
+				<div class="row">
+					<div class="column large-3">
+						<label>
+							Method
+
+							<select name="input-type">
+								<option>POST</option>
+								<option>GET</option>
+								<option>PUT</option>
+								<option>DELETE</option>
+								<option>PATCH</option>
+								<option>OPTION</option>
+							</select>
+						</label>
+					</div>
+
+					<div class="column large-9">
+						<label>
+							URL
+
+							<input type="text" name="url"
+									 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="tabs-panel" id="existing-request">
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+
+				<label>
+					<input type="checkbox" />
+
+					<span>All addresses</span>
+					<small>(GET /address/all)</small>
+				</label>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="column">
+				<button type="submit" class="button success float-right">Add</button>
+			</div>
+		</div>
+	</form>
+
+	<!-- Close button -->
+	<button class="close-button" data-close aria-label="Close modal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+
+<div class="reveal large" id="edit-test" data-reveal="">
+	<h3>Edit test</h3>
+
+	<form action="#" method="post">
+
+		<label>
+			Test name
+
+			<input type="text" value="Address"/>
+		</label>
+
+		<label>
+			Description
+
+			<textarea rows="2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam animi commodi corporis illum ipsa nisi porro rem reprehenderit vel vero? Beatae delectus iste magnam, numquam officiis quia rerum similique voluptates?</textarea>
+		</label>
+
+
+		<h4>Requests</h4>
+		<label>
+			<input checked=checked type="checkbox" />
+
+			<span>All addresses</span>
+			<small>(GET /address/all)</small>
+		</label>
+
+		<label>
+			<input type="checkbox" />
+
+			<span>All addresses</span>
+			<small>(GET /address/all)</small>
+		</label>
+
+		<label>
+			<input checked=checked type="checkbox" />
+
+			<span>All addresses</span>
+			<small>(GET /address/all)</small>
+		</label>
+
+		<label>
+			<input type="checkbox" />
+
+			<span>All addresses</span>
+			<small>(GET /address/all)</small>
+		</label>
+
+
+		<div class="row">
+			<div class="column">
+				<button type="submit" class="button success float-right">Edit</button>
+			</div>
+		</div>
+	</form>
+
+	<!-- Close button -->
+	<button class="close-button" data-close aria-label="Close modal" type="button">
+		<span aria-hidden="true">&times;</span>
+	</button>
+
+</div>

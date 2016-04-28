@@ -33,6 +33,7 @@ module.exports.policies = {
 		'*': ['jwToken']
 	},
 	'api/v1/Tests': {
+		detail: ['jwToken', 'testIdRequired'],
 		'*': ['jwToken', 'environmentIdRequired']
 	}
 };

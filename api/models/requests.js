@@ -2,27 +2,13 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
 		usersId: {
 			type: Sequelize.INTEGER,
-			allowNull: true
-		},
-		parentTestPartId: {
-			type: Sequelize.INTEGER,
-			allowNull: true
-		},
-		createdAt: {
-			type: Sequelize.DATE,
-			allowNull: true
-		},
-		updatedAt: {
-			type: Sequelize.DATE,
-			allowNull: true
+			allowNull: false,
+			references: {
+				model: 'users',
+				key: 'id'
+			}
 		},
 		name: {
 			type: Sequelize.STRING,
@@ -61,5 +47,44 @@ module.exports = {
 			allowNull: true
 		}
 	},
-	tableName: 'requests'
+	options: {
+		tableName: 'requests'
+	},
+	// create relationships with other models
+	associations: function () {
+
+		/**
+		 * User who created request
+		 */
+		requests.belongsTo (users, {
+			foreignKey: {
+				name: 'usersId',
+				as: 'author',
+				allowNull: false
+			}
+		});
+
+		requests.belongsTo (versions, {
+			foreignKey: {
+				name: 'vesionsId',
+				as: 'version',
+				allowNull: false
+			}
+		});
+
+		/**
+		 * Users, who manages this environment
+		 */
+		requests.belongsToMany (tests, {
+			through: requestsInTest,
+			as: {
+				singular: 'test',
+				plural: 'tests'
+			},
+			foreignKey: {
+				name: 'requestsId',
+				allowNull: false
+			}
+		});
+	}
 };

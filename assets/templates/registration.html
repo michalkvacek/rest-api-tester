@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="column">
+
+		<form ng-controller="RegistrationController as registration" ng-submit="registration.localRegistration()">
+			<label>
+				E-mail
+				<input type="email" name="email" ng-model="registration.formData.email"/>
+			</label>
+
+			<label>
+				Name
+
+				<input type="text" name="name" ng-model="registration.formData.name" />
+			</label>
+
+			<button type="submit" class="submit button">Create new account</button>
+		</form>
+	</div>
+</div>

@@ -1,14 +1,23 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('LoginController', ['$scope', 'loginService', '$location', function ($scope, login, $location) {
+app.controller ('LoginController', ['$scope', '$location', 'loginService', function ($scope, $location, loginService) {
 
-	$scope.formData = {};
+	var self = this;
 
-	return {
-		localAuth: function () {
-			login.postLogin ($scope.formData).then (function (response) {
-				$location.path('/projects');
-			});
-		}
-	}
+	self.formData = {};
+
+	self.localAuth = function (options) {
+
+		if (typeof options == "undefined")
+			options = {};
+
+		loginService.localAuth (self.formData).then (function (response) {
+			if (options.redirect)
+				$location.path ('/projects');
+		}, function (err) {
+			console.error(err);
+		});
+	};
+
+	return self;
 }]);

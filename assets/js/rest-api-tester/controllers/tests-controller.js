@@ -4,7 +4,7 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 
 	var self = this;
 
-	self.tests = self.statistics = {};
+	self.detail = self.tests = self.statistics = {};
 
 	self.initStatistics = function () {
 		var environmentId = $stateParams.environmentId;
@@ -19,6 +19,14 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 
 		testsService.getOverview(environmentId).then(function (tests) {
 			self.tests = tests.data;
+		});
+	};
+	
+	self.initDetail = function () {
+		var testId = $stateParams.testId;
+		
+		testsService.getDetail(testId).then(function (test) {
+			self.detail = test.data;
 		});
 	};
 

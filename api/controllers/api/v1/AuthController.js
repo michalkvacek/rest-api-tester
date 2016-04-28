@@ -10,18 +10,18 @@ var bcrypt = require ('bcryptjs');
 module.exports = {
 	/**
 	 * Method for local login. Requires "email" and "password" parameters.
-	 * 
+	 *
 	 * Returns token for user.
-	 * 
+	 *
 	 * @param req
 	 * @param res
 	 */
 	passwordLogin: function (req, res) {
-		users.findOne ({email: req.param ('email')}).then (function (user) {
+		users.find ({where: {email: req.param ('email')}}).then (function (user) {
 
 			// check if user exists or if any error occured
 			if (!user)
-				return res.badRequest ();
+				return res.badRequest ('no user');
 
 			// check passwords
 			if (!bcrypt.compareSync (req.param ('password'), user.password))
@@ -32,7 +32,7 @@ module.exports = {
 			delete user.password;
 
 			// user successfully logged in
-			res.ok ({
+			res.json ({
 				user: user,
 				token: jwToken.issue ({id: user.id})
 			});

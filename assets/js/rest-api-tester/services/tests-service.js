@@ -12,7 +12,14 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 		getStatistics: function (environmentId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/environments/'+environmentId+'/statistics', data).then (d.resolve, d.reject);
+			$http.get ('/api/v1/environments/'+environmentId+'/statistics').then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+		getDetail: function (testId) {
+			var d = $q.defer ();
+
+			$http.get ('/api/v1/tests/'+testId).then (d.resolve, d.reject);
 
 			return d.promise;
 		},

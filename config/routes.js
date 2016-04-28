@@ -28,6 +28,7 @@ module.exports.routes = {
 
 	'get /api/v1/environments/:environmentId/statistics': 'api/v1/Environments.statistics',
 	'get /api/v1/environments/:environmentId/tests': 'api/v1/Tests.index',
+	'get /api/v1/tests/:testId': 'api/v1/Tests.detail',
 
 	'post /api/v1/registration': 'api/v1/Users.create',
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",

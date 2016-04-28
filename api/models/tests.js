@@ -34,10 +34,9 @@ module.exports = {
 			type: 'TINTERVAL',
 			allowNull: true
 		},
-		active: {
-			type: Sequelize.BOOLEAN,
-			allowNull: true,
-			defaultValue: true
+		lastRun: {
+			type: Sequelize.STRING,
+			allowNull: true
 		}
 	},
 	options: {
@@ -60,11 +59,11 @@ module.exports = {
 		 * Users, who manages this environment
 		 */
 
-		tests.belongsToMany (testParts, {
-			through: testPartsInTest,
+		tests.belongsToMany (requests, {
+			through: requestsInTest,
 			as: {
-				singular: 'testPart',
-				plural: 'testParts'
+				singular: 'request',
+				plural: 'requests'
 			},
 			foreignKey: {
 				name: 'testsId',
