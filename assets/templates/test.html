@@ -74,32 +74,39 @@
 						</a>
 						<div class="accordion-content" data-tab-content>
 							<ul class="tabs" data-tabs id="request-tabs-{{request.id}}">
-								<li class="tabs-title is-active"><a href="javascript:void(0)"
-																				ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
-																				aria-selected="true">
-									Request</a>
+								<li class="tabs-title is-active">
+									<a href="javascript:void(0)"
+										ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
+										aria-selected="true">
+										Request</a>
 								</li>
-								<li class="tabs-title"><a href="javascript:void(0)"
-																  ng-click="openTab('#requests-tabs-'+request.id, '#assertions-'+request.id)">Assertions</a>
+								<li class="tabs-title">
+									<a href="javascript:void(0)"
+										ng-click="openTab('#requests-tabs-'+request.id, '#assertions-'+request.id)">
+										Assertions
+									</a>
 								</li>
-								<li class="tabs-title"><a href="javascript:void(0)"
-																  ng-click="openTab('#requests-tabs-'+request.id, '#response-'+request.id)">Last
-																																									 response</a>
+								<li class="tabs-title">
+									<a href="javascript:void(0)"
+										ng-click="openTab('#requests-tabs-'+request.id, '#response-'+request.id)">
+										Last response
+									</a>
 								</li>
 							</ul>
 							<div class="tabs-content" data-tabs-content="request-tabs-{{request.id}}">
 								<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
-									<h4><a href="request.html"><i class="fi-magnifying-glass"></i> {{request.name}}
-										<!--<small>(Oauth 2.0)</small>-->
-									</a></h4>
+									<h4>
+										<a href="request.html">
+											<i class="fi-magnifying-glass"></i>
+											{{request.name}}
+											<!--<small>(Oauth 2.0)</small>-->
+										</a>
+									</h4>
 
 									<p>{{request.description}}</p>
 
 									<h5>Headers</h5>
 
-				// 3.5h 27.4 - prehled testu
-				// 6h 28.4 - layout + registrace
-				// 6h dnes novy request, detail testu, prehled requestu
 									<ul>
 										<li><strong>Content-type</strong>: application/json</li>
 										<li><strong>X-Powered-By</strong>: some-value</li>
