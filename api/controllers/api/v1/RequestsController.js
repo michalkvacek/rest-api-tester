@@ -7,10 +7,42 @@
 
 module.exports = {
 	index: function (req, res) {
-		var environmentId = req.param ('environmentId');
+
+		var findCriterium = {
+			where: {environmentsId: req.environmentId},
+			include: []
+		};
+
+		var ignoredTest = req.param ('ignoreTest', false);
+
+		// todo nejak vyresit ignorovany test - potreba pro pridavani requestu do testu
+		// idealne nejak jako select * from requests where id not in (select requestsId from requestsInTests where testsId = ignoredTest)
+		//   * ale optimalni cestou, idealne nejak pres antijoin, pripadne kombinaci outer joinu a where klauzule
+
+		// if (ignoredTest) {
+		// 	findCriterium.include.push ({
+		// 		model: tests,
+		// 		as: 'tests',
+		// 		where: {
+		// 			id: {
+		// 				$ne: ignoredTest
+		// 			}
+		// 		}
+		// 	});
+		// }
+
+		requests.findAll (findCriterium).then (function (data) {
+			return res.ok (data);
+		}, function (err) {
+			return res.serverError (err);
+		})
 
 	},
 
+	assign: function (req, res) {
+		
+	},
+	
 	create: function (req, res) {
 
 		var testsId = req.param ('testsId', false);
@@ -42,6 +74,7 @@ module.exports = {
 						position: parseInt (position) + 1
 					}).then (function (assignedTest) {
 
+						request = request.toJSON ();
 						request.assignedToTest = assignedTest;
 
 						return res.created (request)

@@ -67,9 +67,6 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		var tabButtons = tabsContainer + ' .tabs-title';
 		var pressedButton = tab + "-title";
 		
-
-		console.log(tabButtons);
-
 		$ (tabButtons).removeClass ('is-active');
 		$ (tabButtons + ' a').attr ("aria-selected", false);
 		$ (pressedButton).addClass ('is-active');

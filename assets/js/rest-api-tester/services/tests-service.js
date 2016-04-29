@@ -5,28 +5,35 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 		getOverview: function (environmentId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/environments/'+environmentId+'/tests').then (d.resolve, d.reject);
+			$http.get ('/api/v1/environments/' + environmentId + '/tests').then (d.resolve, d.reject);
 
 			return d.promise;
 		},
 		getStatistics: function (environmentId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/environments/'+environmentId+'/statistics').then (d.resolve, d.reject);
+			$http.get ('/api/v1/environments/' + environmentId + '/statistics').then (d.resolve, d.reject);
 
 			return d.promise;
 		},
 		getDetail: function (testId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/tests/'+testId+'?withRequests=1').then (d.resolve, d.reject);
+			$http.get ('/api/v1/tests/' + testId + '?withRequests=1').then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+		assignRequest: function (testId, requestId) {
+			var d = $q.defer ();
+
+			$http.post ('/api/v1/tests/' + testId + '/request/' + requestId).then (d.resolve, d.reject);
 
 			return d.promise;
 		},
 		create: function (environmentId, data) {
 			var d = $q.defer ();
 
-			$http.post ('/api/v1/environments/'+environmentId+'/tests', data).then (d.resolve, d.reject);
+			$http.post ('/api/v1/environments/' + environmentId + '/tests', data).then (d.resolve, d.reject);
 
 			return d.promise;
 		}

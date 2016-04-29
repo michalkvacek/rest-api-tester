@@ -7,8 +7,9 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 	self.detail = self.tests = self.statistics = {};
 
 	$scope.$on ('requestCreated', function (event, request) {
-		if (request.hasOwnProperty ('testsId') && request.testsId == $scope.testId)
+		if (request.hasOwnProperty ('assignedToTest') && request.assignedToTest.testsId == $scope.testId)
 			self.initDetail ();
+
 	});
 
 	self.initStatistics = function () {
@@ -36,6 +37,10 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 
 			self.detail = test.data;
 		});
+	};
+
+	self.assign = function () {
+		// todo
 	};
 
 	return self;

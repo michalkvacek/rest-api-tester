@@ -74,7 +74,7 @@
 							</h5>
 							<small>{{request.description}}</small>
 						</a>
-						<div class="accordion-content" ng-attr-id="{{ 'request-tabs-'+request.id}}"  data-tab-content>
+						<div class="accordion-content" ng-attr-id="{{ 'request-tabs-'+request.id}}" data-tab-content>
 							<ul class="tabs">
 								<li ng-attr-id="{{ 'request-'+request.id+'-title'}}" class="tabs-title is-active">
 									<a href="javascript:void(0)"
@@ -216,14 +216,7 @@
 		<div class="row">
 			<div class="column no-padding">
 				<a href="./test-result.html" class="button tiny success fi-check"> 21.1</a>
-				<a href="./test-result.html" class="button tiny success fi-check"> 21.2</a>
-				<a href="./test-result.html" class="button tiny success fi-check"> 21.3</a>
 				<a href="./test-result.html" class="button tiny alert fi-x"> 21.4</a>
-				<a href="./test-result.html" class="button tiny alert fi-x"> 21.4</a>
-				<a href="./test-result.html" class="button tiny success fi-check"> 21.5</a>
-				<a href="./test-result.html" class="button tiny success fi-check"> 21.6</a>
-				<a href="./test-result.html" class="button tiny success fi-check"> 21.7</a>
-				<a href="./test-result.html" class="button tiny success fi-check"> 21.8</a>
 			</div>
 		</div>
 	</div>
@@ -338,20 +331,24 @@
 	</button>
 </div>
 
-<div class="reveal" id="new-request-window" data-reveal ng-controller="RequestsController as request">
+<div class="reveal large" id="new-request-window" data-reveal ng-controller="RequestsController as request">
 
 	<h3>Add request</h3>
 
 	<ul class="tabs">
-		<li id="new-request-title" class="tabs-title is-active"><a ng-click="openTab('#new-request-window', '#new-request')"
-																					  aria-selected="true">New request</a></li>
-		<li id="existing-request-title" class="tabs-title"><a
-				  ng-click="openTab('#new-request-window', '#existing-request')">Existing requests</a></li>
+		<li id="new-request-title" class="tabs-title is-active">
+			<a ng-click="openTab('#new-request-window', '#new-request')" aria-selected="true">New request</a>
+		</li>
+		<li id="existing-request-title" class="tabs-title">
+			<a ng-click="openTab('#new-request-window', '#existing-request'); request.initEnvironmentOverview(controller.detail.environmentsId, {ignoreTest: controller.detail.id})">
+				Existing requests
+			</a>
+		</li>
 	</ul>
 
-	<form ng-submit="request.create()">
-		<div class="tabs-content">
-			<div class="tabs-panel is-active" id="new-request">
+	<div class="tabs-content">
+		<div class="tabs-panel is-active" id="new-request">
+			<form ng-submit="request.create()">
 				<div class="row">
 					<div class="column">
 						<label>
@@ -369,12 +366,12 @@
 							Method
 
 							<select name="httpMethod" ng-model="request.formData.httpMethod">
+								<option value="GET">GET</option>
 								<option value="POST">POST</option>
-								<option selected value="GET">GET</option>
 								<option value="PUT">PUT</option>
 								<option value="DELETE">DELETE</option>
-								<option value="PATCH">PATCH</option>
 								<option value="OPTION">OPTION</option>
+								<option value="PATCH">PATCH</option>
 							</select>
 						</label>
 					</div>
@@ -388,45 +385,33 @@
 						</label>
 					</div>
 				</div>
-			</div>
-			<div class="tabs-panel" id="existing-request">
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-			</div>
+				<div class="row">
+					<div class="column">
+						<button type="submit" class="button success float-right">Add</button>
+					</div>
+				</div>
+			</form>
 		</div>
 
+		<div class="tabs-panel" id="existing-request">
+			<form ng-submit="controller.assign()">
+				<label ng-repeat="availableRequest in request.environmentRequests">
+					<input type="checkbox" ng-model="request.formData.availableRequest[availableRequest.id]" />
 
-		<div class="row">
-			<div class="column">
-				<button type="submit" class="button success float-right">Add</button>
-			</div>
+					<span>{{availableRequest.name}}</span>
+					<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
+				</label>
+
+				<div class="callout warning" ng-show="request.environmentRequests.length == 0">Nedostupne</div>
+
+				<div class="row">
+					<div class="column">
+						<button type="submit" class="button success float-right">Add</button>
+					</div>
+				</div>
+			</form>
 		</div>
-	</form>
+	</div>
 
 	<!-- Close button -->
 	<button class="close-button" data-close aria-label="Close modal" type="button">
