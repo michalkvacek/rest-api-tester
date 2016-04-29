@@ -62,37 +62,50 @@
 
 		<div class="row content-holder" ng-show="controller.detail.requests.length">
 			<div class="column no-padding">
-				<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
-					<li class="accordion-item" data-accordion-item>
-						<a href="#" class="accordion-title">
-							<h5><span class="label fi-check success"> All addresses</span>
-								<small>(GET /address/all)</small>
+				<ul class="accordion" id="requests-list" data-accordion data-multi-expand="true"
+					 data-allow-all-closed="true">
+					<li class="accordion-item" ng-repeat="request in controller.detail.requests" data-accordion-item>
+						<a href="javascript:void(0)" class="accordion-title">
+							<h5>
+								<span class="label fi-check success"> {{request.name}}</span>
+								<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
 							</h5>
-							<small>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</small>
+							<small>{{request.description}}</small>
 						</a>
 						<div class="accordion-content" data-tab-content>
-							<ul class="tabs" data-tabs id="request-tabs-1">
-								<li class="tabs-title is-active"><a href="#request-1" aria-selected="true">Request</a>
+							<ul class="tabs" data-tabs id="request-tabs-{{request.id}}">
+								<li class="tabs-title is-active"><a href="javascript:void(0)"
+																				ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
+																				aria-selected="true">
+									Request</a>
 								</li>
-								<li class="tabs-title"><a href="#assertions-1">Assertions</a></li>
-								<li class="tabs-title"><a href="#response-1">Last response</a></li>
+								<li class="tabs-title"><a href="javascript:void(0)"
+																  ng-click="openTab('#requests-tabs-'+request.id, '#assertions-'+request.id)">Assertions</a>
+								</li>
+								<li class="tabs-title"><a href="javascript:void(0)"
+																  ng-click="openTab('#requests-tabs-'+request.id, '#response-'+request.id)">Last
+																																									 response</a>
+								</li>
 							</ul>
-							<div class="tabs-content" data-tabs-content="request-tabs-1">
-								<div class="tabs-panel is-active" id="request-1">
-									<h4><a href="request.html"><i class="fi-magnifying-glass"></i> All addresses
-										<small>(Oauth 2.0)</small>
+							<div class="tabs-content" data-tabs-content="request-tabs-{{request.id}}">
+								<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
+									<h4><a href="request.html"><i class="fi-magnifying-glass"></i> {{request.name}}
+										<!--<small>(Oauth 2.0)</small>-->
 									</a></h4>
 
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+									<p>{{request.description}}</p>
 
 									<h5>Headers</h5>
 
+				// 3.5h 27.4 - prehled testu
+				// 6h 28.4 - layout + registrace
+				// 6h dnes novy request, detail testu, prehled requestu
 									<ul>
 										<li><strong>Content-type</strong>: application/json</li>
 										<li><strong>X-Powered-By</strong>: some-value</li>
 									</ul>
 								</div>
-								<div class="tabs-panel" id="assertions-1">
+								<div class="tabs-panel" ng-attr-id="{{ 'assertions-'+request.id }}">
 									<table>
 										<thead>
 										<tr>
@@ -122,7 +135,7 @@
 									</button>
 									<div class="clearfix"></div>
 								</div>
-								<div class="tabs-panel" id="response-1">
+								<div class="tabs-panel" ng-attr-id="{{'response-'+request.id}}">
 
 									<div class="row">
 										<div class="column">
@@ -179,18 +192,23 @@
 								</div>
 							</div>
 						</div>
+
+						<script ng-if="$last">$ (function () {
+							Foundation.reInit ('accordion', 'tabs');
+						});</script>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="row controls align-right">
-			<a href="#" class="has-tip success tiny button" data-open="new-request-window" data-tooltip
+			<a href="javascript:void(0)" class="has-tip success tiny button" data-open="new-request-window" data-tooltip
 				aria-haspopup="true"
 				data-disable-hover="false"
 				title="Add new request"><i class="fi-plus"></i> <span class="show-for-medium"> Add request</span></a>
 		</div>
 	</div>
 </div>
+
 <div class="row" ng-show="controller.detail.results.length">
 	<div class="column with-shadow">
 		<h4>Results</h4>
@@ -210,8 +228,6 @@
 			</div>
 		</div>
 	</div>
-</div>
-</div>
 </div>
 
 <div class="reveal" id="edit-assertion" data-reveal>
@@ -323,33 +339,41 @@
 	</button>
 </div>
 
-<div class="reveal" id="new-request-window" data-reveal>
+<div class="reveal" id="new-request-window" data-reveal ng-controller="RequestsController as request">
 
 	<h3>Add request</h3>
-
 
 	<ul class="tabs" data-tabs id="add-request-tabs">
 		<li class="tabs-title is-active"><a href="#new-request" aria-selected="true">New request</a></li>
 		<li class="tabs-title"><a href="#existing-request">Existing requests</a></li>
 	</ul>
 
-	<form action="#" method="post">
-
+	<form ng-submit="request.create()">
 		<div class="tabs-content" data-tabs-content="add-request-tabs">
 			<div class="tabs-panel is-active" id="new-request">
+				<div class="row">
+					<div class="column">
+						<label>
+							Request name
+
+							<input type="text" name="name" ng-model="request.formData.name" />
+
+						</label>
+					</div>
+				</div>
 
 				<div class="row">
 					<div class="column large-3">
 						<label>
 							Method
 
-							<select name="input-type">
-								<option>POST</option>
-								<option>GET</option>
-								<option>PUT</option>
-								<option>DELETE</option>
-								<option>PATCH</option>
-								<option>OPTION</option>
+							<select name="input-type" ng-model="request.formData.httpMethod">
+								<option value="POST">POST</option>
+								<option selected value="GET">GET</option>
+								<option value="PUT">PUT</option>
+								<option value="DELETE">DELETE</option>
+								<option value="PATCH">PATCH</option>
+								<option value="OPTION">OPTION</option>
 							</select>
 						</label>
 					</div>
@@ -358,7 +382,7 @@
 						<label>
 							URL
 
-							<input type="text" name="url"
+							<input type="text" name="url" ng-model="request.formData.url"
 									 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
 						</label>
 					</div>
@@ -418,7 +442,7 @@
 		<label>
 			Test name
 
-			<input type="text" value="Address"/>
+			<input type="text" value="Address" />
 		</label>
 
 		<label>

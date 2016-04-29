@@ -15,19 +15,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 					}
 
 					return config;
-				},
-				// requestError: function (rejection) {
-				// 	// console.log('requestError');
-				// 	// console.log(rejection);
-				// },
-				// response: function (config) {
-				// 	// console.log('response');
-				// 	// console.log(config);
-				// },
-				// responseError: function (neco) {
-				// 	// console.log('responseError');
-				// 	// console.log(neco);
-				// }
+				}
 			};
 		});
 
@@ -73,6 +61,12 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			controllerAs: 'controller'
 		});
 	}]).run (function ($rootScope) {
+
+	$rootScope.openTab = function (tabsContainer, tab) {
+		$(tabsContainer).foundation('_handleTabChange', $(tab));
+		$(tabsContainer).foundation('selectTab', $(tab));
+	};
+
 	$rootScope.$on ('$viewContentLoaded', function () {
 		$ ('#loaded-view').foundation ();
 	});

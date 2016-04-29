@@ -54,11 +54,11 @@ module.exports = {
 
 
 
-							testPartsInTest.create ({
-								testPartsId: request.id,
+							requestsInTest.create ({
+								requestsId: request.id,
 								testsId: test.id,
 								position: 1
-							}).then (function (testPartInTest) {
+							}).then (function (data) {
 								// done
 							}).catch (function (err) {
 								console.error (err);

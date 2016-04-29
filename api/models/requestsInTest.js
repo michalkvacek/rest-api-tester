@@ -6,5 +6,8 @@ module.exports = {
 			type: Sequelize.INTEGER,
 			allowNull: false
 		}
+	},
+	options: {
+		tableName: 'requestsInTest'
 	}
 };

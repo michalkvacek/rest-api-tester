@@ -66,7 +66,7 @@ module.exports = {
 
 		requests.belongsTo (versions, {
 			foreignKey: {
-				name: 'vesionsId',
+				name: 'versionsId',
 				as: 'version',
 				allowNull: false
 			}
@@ -77,10 +77,7 @@ module.exports = {
 		 */
 		requests.belongsToMany (tests, {
 			through: requestsInTest,
-			as: {
-				singular: 'test',
-				plural: 'tests'
-			},
+			as: "tests",
 			foreignKey: {
 				name: 'requestsId',
 				allowNull: false

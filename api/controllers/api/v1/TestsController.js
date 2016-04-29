@@ -51,13 +51,14 @@ module.exports = {
 		if (req.param ('withRequests', false)) {
 			findCriterium.include.push ({
 				model: requests,
-				as: 'requests',
-				where: {testsId: req.testId}
+				as: 'requests'
 			});
 		}
 
 		tests.find (findCriterium).then (function (test) {
 			return res.json (test);
+		}, function (error) {
+			return res.serverError(error);
 		});
 	},
 

@@ -19,7 +19,7 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 		getDetail: function (testId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/tests/'+testId).then (d.resolve, d.reject);
+			$http.get ('/api/v1/tests/'+testId+'?withRequests=1').then (d.resolve, d.reject);
 
 			return d.promise;
 		},
