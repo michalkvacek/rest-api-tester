@@ -49,5 +49,34 @@ module.exports = {
 			allowNull: true
 		}
 	},
-	tableName: 'headers'
+	options: {
+		tableName: 'headers',
+		timestamps: false
+	},
+	associations: function () {
+		headers.belongsTo (projects, {
+			foreignKey: {
+				name: 'projectsId',
+				as: 'project',
+				allowNull: true
+			}
+		});
+
+		headers.belongsTo (environments, {
+			foreignKey: {
+				name: 'environmentsId',
+				as: 'environment',
+				allowNull: true
+			}
+		});
+
+		headers.belongsTo (requests, {
+			foreignKey: {
+				name: 'requestsId',
+				as: 'request',
+				allowNull: true
+			}
+		});
+
+	}
 };

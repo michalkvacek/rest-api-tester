@@ -48,7 +48,18 @@ module.exports = {
 		}
 	},
 	options: {
-		tableName: 'requests'
+		tableName: 'requests',
+		hooks: {
+			afterCreate: function (request, options) {
+				requestValidatedByAssertions.create({
+					requestsId: request.id,
+					assertionType: 'status_code',
+					expectedValue: 200
+				}).then(function (assertion) {
+					// ok
+				});
+			}
+		}
 	},
 	// create relationships with other models
 	associations: function () {
@@ -64,10 +75,34 @@ module.exports = {
 			}
 		});
 
+		requests.belongsTo (environments, {
+			foreignKey: {
+				name: 'environmentsId',
+				as: 'environment',
+				allowNull: false
+			}
+		});
+
 		requests.belongsTo (versions, {
 			foreignKey: {
 				name: 'versionsId',
 				as: 'version',
+				allowNull: false
+			}
+		});
+
+		requests.hasMany (headers, {
+			foreignKey: {
+				name: 'requestsId',
+				allowNull: false
+			}
+		});
+		
+		requests.belongsToMany (assertions, {
+			through: requestValidatedByAssertions,
+			as: 'assertions',
+			foreignKey: {
+				name: 'requestsId',
 				allowNull: false
 			}
 		});

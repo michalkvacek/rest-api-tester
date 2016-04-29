@@ -1,11 +1,23 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('RequestsController', ['$scope', 'requestsService', 'testsService', '$stateParams', function ($scope, requestsService, testsService, $stateParams) {
+app.controller ('RequestsController', ['$scope', 'requestsService', 'testsService', '$stateParams', function ($scope, requestsService) {
 
 	var self = this;
 
-	self.formData = {};
+	$scope.requestId = null;
+	self.formData = self.detail = {};
 
+	self.initDetail = function (environmentId, testId, id) {
+		requestsService.detail(environmentId, testId, id).then(function (response) {
+			self.detail[id] = response.data;
+		});
+	};
+
+
+	self.setRequestId = function (id) {
+		$scope.requestId = id;
+	};
+	
 	self.create = function () {
 
 		var environmentId = self.formData.environmentsId || $scope.environmentId;

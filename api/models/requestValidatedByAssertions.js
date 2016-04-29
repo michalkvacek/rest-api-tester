@@ -2,12 +2,6 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
 		requestsId: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -16,12 +10,12 @@ module.exports = {
 				key: 'id'
 			}
 		},
-		assertionsId: {
-			type: Sequelize.INTEGER,
+		assertionType: {
+			type: Sequelize.STRING,
 			allowNull: false,
 			references: {
 				model: 'assertions',
-				key: 'id'
+				key: 'type'
 			}
 		},
 		property: {
@@ -33,5 +27,7 @@ module.exports = {
 			allowNull: true
 		}
 	},
-	tableName: 'requestValidatedByAssertions'
+	options: {
+		tableName: 'requestValidatedByAssertions'
+	}
 };

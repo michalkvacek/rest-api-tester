@@ -2,15 +2,9 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
 		type: {
 			type: Sequelize.STRING,
-			allowNull: false
+			primaryKey: true
 		},
 		name: {
 			type: Sequelize.STRING,
@@ -25,5 +19,19 @@ module.exports = {
 			allowNull: true
 		}
 	},
-	tableName: 'assertions'
-};
+	options: {
+		timestamps: false,
+		tableName: 'assertions'
+	},
+	associations: function () {
+		assertions.belongsToMany (requests, {
+			through: requestValidatedByAssertions,
+			as: 'usedInRequests',
+			foreignKey: {
+				name: 'assertionType',
+				allowNull: false
+			}
+		})
+	}
+}
+;

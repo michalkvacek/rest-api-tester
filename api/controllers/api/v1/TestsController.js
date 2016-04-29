@@ -58,7 +58,7 @@ module.exports = {
 		tests.find (findCriterium).then (function (test) {
 			return res.json (test);
 		}, function (error) {
-			return res.serverError(error);
+			return res.serverError (error);
 		});
 	},
 

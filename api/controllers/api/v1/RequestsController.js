@@ -39,7 +39,7 @@ module.exports = {
 					requestsInTest.create ({
 						testsId: testsId,
 						requestsId: request.id,
-						position: parseInt(position) + 1
+						position: parseInt (position) + 1
 					}).then (function (assignedTest) {
 
 						request.assignedToTest = assignedTest;
@@ -55,7 +55,46 @@ module.exports = {
 	},
 
 	detail: function (req, res) {
-		var testId = req.param ('testId');
+		var findCriterium = {
+			where: {
+				id: req.requestId
+			},
+			include: []
+		};
+
+		if (req.param ('withAssertions', false)) {
+			findCriterium.include.push ({
+				model: assertions,
+				as: 'assertions'
+			});
+		}
+
+		requests.find (findCriterium).then (function (request) {
+
+			if (req.param ('withHeaders', false)) {
+				headers.findAll ({
+					where: {
+						$or: [
+							{testsId: req.param ('testsId', null)},
+							{projectsId: req.projectId},
+							{environmentsId: req.environmentId},
+							{requestsId: req.requestId}
+						]
+					}
+				}).then (function (headers) {
+
+					request = request.toJSON ();
+					request.headers = headers;
+
+					return res.ok (request);
+				});
+			} else {
+				return res.ok (request);
+			}
+		}, function (err) {
+			return res.serverError (err);
+		});
+
 	},
 
 };
