@@ -63,13 +63,20 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 	}]).run (function ($rootScope) {
 
 	$rootScope.openTab = function (tabsContainer, tab) {
-		$ (tabsContainer + ' .tabs-title').removeClass ('is-active');
-		$ (tabsContainer + ' .tabs-title a').attr ("aria-selected", false);
-		$ (tab + "-title").addClass ('is-active');
-		$ (tab + "-title a").attr ("aria-selected", true);
 
-		$ ('.tabs-panel').removeClass ('is-active');
-		$ ('.tabs-content ' + tab).addClass ('is-active');
+		var tabButtons = tabsContainer + ' .tabs-title';
+		var pressedButton = tab + "-title";
+		
+
+		console.log(tabButtons);
+
+		$ (tabButtons).removeClass ('is-active');
+		$ (tabButtons + ' a').attr ("aria-selected", false);
+		$ (pressedButton).addClass ('is-active');
+		$ (pressedButton + " a").attr ("aria-selected", true);
+
+		$ (tabsContainer + ' .tabs-panel').removeClass ('is-active');
+		$ (tab).addClass ('is-active');
 	};
 
 	$rootScope.$on ('$viewContentLoaded', function () {
