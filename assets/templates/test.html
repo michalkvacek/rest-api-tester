@@ -74,26 +74,26 @@
 						</a>
 						<div class="accordion-content" data-tab-content>
 							<ul class="tabs" data-tabs id="request-tabs-{{request.id}}">
-								<li class="tabs-title is-active">
+								<li ng-attr-id="{{ 'request-'+request.id+'-title'}}" class="tabs-title is-active">
 									<a href="javascript:void(0)"
 										ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
 										aria-selected="true">
 										Request</a>
 								</li>
-								<li class="tabs-title">
+								<li ng-attr-id="{{ 'assertions-'+request.id+'-title'}}" class="tabs-title">
 									<a href="javascript:void(0)"
 										ng-click="openTab('#requests-tabs-'+request.id, '#assertions-'+request.id)">
 										Assertions
 									</a>
 								</li>
-								<li class="tabs-title">
+								<li ng-attr-id="{{ 'response-'+request.id+'-title'}}" class="tabs-title">
 									<a href="javascript:void(0)"
 										ng-click="openTab('#requests-tabs-'+request.id, '#response-'+request.id)">
 										Last response
 									</a>
 								</li>
 							</ul>
-							<div class="tabs-content" data-tabs-content="request-tabs-{{request.id}}">
+							<div class="tabs-content">
 								<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
 									<h4>
 										<a href="request.html">
@@ -106,7 +106,6 @@
 									<p>{{request.description}}</p>
 
 									<h5>Headers</h5>
-
 									<ul>
 										<li><strong>Content-type</strong>: application/json</li>
 										<li><strong>X-Powered-By</strong>: some-value</li>
@@ -208,10 +207,12 @@
 			</div>
 		</div>
 		<div class="row controls align-right">
-			<a href="javascript:void(0)" class="has-tip success tiny button" data-open="new-request-window" data-tooltip
+			<a href="javascript:void(0)" class="has-tip top success tiny button" data-open="new-request-window" data-tooltip
 				aria-haspopup="true"
 				data-disable-hover="false"
-				title="Add new request"><i class="fi-plus"></i> <span class="show-for-medium"> Add request</span></a>
+				title="Add new request">
+				<i class="fi-plus"></i> <span class="show-for-medium"> Add request</span>
+			</a>
 		</div>
 	</div>
 </div>
@@ -351,12 +352,12 @@
 	<h3>Add request</h3>
 
 	<ul class="tabs" data-tabs id="add-request-tabs">
-		<li class="tabs-title is-active"><a href="#new-request" aria-selected="true">New request</a></li>
-		<li class="tabs-title"><a href="#existing-request">Existing requests</a></li>
+		<li id="new-request-title" class="tabs-title is-active"><a ng-click="openTab('#add-request-tabs', '#new-request')" aria-selected="true">New request</a></li>
+		<li id="existing-request-title" class="tabs-title"><a ng-click="openTab('#add-request-tabs', '#existing-request')">Existing requests</a></li>
 	</ul>
 
 	<form ng-submit="request.create()">
-		<div class="tabs-content" data-tabs-content="add-request-tabs">
+		<div class="tabs-content">
 			<div class="tabs-panel is-active" id="new-request">
 				<div class="row">
 					<div class="column">
@@ -374,7 +375,7 @@
 						<label>
 							Method
 
-							<select name="input-type" ng-model="request.formData.httpMethod">
+							<select name="httpMethod" ng-model="request.formData.httpMethod">
 								<option value="POST">POST</option>
 								<option selected value="GET">GET</option>
 								<option value="PUT">PUT</option>
