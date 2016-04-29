@@ -21,11 +21,11 @@ module.exports = {
 			versionsId: req.param ('versionsId', null),
 			mockedResponsesId: req.param ('mockedResponsesId', null),
 			name: req.param ('name'),
+			url: req.param ('url'),
 			description: req.param ('description', null),
 			httpMethod: req.param ('httpMethod'),
 			resourceName: req.param ('resourceName', null),
-			methodName: req.param ('methodName', null),
-			url: req.param ('url', null)
+			methodName: req.param ('methodName', null)
 		};
 
 		requests.create (parameters).then (function (request) {
