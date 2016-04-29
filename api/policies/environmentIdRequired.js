@@ -29,6 +29,7 @@ module.exports = function (req, res, next) {
 		// define some (hopefully) usefull informations
 		req.projectId = environment.projectsId;
 		req.environmentId = environmentId;
+		req.environment = environment;
 
 		return next ();
 

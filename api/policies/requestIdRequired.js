@@ -29,6 +29,7 @@ module.exports = function (req, res, next) {
 		req.projectId = request.environment.projectsId;
 		req.environmentId = request.environmentsId;
 		req.requestId = requestId;
+		req.request = request;
 
 		return next ();
 
