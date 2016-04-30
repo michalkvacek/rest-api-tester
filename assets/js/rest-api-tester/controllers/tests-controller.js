@@ -12,10 +12,10 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 
 	});
 
-	self.initStatistics = function () {
+	self.initStatistics = function (ageInDays) {
 		var environmentId = $stateParams.environmentId;
 
-		testsService.getStatistics (environmentId).then (function (statistics) {
+		testsService.getStatistics (environmentId, ageInDays).then (function (statistics) {
 			self.statistics = statistics.data;
 		});
 	};

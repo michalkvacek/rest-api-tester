@@ -2,12 +2,7 @@
 
 module.exports = {
 	attributes: {
-		id: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			primaryKey: true,
-			autoIncrement: true
-		},
+
 		requestsId: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -48,10 +43,6 @@ module.exports = {
 			type: Sequelize.JSON,
 			allowNull: true
 		},
-		responseBodyXml: {
-			type: 'XML',
-			allowNull: true
-		},
 		responseBodyRaw: {
 			type: Sequelize.TEXT,
 			allowNull: false
@@ -65,5 +56,8 @@ module.exports = {
 			allowNull: false
 		}
 	},
-	tableName: 'response'
+	options: {
+		tableName: 'responses',
+		updatedAt: false
+	}
 };

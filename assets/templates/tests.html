@@ -2,20 +2,20 @@
 	<div class="column with-shadow has-controls" ng-show="controller.statistics">
 		<div class="row text-center">
 			<div class="column">
-				<h4>{{controller.statistics.health}} %</h4>
+				<h4>{{controller.statistics.health || '--'}} %</h4>
 				<small>Health</small>
 			</div>
 			<div class="column">
-				<h4>{{controller.statistics.avgResponseTime}} ms</h4>
+				<h4>{{controller.statistics.avgResponseTime || '--'}} ms</h4>
 				<small>Average response time</small>
 			</div>
 			<div class="column">
-				<h4>{{controller.statistics.maxResponseTime}} ms</h4>
+				<h4>{{controller.statistics.maxResponseTime || '--'}} ms</h4>
 				<small>Longest response time</small>
 			</div>
 			<div class="column">
-				<h4>{{controller.statistics.testsCount}}</h4>
-				tests
+				<h4>{{controller.statistics.testedRequests || '--'}}</h4>
+				tested requests
 			</div>
 		</div>
 
