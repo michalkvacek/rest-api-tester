@@ -39,21 +39,17 @@ module.exports = {
 
 	},
 
-	_assignRequests: function (testId, requestIds) {
-		// todo
-	},
-
-	assign: function (req, res) {
-		var requestIds = req.param ('requestIds', {});
-		var testId = req.param ('testId');
-
-		if (req.param ('deleteExisting', false)) {
-			requestsInTests.destroy ({where: {testsId: testId}}).then (function () {
-				return sails.controllers.Requests._assignRequests(testId, requestIds);
-			});
-		} else {
-			return sails.controllers.Requests._assignRequests(testId, requestIds);
-		}
+	assertions: function (req, res) {
+		requestValidatedByAssertions.findAll ({
+			where: {requestsId: req.requestId},
+			include: {
+				model: assertions
+			}
+		}).then (function (assertions) {
+			return res.ok (assertions);
+		}, function (error) {
+			return res.serverError (error);
+		});
 	},
 
 	create: function (req, res) {

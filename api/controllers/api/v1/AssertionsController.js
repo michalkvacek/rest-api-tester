@@ -10,16 +10,28 @@ module.exports = {
 	types: function (req, res) {
 		assertions.findAll ().then (function (asserts) {
 			return res.ok (asserts);
+		}, function (err) {
+			return res.serverError (err);
+		});
+	},
+
+	detail: function (req, res) {
+		var assertionId = req.param ('assertionId');
+
+		requestValidatedByAssertions.find ({where: {id: assertionId}}).then (function (assertion) {
+			return res.ok (assertion);
+		}, function (err) {
+			return res.serverError (err);
 		});
 	},
 
 	assignToRequest: function (req, res) {
 
 		requestValidatedByAssertions.create ({
-			requestsId: req.param ('requestsId'),
-			assertionsId: req.param ('assertionsId'),
-			property: req.param ('property, null'),
-			exectedValue: req.param ('expectedValue', null)
+			requestsId: req.requestId,
+			assertionType: req.param ('assertionType'),
+			property: req.param ('property', null),
+			expectedValue: req.param ('expectedValue')
 		}).then (function (validation) {
 			return res.created (validation);
 		}, function (error) {
@@ -27,16 +39,13 @@ module.exports = {
 		});
 	},
 
-	editAssignedAssertions: function (req, res) {
-		requestValidatedByAssertion.find ({
-			where: {
-				id: req.param ('validationId'),
-				assertionsId: req.param ('assertionsId')
-			}
+	update: function (req, res) {
+		requestValidatedByAssertions.find ({
+			where: {id: req.param ('assertionId')}
 		}).then (function (validation) {
 			validation.update ({
 				property: req.param ('property'),
-				assertionsId: req.param ('assertionsId'),
+				assertionType: req.param ('assertionType'),
 				expectedValue: req.param ('expectedValue')
 			}).then (function (validation) {
 				return res.ok (validation);
@@ -44,11 +53,10 @@ module.exports = {
 		})
 	},
 
-	deleteAssignedAssertion: function (req, res) {
-		requestValidatedByAssertion.find ({
+	delete: function (req, res) {
+		requestValidatedByAssertions.find ({
 			where: {
-				requestsId: req.param ('requestsId'),
-				assertionsId: req.param ('assertionsId')
+				id: req.param ('assertionId')
 			}
 		}).then (function (validation) {
 			validation.destroy ();

@@ -5,7 +5,7 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 		detail: function (environmentsId, testId, id) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/environments/' + environmentsId + '/requests/' + id + '?withAssertions=1&withHeaders=1&testsId=' + testId).then (d.resolve, d.reject);
+			$http.get ('/api/v1/requests/' + id + '?withHeaders=1&testsId=' + testId).then (d.resolve, d.reject);
 
 			return d.promise;
 		},

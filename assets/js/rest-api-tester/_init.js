@@ -59,6 +59,11 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			template: window.JST['assets/templates/test.html'],
 			controller: 'TestsController',
 			controllerAs: 'controller'
+		}).state ('request', {
+			url: '/requests/:requestId',
+			template: window.JST['assets/templates/request.html'],
+			controller: 'RequestsController',
+			controllerAs: 'request'
 		});
 	}]).run (function ($rootScope) {
 

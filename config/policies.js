@@ -38,10 +38,14 @@ module.exports.policies = {
 		'*': ['jwToken', 'environmentIdRequired']
 	},
 	'api/v1/Requests': {
-		detail: ['jwToken', 'environmentIdRequired', 'requestIdRequired'],
+		index: ['jwToken', 'environmentIdRequired'],
+		create: ['jwToken', 'environmentIdRequired'],
+		detail: ['jwToken', 'requestIdRequired'],
+		assertions: ['jwToken', 'requestIdRequired'],
 		'*': ['jwToken', 'environmentIdRequired']
 	},
 	'api/v1/Assertions': {
+		assignToRequest: ['jwToken', 'requestIdRequired'],
 		'*': ['jwToken']
 	}
 }

@@ -120,8 +120,24 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		});
-	}
-	,
+	},
+
+	_assignRequests: function (testId, requestIds) {
+		// todo
+	},
+
+	assignRequests: function (req, res) {
+		var requestIds = req.param ('requestIds', {});
+		var testId = req.param ('testId');
+
+		if (req.param ('deleteExisting', false)) {
+			requestsInTests.destroy ({where: {testsId: testId}}).then (function () {
+				return sails.controllers.Tests._assignRequests (testId, requestIds);
+			});
+		} else {
+			return sails.controllers.Tests._assignRequests (testId, requestIds);
+		}
+	},
 
 	/**
 	 * Create new test in given environment

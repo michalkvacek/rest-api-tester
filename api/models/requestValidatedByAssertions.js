@@ -2,6 +2,12 @@
 
 module.exports = {
 	attributes: {
+		id: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			primaryKey: true,
+			autoIncrement: true
+		},
 		requestsId: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -29,5 +35,14 @@ module.exports = {
 	},
 	options: {
 		tableName: 'requestValidatedByAssertions'
+	},
+	// create relationships with other models
+	associations: function () {
+		requestValidatedByAssertions.belongsTo (assertions, {
+			foreignKey: {
+				name: 'assertionType',
+				allowNull: false
+			}
+		});
 	}
-};
+	};

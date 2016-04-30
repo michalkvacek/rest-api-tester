@@ -31,7 +31,14 @@ module.exports = {
 				name: 'assertionType',
 				allowNull: false
 			}
-		})
+		});
+
+		assertions.hasMany (requestValidatedByAssertions, {
+			foreignKey: {
+				name: 'assertionType',
+				allowNull: false
+			}
+		});
 	}
 }
 ;
