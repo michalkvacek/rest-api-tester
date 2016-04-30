@@ -55,10 +55,17 @@ module.exports = {
 			}
 		});
 
+		tests.hasMany (runnedTests, {
+			foreignKey: {
+				name: 'testsId',
+				as: 'results',
+				allowNull: false
+			}
+		});
+
 		/**
 		 * Users, who manages this environment
 		 */
-
 		tests.belongsToMany (requests, {
 			through: requestsInTest,
 			as: 'requests',

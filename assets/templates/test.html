@@ -7,44 +7,18 @@
 
 					{{controller.detail.description}}
 				</div>
-				<div class="column shrink">
+				<div class="column shrink" ng-switch="controller.detail.lastRunStatus">
 					<button class="button success small fi-play"> Run now</button>
 					<a href="javascript:void(0)" ng-click="controller.openEditWindow()"
 						class="button primary small fi-pencil"> Edit</a>
 					<br />
-					<span ng-show="controller.detail.passing" class="label success fi-check"> Passing</span>
-					<span ng-show="!controller.detail.passing" class="label alert fi-x"> Not passing</span>
+
+					<span ng-switch-when="success" class="label success fi-check"> Passing</span>
+					<span ng-switch-when="failed" class="label alert fi-x"> Not passing</span>
 					<span ng-show="controller.detail.nextRun" class="label warning fi-calendar"> Next run: {{controller.detail.nextRun | date : 'short' }}</span>
 					<span ng-show="!controller.detail.nextRun" class="label fi-calendar"> Schedule run</span>
 
 				</div>
-			</div>
-			<div class="row">
-				<div class="column no-padding">
-
-					<h5>Headers</h5>
-
-					<table>
-						<tr ng-repeat="header in controller.detail.headers">
-							<td>{{header.name}}</td>
-							<td>{{header.value}}</td>
-							<td class="text-right">
-								<a href="javascript:void(0)"
-									ng-click="controller.headers.openEditWindow(header.id)">
-									<i class="fi-pencil"></i>
-								</a>
-								<a href="javascript:void(0)" ng-click="controller.headers.delete(header.id)">
-									<i class="fi-x"></i>
-								</a>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-			<div class="row controls align-right">
-				<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)"><i
-						  class="fi-check"></i> Add header
-				</button>
 			</div>
 		</div>
 	</div>
@@ -88,6 +62,38 @@
 					ng-class="(controller.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
 					last 24 hours</a>
 			</div>
+		</div>
+	</div>
+
+
+	<div class="column with-shadow has-controls">
+		<div class="row">
+			<div class="column no-padding">
+
+				<h4>Headers</h4>
+
+				<table>
+					<tr ng-repeat="header in controller.detail.headers">
+						<td>{{header.name}}</td>
+						<td>{{header.value}}</td>
+						<td class="text-right">
+							<a href="javascript:void(0)"
+								ng-click="controller.headers.openEditWindow(header.id)">
+								<i class="fi-pencil"></i>
+							</a>
+							<a href="javascript:void(0)" ng-click="controller.headers.delete(header.id)">
+								<i class="fi-x"></i>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row controls align-right">
+			<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)">
+				<i
+						  class="fi-check"></i> Add header
+			</button>
 		</div>
 	</div>
 
@@ -260,15 +266,16 @@
 		</div>
 	</div>
 
-	<div class="row" ng-show="controller.detail.results.length">
+	<div class="row" ng-show="controller.detail.runnedTests.length">
 		<div class="column with-shadow">
 			<h4>Results</h4>
 
 
 			<div class="row">
 				<div class="column no-padding">
-					<a href="./test-result.html" class="button tiny success fi-check"> 21.1</a>
-					<a href="./test-result.html" class="button tiny alert fi-x"> 21.4</a>
+					<a ng-repeat="result in controller.detail.runnedTests" ui-sref="test_result({runnedTestId: result.id})"
+						ng-class="result.status == 'success' ? 'fi-check success' : 'fi-x alert'"
+						class="button tiny"> {{result.createdAt | date : 'shortDate' }}</a>
 				</div>
 			</div>
 		</div>

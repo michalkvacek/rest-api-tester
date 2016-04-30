@@ -115,6 +115,12 @@ module.exports = {
 			});
 		}
 
+		if (req.param('withResults', false)) {
+			findCriterium.include.push({
+				model: runnedTests,
+			})
+		}
+
 		tests.find (findCriterium).then (function (test) {
 
 			test = test.toJSON ();

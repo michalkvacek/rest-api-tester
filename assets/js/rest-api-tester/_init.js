@@ -59,6 +59,11 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			template: window.JST['assets/templates/test.html'],
 			controller: 'TestsController',
 			controllerAs: 'controller'
+		}).state ('test_result', {
+			url: '/tests/results/{testResultId:int}',
+			template: window.JST['assets/templates/testResult.html'],
+			controller: 'TestsResultsController',
+			controllerAs: 'result'
 		}).state ('request', {
 			url: '/requests/:requestId',
 			template: window.JST['assets/templates/request.html'],
