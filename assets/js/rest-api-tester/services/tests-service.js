@@ -28,7 +28,7 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 		getDetail: function (testId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/tests/' + testId + '?withRequests=1').then (d.resolve, d.reject);
+			$http.get ('/api/v1/tests/' + testId + '?withRequests=1&withHeaders=1').then (d.resolve, d.reject);
 
 			return d.promise;
 		},
@@ -51,6 +51,15 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 
 			return d.promise;
 		},
+		
+		edit: function (testId, data) {
+			var d = $q.defer ();
+
+			$http.put ('/api/v1/tests/'+testId, data).then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+		
 		create: function (environmentId, data) {
 			var d = $q.defer ();
 

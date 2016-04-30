@@ -25,7 +25,6 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsSe
 
 	self.newAssertionWindow = function (requestId) {
 		self.requestId = requestId;
-
 		self.initTypes ();
 
 		$ ('#new-assertion').foundation ('open');
@@ -42,14 +41,10 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsSe
 
 	self.editAssertionWindow = function (id) {
 		self.assertionId = id;
-
 		self.initTypes ();
 
 		assertionsService.getDetail (id).then (function (response) {
-
 			self.formData = response.data;
-
-			console.log(self.formData);
 
 			$ ('#edit-assertion').foundation ('open');
 		});

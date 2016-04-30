@@ -116,7 +116,28 @@ module.exports = {
 		}
 
 		tests.find (findCriterium).then (function (test) {
-			return res.json (test);
+
+			test = test.toJSON ();
+
+			if (req.param ('withHeaders', false)) {
+				headers.findAll ({
+					where: {
+						$or: [
+							{testsId: req.testId},
+							{projectsId: req.projectId},
+							{environmentsId: req.environmentId}
+						]
+					}
+				}).then (function (allHeaders) {
+					test.headers = allHeaders;
+
+					return res.json (test);
+				});
+			} else {
+				return res.json (test);
+
+			}
+
 		}, function (error) {
 			return res.serverError (error);
 		});
@@ -159,6 +180,24 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		});
+	},
+
+	update: function (req, res) {
+		tests.find ({where: {id: req.testId}}).then (function (test) {
+
+			test.update ({
+				name: req.param ('name'),
+				description: req.param ('description'),
+			}).then (function (edited) {
+				return res.ok (edited);
+			});
+
+		}, function (error) {
+			return res.serverError (error);
+		})
+	},
+	scheduleRun: function (req, res) {
+
 	}
 }
 ;

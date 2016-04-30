@@ -31,13 +31,23 @@ module.exports.routes = {
 	'get /api/v1/environments/:environmentId/requests': 'api/v1/Requests.index',
 	'get /api/v1/requests/:requestId': 'api/v1/Requests.detail',
 	'get /api/v1/requests/:requestId/assertions': 'api/v1/Requests.assertions',
-	
-	'get /api/v1/tests/:testId': 'api/v1/Tests.detail',
-	
 
+	'get /api/v1/tests/:testId': 'api/v1/Tests.detail',
 	'get /api/v1/assertions/types': 'api/v1/Assertions.types',
 	'get /api/v1/assertions/:assertionId': 'api/v1/Assertions.detail',
-	
+
+	'get /api/v1/headers': 'api/v1/Headers.index',
+	'get /api/v1/headers/:headerId': 'api/v1/Headers.detail',
+	'post /api/v1/headers': 'api/v1/Headers.create',
+	'put /api/v1/headers/:headerId': 'api/v1/Headers.update',
+	'delete /api/v1/headers/:headerId': 'api/v1/Headers.delete',
+
+	// 'get /api/v1/project/:projectId/versions': 'api/v1/Versions.index',
+	// 'get /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.detail',
+	// 'post /api/v1/project/:projectId/versions': 'api/v1/Versions.create',
+	// 'put /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.update',
+	// 'delete /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.delete',
+
 	'post /api/v1/registration': 'api/v1/Users.create',
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",
 	'post /api/v1/projects': 'api/v1/Projects.create',
@@ -46,10 +56,12 @@ module.exports.routes = {
 	'post /api/v1/environments/:environmentId/requests': 'api/v1/Requests.create',
 
 	'post /api/v1/tests/:testId/assignRequests': 'api/v1/Tests.assignRequests',
-	
+
 	'post /api/v1/request/:requestId/assertions': 'api/v1/Assertions.assignToRequest',
-	
+
 	'put /api/v1/assertions/:assertionId': 'api/v1/Assertions.update',
-	
+	'put /api/v1/tests/:testId': 'api/v1/Tests.update',
+	'put /api/v1/tests/:testId/schedule': 'api/v1/Tests.scheduleRun',
+
 	'delete /api/v1/assertions/:assertionId': 'api/v1/Assertions.delete',
 };

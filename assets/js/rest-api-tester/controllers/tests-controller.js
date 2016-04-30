@@ -1,11 +1,15 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', function ($scope, $stateParams, testsService) {
+app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', 'headersService', function ($scope, $stateParams, testsService, headersService) {
 
 	var self = this;
 
-	self.detail = self.tests = self.statistics = {};
+	self.formData = self.detail = self.tests = self.statistics = {};
+	self.formData.headers = {};
 	self.statisticsButton = 7;
+
+	self.headers = {};
+
 
 	$scope.$on ('addedRequestIntoTest', function (event, request) {
 		if (request.hasOwnProperty ('assignedToTest') && request.assignedToTest.testsId == $scope.testId)
@@ -50,6 +54,71 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 		testsService.create (environmentId, self.formData).then (function (response) {
 			self.initTestOverview ();
 		});
+	};
+
+	self.headers.openEditWindow = function (headerId) {
+		self.headerId = headerId;
+
+		headersService.detail (headerId).then (function (response) {
+			self.formData.headers = response.data;
+
+			$ ('#edit-header').foundation ('open');
+		});
+	};
+
+	self.headers.edit = function () {
+		headersService.edit (self.headerId, self.formData.headers).then (function (response) {
+			self.initDetail();
+
+			$ ('#edit-header').foundation ('close');
+		});
+	};
+
+	self.headers.newHeaderWindow = function (testId) {
+		self.formData.headers.testId = testId;
+
+		$ ('#new-header').foundation ('open');
+	};
+
+	self.headers.delete = function (id) {
+		var confirmation = confirm ('Opravdu?');
+
+		if (confirmation) {
+			headersService.delete (id).then (function (response) {
+				// update test detail
+				self.initDetail ();
+			});
+		}
+	};
+
+	self.headers.create = function () {
+		headersService.create (self.formData.headers).then (function (response) {
+			self.initDetail ();
+			$ ('#new-header').foundation ('close');
+		})
+	};
+
+	self.headers.create = function () {
+		headersService.create (self.formData.headers).then (function (response) {
+			self.initDetail ();
+			$ ('#new-header').foundation ('close');
+		})
+	};
+
+	self.openEditWindow = function () {
+
+		self.formData.name = self.detail.name;
+		self.formData.description = self.detail.description;
+
+		$ ('#edit-test').foundation ('open');
+	};
+
+	self.edit = function (testId) {
+		testsService.edit (testId, self.formData).then (function (response) {
+			self.initDetail ();
+
+			$ ('#edit-test').foundation ('close');
+		})
 	};
 
 	self.assign = function () {

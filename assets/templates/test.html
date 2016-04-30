@@ -1,6 +1,6 @@
 <div ng-controller="AssertionsController as asserts">
 	<div class="row content" ng-init="controller.initDetail()">
-		<div class="column with-shadow">
+		<div class="column with-shadow has-controls">
 			<div class="row">
 				<div class="column no-padding">
 					<h3>{{controller.detail.name}}</h3>
@@ -9,13 +9,42 @@
 				</div>
 				<div class="column shrink">
 					<button class="button success small fi-play"> Run now</button>
-					<a href="javascript:void(0)" data-open="edit-test" class="button primary small fi-pencil"> Edit</a>
+					<a href="javascript:void(0)" ng-click="controller.openEditWindow()"
+						class="button primary small fi-pencil"> Edit</a>
 					<br />
 					<span ng-show="controller.detail.passing" class="label success fi-check"> Passing</span>
 					<span ng-show="!controller.detail.passing" class="label alert fi-x"> Not passing</span>
 					<span ng-show="controller.detail.nextRun" class="label warning fi-calendar"> Next run: {{controller.detail.nextRun | date : 'short' }}</span>
+					<span ng-show="!controller.detail.nextRun" class="label fi-calendar"> Schedule run</span>
 
 				</div>
+			</div>
+			<div class="row">
+				<div class="column no-padding">
+
+					<h5>Headers</h5>
+
+					<table>
+						<tr ng-repeat="header in controller.detail.headers">
+							<td>{{header.name}}</td>
+							<td>{{header.value}}</td>
+							<td class="text-right">
+								<a href="javascript:void(0)"
+									ng-click="controller.headers.openEditWindow(header.id)">
+									<i class="fi-pencil"></i>
+								</a>
+								<a href="javascript:void(0)" ng-click="controller.headers.delete(header.id)">
+									<i class="fi-x"></i>
+								</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="row controls align-right">
+				<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)"><i
+						  class="fi-check"></i> Add header
+				</button>
 			</div>
 		</div>
 	</div>
@@ -162,7 +191,8 @@
 														ng-click="asserts.editAssertionWindow(assertion.id)">
 														<i class="fi-pencil" data-open="edit-assertion"></i>
 													</a>
-													<a href="javascript:void(0)" ng-click="asserts.deleteAssertion(assertion.id, request.id)">
+													<a href="javascript:void(0)"
+														ng-click="asserts.deleteAssertion(assertion.id, request.id)">
 														<i class="fi-x"></i>
 													</a>
 												</td>
@@ -242,6 +272,61 @@
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div class="reveal" id="edit-header" data-reveal>
+		<h3>Edit header</h3>
+
+		<form ng-submit="controller.headers.edit()">
+			<div class="row">
+				<div class="column">
+					<label>
+						Name
+						<input type="text" ng-model="controller.formData.headers.name">
+					</label>
+				</div>
+				<div class="column">
+					<label>
+						Value
+						<input type="text" ng-model="controller.formData.headers.value">
+					</label>
+				</div>
+			</div>
+			<button type="submit" class="button success">Save</button>
+		</form>
+
+		<!-- Close button -->
+		<button class="close-button" data-close aria-label="Close modal" type="button">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+
+	<div class="reveal" id="new-header" data-reveal>
+		<h3>New header</h3>
+
+		<form ng-submit="controller.headers.create()">
+			<div class="row">
+				<div class="column">
+					<label>
+						Name
+						<input type="text" ng-model="controller.formData.headers.name">
+					</label>
+				</div>
+				<div class="column">
+					<label>
+						Value
+						<input type="text" ng-model="controller.formData.headers.value">
+					</label>
+				</div>
+			</div>
+			<button type="submit" class="button success">Save</button>
+		</form>
+
+		<!-- Close button -->
+		<button class="close-button" data-close aria-label="Close modal" type="button">
+			<span aria-hidden="true">&times;</span>
+		</button>
 	</div>
 
 	<div class="reveal" id="edit-assertion" data-reveal>
@@ -437,50 +522,19 @@
 	<div class="reveal large" id="edit-test" data-reveal="">
 		<h3>Edit test</h3>
 
-		<form action="#" method="post">
+		<form ng-submit="controller.edit(controller.detail.id)">
 
 			<label>
 				Test name
 
-				<input type="text" value="Address" />
+				<input type="text" ng-model="controller.formData.name" />
 			</label>
 
 			<label>
 				Description
 
-				<textarea rows="2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam animi commodi corporis illum ipsa nisi porro rem reprehenderit vel vero? Beatae delectus iste magnam, numquam officiis quia rerum similique voluptates?</textarea>
+				<textarea rows="2" ng-model="controller.formData.description"></textarea>
 			</label>
-
-
-			<h4>Requests</h4>
-			<label>
-				<input checked=checked type="checkbox" />
-
-				<span>All addresses</span>
-				<small>(GET /address/all)</small>
-			</label>
-
-			<label>
-				<input type="checkbox" />
-
-				<span>All addresses</span>
-				<small>(GET /address/all)</small>
-			</label>
-
-			<label>
-				<input checked=checked type="checkbox" />
-
-				<span>All addresses</span>
-				<small>(GET /address/all)</small>
-			</label>
-
-			<label>
-				<input type="checkbox" />
-
-				<span>All addresses</span>
-				<small>(GET /address/all)</small>
-			</label>
-
 
 			<div class="row">
 				<div class="column">
