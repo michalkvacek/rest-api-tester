@@ -168,7 +168,7 @@ html, body {
 
 .user-profile {
 	padding: 1em;
-	background: #CCC;
+	/*background: #CCC;*/
 }
 
 li.separator {
@@ -186,7 +186,7 @@ li.separator {
 }
 
 #side-menu {
-	background: #DDD;
+	/*background: #DDD;*/
 }
 
 .dropdown li.is-submenu-item:hover {
@@ -199,7 +199,7 @@ li.separator {
 }
 
 .title-bar {
-	background: #C5C5C5;
+	background: #eee;
 }
 
 #content {
