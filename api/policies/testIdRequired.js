@@ -24,7 +24,7 @@ module.exports = function (req, res, next) {
 		req.testId = testId;
 
 		return next();
-	}).catch (function (err) {
+	}, function (err) {
 		return res.serverError(err);
 	})
 };

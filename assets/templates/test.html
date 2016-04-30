@@ -8,11 +8,11 @@
 			</div>
 			<div class="column shrink">
 				<button class="button success small fi-play"> Run now</button>
-				<a href="#" data-open="edit-test" class="button primary small fi-pencil"> Edit</a>
+				<a href="javascript:void(0)" data-open="edit-test" class="button primary small fi-pencil"> Edit</a>
 				<br />
 				<span ng-show="controller.detail.passing" class="label success fi-check"> Passing</span>
 				<span ng-show="!controller.detail.passing" class="label alert fi-x"> Not passing</span>
-				<span ng-show="controller.detail.sheduled" class="label warning fi-calendar"> Scheduled: {{controller.detail.scheduled}}</span>
+				<span ng-show="controller.detail.nextRun" class="label warning fi-calendar"> Next run: {{controller.detail.nextRun | date : 'short' }}</span>
 
 			</div>
 		</div>
@@ -65,7 +65,7 @@
 	<div class="column has-controls with-shadow">
 		<h4>Requests</h4>
 
-		<div ng-show="!controller.detail.requests.length" class="callout warning">Zadny request</div>
+		<div ng-show="controller.detail.requests.length == 0" class="callout warning">Zadny request</div>
 
 		<div class="row content-holder" ng-show="controller.detail.requests.length"
 			  ng-controller="RequestsController as reqController">
@@ -76,7 +76,17 @@
 						<a href="javascript:void(0)" class="accordion-title"
 							ng-click="reqController.initDetail(request.environmentsId, controller.detail.id, request.id)">
 							<h5>
-								<span class="label fi-check success"> {{request.name}}</span>
+
+								<span ng-show="request.lastResponse"
+										ng-class="request.lastResponse.passedAssertions ? 'success fi-check' : 'alert fi-x'"
+										class="label">
+									{{request.name}}
+								</span>
+								<span ng-show="!request.lastResponse" class="label secondary">
+									{{request.name}}
+								</span>
+
+
 								<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
 							</h5>
 							<small>{{request.description}}</small>
@@ -118,8 +128,8 @@
 									<div class="headers" ng-show="reqController.detail[request.id].headers.length > 0">
 										<h5>Headers</h5>
 										<ul>
-											<li ng-repeat="header in reqController.detail[request.id].headers"><strong>{{header.name}}</strong>:
-																																												{{header.value}}
+											<li ng-repeat="header in reqController.detail[request.id].headers">
+												<strong>{{header.name}}</strong>: {{header.value}}
 											</li>
 										</ul>
 									</div>
@@ -166,29 +176,27 @@
 										<div class="column">
 											<h5>Status</h5>
 											<ul>
-												<li>Status code: 200</li>
-												<li>Response size: 123 kB</li>
-												<li>Response time: 100 ms</li>
+												<li>Status code: {{request.lastResponse.responseCode}}</li>
+												<li>Response size: {{request.lastResponse.responseSize / 1024}} kB</li>
+												<li>Response time: {{request.lastResponse.responseTime}} ms</li>
 											</ul>
 										</div>
 										<div class="column">
 											<h5>Response headers</h5>
 
 											<ul>
-												<li><strong>Content-type</strong>: application/json</li>
-												<li><strong>X-Powered-By</strong>: some-value</li>
+												<li ng-repeat="responseHeaders in request.lastResponse.responseHeader">
+													<strong>{{responseHeaders[0]}}</strong>: {{responseHeaders[1]}}</li>
 											</ul>
 										</div>
 									</div>
 
 									<div class="row">
 										<div class="column">
-
-
 											<h5>Response body</h5>
 
 											<code class="response">
-												{}
+												{{request.lastResponse.responseBodyRaw}}
 											</code>
 										</div>
 									</div>
@@ -196,8 +204,8 @@
 							</div>
 						</div>
 
-						<script ng-if="$last">$ (function () {
-							Foundation.reInit ('accordion', 'tabs');
+						<script ng-if="controller.detail.requests.length > 0 && $last">$ (function () {
+							Foundation.reInit ('accordion');
 						});</script>
 					</li>
 				</ul>

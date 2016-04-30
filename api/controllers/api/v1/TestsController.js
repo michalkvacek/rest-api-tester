@@ -70,44 +70,37 @@ module.exports = {
 		}
 
 		if (req.param ('testId', false)) {
-			findCriterium.include.push ({
-				model: environments,
-				as: 'environment',
-				include: {
-					model: tests,
-					as: 'tests',
-					where: {
-						id: req.param('testId')
-					}
-				}
-			});
+			findCriterium.where.testsId = req.param ('testId')
 		}
 
 		responses.findAll (findCriterium).then (function (data) {
-
 			stats.testedRequests = data.length;
 
 			for (i in data) {
-				if (data.passedAssertions)
+				if (!data.hasOwnProperty (i)) continue;
+
+				if (data[i].passedAssertions)
 					stats.passed++;
 				else
 					stats.failed++;
 
-				if (data.responseTime > maxResponseTime)
-					maxResponseTime = data.responseTime;
+				if (data[i].responseTime > stats.maxResponseTime)
+					stats.maxResponseTime = data[i].responseTime;
 
-				if (data.responseSize > maxResponseSize)
-					maxResponseSize = data.responseSize;
+				if (data[i].responseSize > stats.maxResponseSize)
+					stats.maxResponseSize = data[i].responseSize;
 
-				responseSizeSum += data.responseSize;
-				responseTimeSum += data.responseTime;
+				responseSizeSum += data[i].responseSize;
+				responseTimeSum += data[i].responseTime;
 			}
 
-			stats.health = stats.passed > 0 ? (stats.passed + stats.failed) / passed : NaN;
+			stats.health = stats.testedRequests > 0 ? (stats.passed + stats.failed) / stats.passed * 100 : 0;
 			stats.avgResponseSize = stats.testedRequests > 0 ? responseSizeSum / stats.testedRequests : NaN;
 			stats.avgResponseTime = stats.testedRequests > 0 ? responseTimeSum / stats.testedRequests : NaN;
 
 			return res.ok (stats);
+		}, function (error) {
+			return res.serverError (error);
 		});
 	},
 
