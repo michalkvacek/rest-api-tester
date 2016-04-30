@@ -24,6 +24,7 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 		var environmentId = $stateParams.environmentId;
 
 		testsService.getOverview (environmentId).then (function (tests) {
+			self.statistics.testsCount = tests.data.length;
 			self.tests = tests.data;
 		});
 	};
@@ -36,6 +37,14 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 			$scope.environmentId = test.data.environmentsId;
 
 			self.detail = test.data;
+		});
+	};
+
+	self.newTest = function () {
+		var environmentId = $stateParams.environmentId;
+
+		testsService.create(environmentId, self.formData).then(function (response) {
+			self.initTestOverview();
 		});
 	};
 

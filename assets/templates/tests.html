@@ -1,32 +1,32 @@
-<div class="row content">
-	<div class="column with-shadow has-controls">
+<div class="row content" ng-init="controller.initStatistics(7)">
+	<div class="column with-shadow has-controls" ng-show="controller.statistics">
 		<div class="row text-center">
 			<div class="column">
-				<h4>97 %</h4>
+				<h4>{{controller.statistics.health}} %</h4>
 				<small>Health</small>
 			</div>
 			<div class="column">
-				<h4>105ms</h4>
+				<h4>{{controller.statistics.avgResponseTime}} ms</h4>
 				<small>Average response time</small>
 			</div>
 			<div class="column">
-				<h4>154ms</h4>
+				<h4>{{controller.statistics.maxResponseTime}} ms</h4>
 				<small>Longest response time</small>
 			</div>
 			<div class="column">
-				<h4>10</h4>
+				<h4>{{controller.statistics.testsCount}}</h4>
 				tests
 			</div>
 		</div>
 
 		<div class="row controls align-right">
-			<a href="#" class="button secondary tiny">30 days</a>
+			<a href="javascript:void(0)" ng-click="controller.initStatistics(30)" class="button secondary tiny">30 days</a>
 			&nbsp;
-			<a href="#" class="button primary tiny">7 days</a>
+			<a href="javascript:void(0)" ng-click="controller.initStatistics(7)" class="button primary tiny">7 days</a>
 			&nbsp;
-			<a href="#" class="button secondary tiny">last 24 hours</a>
+			<a href="javascript:void(0)" ng-click="controller.initStatistics(1)" class="button secondary tiny">last 24 hours</a>
 			&nbsp;
-			<a href="#" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
+			<a href="javascript:void(0)" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
 		</div>
 	</div>
 </div>
@@ -54,17 +54,21 @@
 					</div>
 				</div>
 
-				<div class="row align-right">
-					<span class="label success fi-check"> Passing</span>
+				<div class="row align-right" ng-switch="test.lastRunStatus">
+					<span ng-switch-when="success" class="label success fi-check"> Passing</span>
+					<span ng-switch-when="failed" class="label alert fi-check"> Not passing!</span>
+					<span ng-switch-when="waiting_for_response" class="label primary fi-check"> Waiting for response</span>
+					<span ng-switch-when="evaluating" class="label warning fi-check"> Running</span>
 				</div>
 
 				<!--<div class="row align-right">-->
-					<!--<small><em>30 requests, 105 assertions</em></small>-->
+				<!--<small><em>30 requests, 105 assertions</em></small>-->
 				<!--</div>-->
 
 			</div>
 			<div class="row controls align-right">
-				<a ui-sref="test_detail({testId: test.id})" class="has-tip primary tiny button" data-tooltip aria-haspopup="true"
+				<a ui-sref="test_detail({testId: test.id})" class="has-tip primary tiny button" data-tooltip
+					aria-haspopup="true"
 					data-disable-hover="false"
 					title="Test detail"><i class="fi-magnifying-glass"></i> <span class="show-for-medium">Detail</span></a>
 				&nbsp;
@@ -135,12 +139,12 @@
 <div class="reveal large" id="new-test" data-reveal="">
 	<h3>New test</h3>
 
-	<form ng-submit="controller.create()">
+	<form ng-submit="controller.newTest()">
 
 		<label>
 			Test name
 
-			<input type="text" ng-model="controller.formData.name" name="name"/>
+			<input type="text" ng-model="controller.formData.name" name="name" />
 		</label>
 
 		<label>

@@ -70,14 +70,17 @@ module.exports = {
 	 */
 	create: function (req, res) {
 		var parameters = {
-			usersId: req.user.id,
-			environmentsId: req.environmentId
+			usersId: req.token.id,
+			environmentsId: req.environmentId,
+			name: req.param ('name'),
+			description: req.param ('description')
 		};
-		parameters.merge (req.allParams ());
 
 		// create new test
 		tests.create (parameters).then (function (test) {
-			return res.created ({test: test});
+			return res.created (test);
+		}, function (error) {
+			return res.serverError (error);
 		});
 	}
 };
