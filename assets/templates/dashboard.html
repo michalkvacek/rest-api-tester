@@ -6,7 +6,9 @@
 				<h4 class="text-center">{{environment.name}}</h4>
 
 				<div class="row tests text-center">
-					<a href="test-result.html" ng-repeat="result in environment.results" data-ng-class="{'success': true, 'alert' : false }" data-tooltip aria-haspopup="true" class="has-tip badge success"
+					<a href="test-result.html" ng-repeat="result in environment.results"
+						data-ng-class="{'success': true, 'alert' : false }" data-tooltip aria-haspopup="true"
+						class="has-tip badge success"
 						data-disable-hover="false" title="Address, 12.3 15:12"><i class="fi-check"></i></a>
 				</div>
 
@@ -23,7 +25,7 @@
 				<div ng-show="environment.results.length" class="failed-tests">
 					<div class="row" ng-repeat="result in environment.results"> <!-- filter: {result.status: false} -->
 						<p>
-							<a href="test.html"><i class="fi-x badge alert"></i> Address</a>
+							<a ui-sref="test_detail({testId: result.id})"><i class="fi-x badge alert"></i> Address</a>
 							<small>11.2. 16:00</small>
 						</p>
 					</div>
@@ -32,7 +34,8 @@
 				</div>
 			</div>
 			<div class="row controls align-right">
-				<a href="./tests.html" class="primary button has-tip tiny" data-tooltip aria-haspopup="true"
+				<a ui-sref="tests({environmentId: environment.id})" class="primary button has-tip tiny" data-tooltip
+					aria-haspopup="true"
 					data-disable-hover="false"
 					title="Tests overview"><i class="fi-list"></i> All tests</a>
 
@@ -46,25 +49,23 @@
 	</div>
 
 
+	<a data-open="new-environment" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>
 
+	<div class="reveal" id="new-environment" data-reveal>
 
-	<a data-open="new-project" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>
+		<h3>Add environment</h3>
 
-	<div class="reveal" id="new-project" data-reveal>
-
-		<h3>Add project</h3>
-
-		<form ng-submit="con.create()">
+		<form ng-submit="controller.create()">
 			<label>
 				Name
 
-				<input type="text" placeholder="Project name" ng-model="formData.name" />
+				<input type="text" placeholder="Environment name" ng-model="formData.name" />
 			</label>
 
 			<label>
-			API endpoint
+				API endpoint
 
-			<input type="text" placeholder="https://api.example.com/api/v1" ng-model="formData.apiEndpoint" />
+				<input type="text" placeholder="https://api.example.com/api/v1" ng-model="formData.apiEndpoint" />
 			</label>
 
 
@@ -72,7 +73,7 @@
 				Description
 
 			<textarea rows="2" name="description" ng-model="formData.description"
-						 placeholder="Some brief description of this API"></textarea>
+						 placeholder="Some brief description of this API environment"></textarea>
 			</label>
 
 			<button type="submit" class="button success float-right">Create new</button>
@@ -83,7 +84,6 @@
 			<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
-
 
 
 </div>

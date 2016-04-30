@@ -37,7 +37,7 @@ module.exports = {
 			});
 		}
 
-		if (req.param('withResults', false)) {
+		if (req.param ('withResults', false)) {
 
 		}
 
@@ -67,31 +67,23 @@ module.exports = {
 	 * @returns {*}
 	 */
 	create: function (req, res) {
-		var projectId = req.param ('projectId', false);
-
-		if (!projectId)
-			return ResponseHandler.action (req, res, false, 'Neexistuje projekt', {redirectTo: '/projects'});
 
 		// new environment
 		var parameters = {
-			usersId: req.user.id,
-			projectsId: projectId
+			usersId: req.token.id,
+			projectsId: req.projectId,
+			name: req.param('name'),
+			apiEndpoint: req.param('apiEndpoint'),
+			description: req.param('description')
 		};
-		parameters.merge (req.allParams ());
 
 		// create new environment with data defined above
 		environments.create (parameters).then (function (environment) {
 
 			// redirect or send json response with information about successfull creating environment
-			return ResponseHandler.action (req, res, true, 'Vytvoreno', {environment: environment});
+			return res.created (environment);
 		}).catch (function (error) {
-
-			// something went wrong...
-			console.error (error);
-			return ResponseHandler.action (req, res, false, 'Chyba', {
-				err: err,
-				requestData: req.allParams ()
-			});
+			return res.serverError (error);
 		})
 
 	}

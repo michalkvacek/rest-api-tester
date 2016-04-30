@@ -16,10 +16,10 @@ app.service ('environmentsService', ['$http', '$q', function ($http, $q) {
 
 			return d.promise;
 		},
-		create: function (data) {
+		create: function (projectId, data) {
 			var d = $q.defer ();
 
-			$http.post ('/api/v1/projects', data).then (d.resolve, d.reject);
+			$http.post ('/api/v1/projects/'+projectId+'/environments', data).then (d.resolve, d.reject);
 
 			return d.promise;
 		}

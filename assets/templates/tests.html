@@ -58,9 +58,9 @@
 					<span class="label success fi-check"> Passing</span>
 				</div>
 
-				<div class="row align-right">
-					<small><em>30 requests, 105 assertions</em></small>
-				</div>
+				<!--<div class="row align-right">-->
+					<!--<small><em>30 requests, 105 assertions</em></small>-->
+				<!--</div>-->
 
 			</div>
 			<div class="row controls align-right">
@@ -135,85 +135,19 @@
 <div class="reveal large" id="new-test" data-reveal="">
 	<h3>New test</h3>
 
-	<form action="#" method="post">
+	<form ng-submit="controller.create()">
 
 		<label>
 			Test name
 
-			<input type="text" />
+			<input type="text" ng-model="controller.formData.name" name="name"/>
 		</label>
 
 		<label>
 			Description
 
-			<textarea rows="2"></textarea>
+			<textarea rows="2" ng-model="controller.formData.description" name="description"></textarea>
 		</label>
-
-
-		<ul class="tabs" data-tabs id="add-request-tabs">
-			<li class="tabs-title is-active"><a href="#new-request" aria-selected="true">New request</a></li>
-			<li class="tabs-title"><a href="#existing-request">Existing requests</a></li>
-		</ul>
-		<div class="tabs-content" data-tabs-content="add-request-tabs">
-			<div class="tabs-panel is-active" id="new-request">
-
-				<div class="row">
-					<div class="column large-3">
-						<label>
-							Method
-
-							<select name="input-type">
-								<option>POST</option>
-								<option>GET</option>
-								<option>PUT</option>
-								<option>DELETE</option>
-								<option>PATCH</option>
-								<option>OPTION</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="column large-9">
-						<label>
-							URL
-
-							<input type="text" name="url"
-									 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="tabs-panel" id="existing-request">
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-
-				<label>
-					<input type="checkbox" />
-
-					<span>All addresses</span>
-					<small>(GET /address/all)</small>
-				</label>
-			</div>
-		</div>
-
 
 		<div class="row">
 			<div class="column">

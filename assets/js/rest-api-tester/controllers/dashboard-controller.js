@@ -17,11 +17,15 @@ app.controller ('DashboardController', ['$scope', 'environmentsService', '$state
 
 	return {
 		create: function () {
-			environmentsService.create ($scope.formData).then (function (data) {
+			var projectId = $stateParams.projectId;
+
+			environmentsService.create (projectId, $scope.formData).then (function (data) {
 				initOverview ();
+
+				$ ('#new-environment').foundation ('close');
+
 			});
 
-			$ ('#new-environment').foundation ('close');
 		}
 	}
 
