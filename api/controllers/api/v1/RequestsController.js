@@ -77,6 +77,8 @@ module.exports = {
 						testsId: testsId
 					}
 				}).then (function (position) {
+					if (!position) position = 0;
+
 					requestsInTest.create ({
 						testsId: testsId,
 						requestsId: request.id,
@@ -86,13 +88,17 @@ module.exports = {
 						request = request.toJSON ();
 						request.assignedToTest = assignedTest;
 
-						return res.created (request)
+						return res.created (request);
 					})
+				}, function (error) {
+					return res.serverError (error);
 				});
 			} else {
 				return res.created (request)
 			}
-		})
+		}, function (error) {
+			return res.serverError (error);
+		});
 
 	},
 
