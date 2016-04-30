@@ -23,10 +23,22 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 
 			return d.promise;
 		},
-		assignRequest: function (testId, requestId) {
+		assignRequest: function (testId, requestIds) {
 			var d = $q.defer ();
 
-			$http.post ('/api/v1/tests/' + testId + '/request/' + requestId).then (d.resolve, d.reject);
+			var data = {
+				testId: testId,
+				requestIds: requestIds
+			};
+			
+			$http.post ('/api/v1/tests/' + testId + '/assignRequests', data).then (function (response) {
+					response.data.assignedToTest.testsId = testId;
+					$rootScope.$broadcast ('addedRequestIntoTest', response.data);
+
+					return d.resolve (response);
+				},
+				d.reject
+			);
 
 			return d.promise;
 		},

@@ -28,7 +28,7 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 			var d = $q.defer ();
 
 			$http.post ('/api/v1/environments/' + environmentId + '/requests', data).then (function (response) {
-				$rootScope.$broadcast ('requestCreated', response.data);
+				$rootScope.$broadcast ('addedRequestIntoTest', response.data);
 
 				return d.resolve (response);
 			}, d.reject);

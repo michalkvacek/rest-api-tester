@@ -6,7 +6,7 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 
 	self.detail = self.tests = self.statistics = {};
 
-	$scope.$on ('requestCreated', function (event, request) {
+	$scope.$on ('addedRequestIntoTest', function (event, request) {
 		if (request.hasOwnProperty ('assignedToTest') && request.assignedToTest.testsId == $scope.testId)
 			self.initDetail ();
 
@@ -40,7 +40,13 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 	};
 
 	self.assign = function () {
+		var testId = $stateParams.testId;
+		
 		// todo
+		
+		testsService.assignRequest().then(function (response) {
+			
+		});
 	};
 
 	return self;
