@@ -19,37 +19,44 @@
 	</div>
 </div>
 
-<div class="row" ng-show="false">
+<div class="row" ng-init="controller.initStatistics(controller.statisticsButton)" ng-show="controller.statistics">
 	<div class="column with-shadow has-controls">
 		<div class="row text-center">
 			<div class="column">
-				<h4>95 %</h4>
+				<h4>{{controller.statistics.health || '--'}} %</h4>
 				<small>Health</small>
 			</div>
 			<div class="column">
-				<h4>145ms</h4>
+				<h4>{{controller.statistics.avgResponseTime || '--'}} ms</h4>
 				<small>Average response time</small>
 			</div>
 			<div class="column">
-				<h4>1054ms</h4>
+				<h4>{{controller.statistics.maxResponseTime || '--'}} ms</h4>
 				<small>Longest response time</small>
 			</div>
 			<div class="column">
-				<h4>1</h4>
-				request
+				<h4>{{controller.statistics.testedRequests || '--'}}</h4>
+				tested requests
 			</div>
-			<div class="column">
-				<h4>10</h4>
-				assertions
-			</div>
+
 		</div>
 
 		<div class="row controls align-right">
-			<a href="#" class="button secondary tiny">30 days</a>
+			<a href="javascript:void(0)"
+				ng-click="controller.initStatistics(30); controller.statisticsButton = 30"
+				ng-class="(controller.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
+				30 days
+			</a>
 			&nbsp;
-			<a href="#" class="button primary tiny">7 days</a>
+			<a href="javascript:void(0)"
+				ng-click="controller.initStatistics(7); controller.statisticsButton = 7"
+				ng-class="(controller.statisticsButton == 7) ? 'primary' : 'secondary'"
+				class="button tiny">7 days</a>
 			&nbsp;
-			<a href="#" class="button secondary tiny">last 24 hours</a>
+			<a href="javascript:void(0)"
+				ng-click="controller.initStatistics(1); controller.statisticsButton = 1"
+				ng-class="(controller.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
+				last 24 hours</a>
 		</div>
 	</div>
 </div>

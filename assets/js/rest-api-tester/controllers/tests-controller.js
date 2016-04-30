@@ -5,6 +5,7 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 	var self = this;
 
 	self.detail = self.tests = self.statistics = {};
+	self.statisticsButton = 7;
 
 	$scope.$on ('addedRequestIntoTest', function (event, request) {
 		if (request.hasOwnProperty ('assignedToTest') && request.assignedToTest.testsId == $scope.testId)
@@ -13,9 +14,13 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 	});
 
 	self.initStatistics = function (ageInDays) {
-		var environmentId = $stateParams.environmentId;
+		var environmentId = $stateParams.environmentId || $scope.environmentId;
+		var testId = $stateParams.testId || $scope.testId;
 
-		testsService.getStatistics (environmentId, ageInDays).then (function (statistics) {
+		testsService.getStatistics (ageInDays, {
+			environmentId: environmentId,
+			testId: testId
+		}).then (function (statistics) {
 			self.statistics = statistics.data;
 		});
 	};
@@ -24,7 +29,6 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 		var environmentId = $stateParams.environmentId;
 
 		testsService.getOverview (environmentId).then (function (tests) {
-			self.statistics.testsCount = tests.data.length;
 			self.tests = tests.data;
 		});
 	};
@@ -43,18 +47,18 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', fu
 	self.newTest = function () {
 		var environmentId = $stateParams.environmentId;
 
-		testsService.create(environmentId, self.formData).then(function (response) {
-			self.initTestOverview();
+		testsService.create (environmentId, self.formData).then (function (response) {
+			self.initTestOverview ();
 		});
 	};
 
 	self.assign = function () {
 		var testId = $stateParams.testId;
-		
+
 		// todo
-		
-		testsService.assignRequest().then(function (response) {
-			
+
+		testsService.assignRequest ().then (function (response) {
+
 		});
 	};
 

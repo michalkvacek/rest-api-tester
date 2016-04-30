@@ -11,6 +11,14 @@ module.exports = {
 				key: 'id'
 			}
 		},
+		environmentsId: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'environments',
+				key: 'id'
+			}
+		},
 		createdAt: {
 			type: Sequelize.DATE,
 			allowNull: true
@@ -59,5 +67,24 @@ module.exports = {
 	options: {
 		tableName: 'responses',
 		updatedAt: false
+	},
+	// create relationships with other models
+	associations: function () {
+
+		responses.belongsTo (requests, {
+			foreignKey: {
+				name: 'requestsId',
+				as: 'request',
+				allowNull: false
+			}
+		});
+
+		responses.belongsTo (environments, {
+			foreignKey: {
+				name: 'environmentsId',
+				as: 'environment',
+				allowNull: false
+			}
+		});
 	}
 };

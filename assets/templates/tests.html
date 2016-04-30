@@ -1,4 +1,4 @@
-<div class="row content" ng-init="controller.initStatistics(7)">
+<div class="row content" ng-init="controller.initStatistics(controller.statisticsButton)">
 	<div class="column with-shadow has-controls" ng-show="controller.statistics">
 		<div class="row text-center">
 			<div class="column">
@@ -20,11 +20,21 @@
 		</div>
 
 		<div class="row controls align-right">
-			<a href="javascript:void(0)" ng-click="controller.initStatistics(30)" class="button secondary tiny">30 days</a>
+			<a href="javascript:void(0)"
+				ng-click="controller.initStatistics(30); controller.statisticsButton = 30"
+				ng-class="(controller.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
+				30 days
+			</a>
 			&nbsp;
-			<a href="javascript:void(0)" ng-click="controller.initStatistics(7)" class="button primary tiny">7 days</a>
+			<a href="javascript:void(0)"
+				ng-click="controller.initStatistics(7); controller.statisticsButton = 7"
+				ng-class="(controller.statisticsButton == 7) ? 'primary' : 'secondary'"
+				class="button tiny">7 days</a>
 			&nbsp;
-			<a href="javascript:void(0)" ng-click="controller.initStatistics(1)" class="button secondary tiny">last 24 hours</a>
+			<a href="javascript:void(0)"
+				ng-click="controller.initStatistics(1); controller.statisticsButton = 1"
+				ng-class="(controller.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
+				last 24 hours</a>
 			&nbsp;
 			<a href="javascript:void(0)" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
 		</div>

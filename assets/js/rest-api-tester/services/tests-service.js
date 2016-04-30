@@ -9,10 +9,19 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 
 			return d.promise;
 		},
-		getStatistics: function (environmentId) {
+		getStatistics: function (ageInDays, options) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/environments/' + environmentId + '/statistics').then (d.resolve, d.reject);
+			var queryString = '?age='+ageInDays;
+
+			if (typeof options.environmentId != 'undefined')
+				queryString += '&environmentId='+options.environmentId;
+
+			if (typeof options.testId != 'undefined') {
+				queryString += '&testId='+options.testId;
+			}
+
+			$http.get ('/api/v1/tests/statistics'+queryString).then (d.resolve, d.reject);
 
 			return d.promise;
 		},

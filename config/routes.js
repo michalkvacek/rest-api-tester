@@ -26,7 +26,7 @@ module.exports.routes = {
 	'get /api/v1/projects/:projectId/environments': 'api/v1/Environments.index',
 	'get /api/v1/projects': 'api/v1/Projects.index',
 
-	'get /api/v1/environments/:environmentId/statistics': 'api/v1/Environments.statistics',
+	'get /api/v1/tests/statistics': 'api/v1/Tests.statistics',
 	'get /api/v1/environments/:environmentId/tests': 'api/v1/Tests.index',
 	'get /api/v1/environments/:environmentId/requests': 'api/v1/Requests.index',
 	'get /api/v1/environments/:environmentId/requests/:requestId': 'api/v1/Requests.detail',
