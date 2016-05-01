@@ -112,7 +112,7 @@ module.exports = {
 				url: req.param ('url'),
 				httpMethod: req.param ('httpMethod'),
 				versionsId: req.param ('versionsId'),
-				authenticationsId: req.param('authenticationsId')
+				authenticationsId: req.param ('authenticationsId')
 			}).then (function (edited) {
 				return res.ok (edited);
 			});
@@ -144,7 +144,7 @@ module.exports = {
 			});
 		}
 
-		if (req.param('withTests', false)) {
+		if (req.param ('withTests', false)) {
 			findCriterium.include.push ({
 				model: tests,
 				as: 'tests'
@@ -158,7 +158,7 @@ module.exports = {
 		if (req.param ('withAuth', false)) {
 			findCriterium.include.push ({model: authentications});
 		}
-		
+
 		if (req.param ('withHttpParams', false)) {
 			findCriterium.include.push ({model: httpParameters});
 		}
@@ -210,6 +210,21 @@ module.exports = {
 			]
 		}).then (function (response) {
 			return res.ok (response);
+		});
+	},
+
+	delete: function (req, res) {
+		requests.findOne ({
+			where: {id: req.requestId}
+		}).then (function (request) {
+			if (!request)
+				return res.notFound ();
+
+			// request.destroy ();
+
+			return res.ok ('deleted');
+		}, function (err) {
+			return res.serverError (err);
 		});
 	}
 };

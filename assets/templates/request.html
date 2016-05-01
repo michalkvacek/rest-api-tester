@@ -171,10 +171,11 @@
 				  class="show-for-medium">Edit</span></a>
 
 		&nbsp;
-		<a href="#" class="has-tip alert tiny button" data-tooltip aria-haspopup="true"
-			data-disable-hover="false"
-			title="Delete this request"><i class="fi-x"></i> <span
-				  class="show-for-medium">Delete</span></a>
+		<a href="javascript:void(0)" ng-click="request.delete(request.current.environmentsId, request.current.id)"
+			class="alert tiny button">
+			<i class="fi-x"></i>
+			<span class="show-for-medium">Delete</span>
+		</a>
 	</div>
 </div>
 

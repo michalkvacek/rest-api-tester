@@ -37,7 +37,7 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 		edit: function (requestId, data) {
 			var d = $q.defer ();
 
-			$http.put ('/api/v1/requests/'+requestId, data).then (d.resolve, d.reject);
+			$http.put ('/api/v1/requests/' + requestId, data).then (d.resolve, d.reject);
 
 			return d.promise;
 		},
@@ -45,7 +45,7 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 		lastResponse: function (requestId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/requests/'+requestId+"/lastResponse").then (d.resolve, d.reject);
+			$http.get ('/api/v1/requests/' + requestId + "/lastResponse").then (d.resolve, d.reject);
 
 			return d.promise;
 		},
@@ -58,6 +58,13 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 
 				return d.resolve (response);
 			}, d.reject);
+
+			return d.promise;
+		},
+		delete: function (requestId) {
+			var d = $q.defer ();
+
+			$http.delete ('/api/v1/requests/' + requestId).then (d.resolve, d.reject);
 
 			return d.promise;
 		}

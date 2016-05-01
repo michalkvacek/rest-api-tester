@@ -79,5 +79,6 @@ module.exports.routes = {
 	'put /api/v1/tests/:testId': 'api/v1/Tests.update',
 	'put /api/v1/tests/:testId/schedule': 'api/v1/Tests.scheduleRun',
 
+	'delete /api/v1/requests/:requestId': 'api/v1/Requests.delete',
 	'delete /api/v1/assertions/:assertionId': 'api/v1/Assertions.delete',
 };

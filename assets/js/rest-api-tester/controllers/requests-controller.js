@@ -98,6 +98,15 @@ app.controller ('RequestsController', [
 			})
 		};
 
+		self.delete = function (environmentId, requestId) {
+			if (typeof requestId == 'undefined')
+				requestId = $stateParams.requestId;
+
+			requestsService.delete(requestId).then(function (response) {
+				$state.go('tests', {environmentId: environmentId});
+			});
+		};
+
 		self.headers.openEditWindow = function (headerId) {
 			self.headerId = headerId;
 
