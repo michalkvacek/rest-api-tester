@@ -56,6 +56,9 @@ module.exports.policies = {
 	},
 	'api/v1/Versions': {
 		'*': ['jwToken', 'projectIdRequired']
+	},
+	'api/v1/Authentications': {
+		'*': ['jwToken', 'environmentIdRequired']
 	}
 }
 ;

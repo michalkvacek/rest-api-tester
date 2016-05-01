@@ -1,131 +1,142 @@
 <div class="row content" ng-controller="VersionsController as versions" ng-init="request.initDetailForEdit()">
-	<div class="column with-shadow">
-		<h4>{{request.formData.name}}
-			<small>({{request.formData.httpMethod}} {{request.formData.url}})</small>
-		</h4>
+	<div class="column no-padding" ng-controller="AuthenticationsController as auths">
+		<div class="column with-shadow">
+			<h4>{{request.formData.name}}
+				<small>({{request.formData.httpMethod}} {{request.formData.url}})</small>
+			</h4>
 
-		<ul class="tabs" data-tabs id="request-editor">
-			<li class="tabs-title is-active"><a href="#basic-info" aria-selected="true">Basic information</a></li>
-			<li class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
-				<a href="#request-parameters">{{request.formData.httpMethod}} parameters</a>
-			</li>
-			<li class="tabs-title"><a href="#headers">Headers</a></li>
-		</ul>
-		<div class="tabs-content" data-tabs-content="request-editor">
-			<div class="tabs-panel is-active" id="basic-info">
-				<form ng-submit="request.edit()">
-					<div class="row">
-						<div class="column">
-							<label>
-								Request name
+			<ul class="tabs" data-tabs id="request-editor">
+				<li class="tabs-title is-active"><a href="#basic-info" aria-selected="true">Basic information</a></li>
+				<li class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
+					<a href="#request-parameters">{{request.formData.httpMethod}} parameters</a>
+				</li>
+				<li class="tabs-title"><a href="#headers">Headers</a></li>
+			</ul>
+			<div class="tabs-content" data-tabs-content="request-editor">
+				<div class="tabs-panel is-active" id="basic-info">
+					<form ng-submit="request.edit()">
+						<div class="row">
+							<div class="column">
+								<label>
+									Request name
 
-								<input type="text" ng-model="request.formData.name" ng-blur="request.edit()">
-							</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="column">
-							<label>
-								Request description
-								<textarea rows="3" ng-model="request.formData.description" ng-blur="request.edit()"></textarea>
-							</label>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="column">
-							<label>
-								API version
-								<select ng-show="versions.overview.length > 0"
-										  ng-blur="request.edit()"
-										  ng-model="request.formData.versionsId"
-										  ng-if="request.environment.projectsId"
-										  ng-init="versions.init(request.environment.projectsId)">
-									<option ng-repeat="version in versions.overview" value="{{version.id}}">
-										{{version.name}}
-									</option>
-								</select>
-
-								<a href="javascript:void(0)" class="button success" data-open="new-version">
-									<i class="fi-plus"></i>
-								</a>
-							</label>
-						</div>
-
-						<div class="column">
-							<label>
-
-								Authentication
-
-								<select>
-									<option>OAuth 2 - admin</option>
-									<option>Basic Auth - visitor</option>
-								</select>
-							</label>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="column large-2">
-							<label>
-								<select ng-blur="request.edit()" name="input-type" ng-model="request.formData.httpMethod">
-									<option>POST</option>
-									<option>GET</option>
-									<option>PUT</option>
-									<option>DELETE</option>
-									<option>PATCH</option>
-									<option>OPTION</option>
-								</select>
-							</label>
-						</div>
-
-						<div class="column large-10">
-							<div class="input-group">
-								<span class="input-group-label">{{request.environment.apiEndpoint}}</span>
-								<input ng-blur="request.edit()" class="input-group-field" type="text"
-										 ng-model="request.formData.url">
+									<input type="text" ng-model="request.formData.name" ng-blur="request.edit()">
+								</label>
 							</div>
 						</div>
+						<div class="row">
+							<div class="column">
+								<label>
+									Request description
+									<textarea rows="3" ng-model="request.formData.description"
+												 ng-blur="request.edit()"></textarea>
+								</label>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="column">
+								<label>
+									API version
+									<select ng-show="versions.overview.length > 0"
+											  ng-blur="request.edit()"
+											  ng-model="request.formData.versionsId"
+											  ng-if="request.environment.projectsId"
+											  ng-init="versions.init(request.environment.projectsId, request.formData.versionsId)">
+										<option ng-repeat="version in versions.overview" value="{{version.id}}">
+											{{version.name}}
+										</option>
+									</select>
+
+									<a href="javascript:void(0)" class="button success" data-open="new-version">
+										<i class="fi-plus"></i>
+									</a>
+								</label>
+							</div>
+
+							<div class="column">
+								<label>
+
+									Authentication
+
+									<select ng-show="auths.overview.length > 0"
+											  ng-blur="request.edit()"
+											  ng-model="request.formData.authenticationsId"
+											  ng-if="request.environment.id"
+											  ng-init="auths.init(request.environment.id)">
+										<option ng-repeat="auth in auths.overview" value="{{auth.id}}">
+											{{auth.name}}
+										</option>
+									</select>
+
+									<a href="javascript:void(0)" class="button success" data-open="new-authentication">
+										<i class="fi-plus"></i>
+									</a>
+								</label>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="column large-2">
+								<label>
+									<select ng-blur="request.edit()" name="input-type" ng-model="request.formData.httpMethod">
+										<option>POST</option>
+										<option>GET</option>
+										<option>PUT</option>
+										<option>DELETE</option>
+										<option>PATCH</option>
+										<option>OPTION</option>
+									</select>
+								</label>
+							</div>
+
+							<div class="column large-10">
+								<div class="input-group">
+									<span class="input-group-label">{{request.environment.apiEndpoint}}</span>
+									<input ng-blur="request.edit()" class="input-group-field" type="text"
+											 ng-model="request.formData.url">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="tabs-panel has-controls" id="request-parameters">
+					<h5>{{request.formData.httpMethod}} parameters</h5>
+
+					<div class="content-holder">
+						<table>
+							<tr ng-repeat="param in request.formData.httpParameters">
+								<td>{{param.name}}</td>
+								<td>{{param.value}}</td>
+								<td class="text-right">
+									<a href="javascript:void(0)"
+										ng-click="request.httpParameters.openEditWindow(param.id)">
+										<i class="fi-pencil"></i>
+									</a>
+									<a href="javascript:void(0)" ng-click="request.httpParameters.delete(param.id)">
+										<i class="fi-x"></i>
+									</a>
+								</td>
+							</tr>
+						</table>
 					</div>
-				</form>
-			</div>
-
-			<div class="tabs-panel has-controls" id="request-parameters">
-				<h5>{{request.formData.httpMethod}} parameters</h5>
-
-				<div class="content-holder">
-					<table>
-						<tr ng-repeat="param in request.formData.httpParameters">
-							<td>{{param.name}}</td>
-							<td>{{param.value}}</td>
-							<td class="text-right">
-								<a href="javascript:void(0)"
-									ng-click="request.httpParameters.openEditWindow(param.id)">
-									<i class="fi-pencil"></i>
-								</a>
-								<a href="javascript:void(0)" ng-click="request.httpParameters.delete(param.id)">
-									<i class="fi-x"></i>
-								</a>
-							</td>
-						</tr>
-					</table>
+					<div class="row controls align-right">
+						<a href="javascript:void(0)"
+							ng-click="request.httpParameters.newHttpParameterWindow(request.formData.id)"
+							class="success tiny button"><i class="fi-plus"></i> <span
+								  class="show-for-medium"> Add parameter</span></a>
+					</div>
 				</div>
-				<div class="row controls align-right">
-					<a href="javascript:void(0)"
-						ng-click="request.httpParameters.newHttpParameterWindow(request.formData.id)"
-						class="success tiny button"><i class="fi-plus"></i> <span
-							  class="show-for-medium"> Add parameter</span></a>
-				</div>
-			</div>
 
-			<div class="tabs-panel has-controls" id="headers">
-				<h5>Request headers</h5>
-				<div class="content-holder">
-					<table>
-						<tr ng-repeat="header in request.formData.headers">
-							<td>{{header.name}}</td>
-							<td>{{header.value}}</td>
-							<td class="text-right">
+				<div class="tabs-panel has-controls" id="headers">
+					<h5>Request headers</h5>
+					<div class="content-holder">
+						<table>
+							<tr ng-repeat="header in request.formData.headers">
+								<td>{{header.name}}</td>
+								<td>{{header.value}}</td>
+								<td class="text-right">
 								<span ng-show="header.requestsId == request.formData.id">
 									<a href="javascript:void(0)"
 										ng-click="request.headers.openEditWindow(header.id)">
@@ -135,158 +146,206 @@
 										<i class="fi-x"></i>
 									</a>
 								</span>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="row controls align-right">
-					<a href="javascript:void(0)" ng-click="request.headers.newHeaderWindow()" class="success tiny button">
-						<i class="fi-plus"></i>
-						<span class="show-for-medium"> Add header</span></a>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="row controls align-right">
+						<a href="javascript:void(0)" ng-click="request.headers.newHeaderWindow()" class="success tiny button">
+							<i class="fi-plus"></i>
+							<span class="show-for-medium"> Add header</span></a>
+					</div>
 				</div>
 			</div>
 		</div>
+
+		<!--================================-->
+		<!--Modal windows-->
+
+		<div class="reveal" id="new-version" data-reveal>
+			<h3>New version</h3>
+
+			<form ng-submit="versions.create()">
+				<label>
+					Name
+					<input type="text" ng-model="versions.formData.name">
+				</label>
+				<label>
+					Description
+					<textarea rows="2" ng-model="versions.formData.description"></textarea>
+				</label>
+				<label>
+					URL segment
+					<input type="text" ng-model="versions.formData.urlSegment">
+				</label>
+
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="submit">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<div class="reveal" id="new-authentication" data-reveal>
+			<h3>New authentication</h3>
+
+			<form ng-submit="auths.create()">
+				<label>
+					Name
+					<input type="text" ng-model="auths.formData.name">
+				</label>
+
+				<label>
+					Username
+					<input type="text" ng-model="auths.formData.username">
+				</label>
+
+				<label>
+					Password
+					<input type="text" ng-model="auths.formData.password">
+				</label>
+
+				<label>
+					Authentication type
+
+					<select ng-model="auths.formData.type">
+						<option value="base">Base Auth</option>
+						<option value="bearer">Bearer token</option>
+					</select>
+				</label>
+
+				<div ng-show="auths.formData.type == 'bearer'">
+					<label>
+						API method
+						<input type="text" ng-model="auths.formData.apiMethod">
+					</label>
+
+					<label>
+						Token property
+						<input type="text" ng-model="auths.formData.tokenProperty">
+					</label>
+				</div>
+
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="submit">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+
+		<div class="reveal" id="edit-header" data-reveal>
+			<h3>Edit header</h3>
+
+			<form ng-submit="request.headers.edit()">
+				<div class="row">
+					<div class="column">
+						<label>
+							Name
+							<input type="text" ng-model="request.headersData.name">
+						</label>
+					</div>
+					<div class="column">
+						<label>
+							Value
+							<input type="text" ng-model="request.headersData.value">
+						</label>
+					</div>
+				</div>
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+
+		<div class="reveal" id="new-header" data-reveal>
+			<h3>New header</h3>
+
+			<form ng-submit="request.headers.create()">
+				<div class="row">
+					<div class="column">
+						<label>
+							Name
+							<input type="text" ng-model="request.headersData.name">
+						</label>
+					</div>
+					<div class="column">
+						<label>
+							Value
+							<input type="text" ng-model="request.headersData.value">
+						</label>
+					</div>
+				</div>
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<div class="reveal" id="edit-httpParameter" data-reveal>
+			<h3>Edit {{request.formData.httpMethod}} parameter</h3>
+
+			<form ng-submit="request.httpParameters.edit()">
+				<div class="row">
+					<div class="column">
+						<label>
+							Name
+							<input type="text" ng-model="request.httpParametersData.name">
+						</label>
+					</div>
+					<div class="column">
+						<label>
+							Value
+							<input type="text" ng-model="request.httpParametersData.value">
+						</label>
+					</div>
+				</div>
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+
+		<div class="reveal" id="new-httpParameter" data-reveal>
+			<h3>New {{request.formData.httpMethod}} parameter</h3>
+
+			<form ng-submit="request.httpParameters.create()">
+				<div class="row">
+					<div class="column">
+						<label>
+							Name
+							<input type="text" ng-model="request.httpParametersData.name">
+						</label>
+					</div>
+					<div class="column">
+						<label>
+							Value
+							<input type="text" ng-model="request.httpParametersData.value">
+						</label>
+					</div>
+				</div>
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
 	</div>
-
-	<!--================================-->
-	<!--Modal windows-->
-
-	<div class="reveal" id="new-version" data-reveal>
-		<h3>New version</h3>
-
-		<form ng-submit="versions.create()">
-			<label>
-				Name
-				<input type="text" ng-model="versions.formData.name">
-			</label>
-			<label>
-				Description
-				<textarea rows="2" ng-model="versions.formData.description"></textarea>
-			</label>
-			<label>
-				URL segment
-				<input type="text" ng-model="versions.formData.urlSegment">
-			</label>
-
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="submit">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-
-	<div class="reveal" id="edit-header" data-reveal>
-		<h3>Edit header</h3>
-
-		<form ng-submit="request.headers.edit()">
-			<div class="row">
-				<div class="column">
-					<label>
-						Name
-						<input type="text" ng-model="request.headersData.name">
-					</label>
-				</div>
-				<div class="column">
-					<label>
-						Value
-						<input type="text" ng-model="request.headersData.value">
-					</label>
-				</div>
-			</div>
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-
-	<div class="reveal" id="new-header" data-reveal>
-		<h3>New header</h3>
-
-		<form ng-submit="request.headers.create()">
-			<div class="row">
-				<div class="column">
-					<label>
-						Name
-						<input type="text" ng-model="request.headersData.name">
-					</label>
-				</div>
-				<div class="column">
-					<label>
-						Value
-						<input type="text" ng-model="request.headersData.value">
-					</label>
-				</div>
-			</div>
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-	<div class="reveal" id="edit-httpParameter" data-reveal>
-		<h3>Edit {{request.formData.httpMethod}} parameter</h3>
-
-		<form ng-submit="request.httpParameters.edit()">
-			<div class="row">
-				<div class="column">
-					<label>
-						Name
-						<input type="text" ng-model="request.httpParametersData.name">
-					</label>
-				</div>
-				<div class="column">
-					<label>
-						Value
-						<input type="text" ng-model="request.httpParametersData.value">
-					</label>
-				</div>
-			</div>
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-
-	<div class="reveal" id="new-httpParameter" data-reveal>
-		<h3>New {{request.formData.httpMethod}} parameter</h3>
-
-		<form ng-submit="request.httpParameters.create()">
-			<div class="row">
-				<div class="column">
-					<label>
-						Name
-						<input type="text" ng-model="request.httpParametersData.name">
-					</label>
-				</div>
-				<div class="column">
-					<label>
-						Value
-						<input type="text" ng-model="request.httpParametersData.value">
-					</label>
-				</div>
-			</div>
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-
 </div>

@@ -95,6 +95,14 @@ module.exports = {
 			}
 		});
 
+		requests.belongsTo (authentications, {
+			foreignKey: {
+				name: 'authenticationsId',
+				as: 'auth',
+				allowNull: true
+			}
+		});
+
 		requests.hasMany (headers, {
 			foreignKey: {
 				name: 'requestsId',

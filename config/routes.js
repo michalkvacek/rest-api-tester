@@ -55,6 +55,14 @@ module.exports.routes = {
 	'put /api/v1/projects/:projectId/versions/:versionId': 'api/v1/Versions.update',
 	'delete /api/v1/projects/:projectId/versions/:versionId': 'api/v1/Versions.delete',
 
+	'get /api/v1/environments/:environmentId/auths': 'api/v1/Authentications.index',
+	'get /api/v1/environments/:environmentId/auths/:authId': 'api/v1/Authentications.detail',
+	'post /api/v1/environments/:environmentId/auths': 'api/v1/Authentications.create',
+	'put /api/v1/environments/:environmentId/auths/:authId': 'api/v1/Authentications.update',
+	'delete /api/v1/environments/:environmentId/auths/:authId': 'api/v1/Authentications.delete',
+
+
+
 	'post /api/v1/registration': 'api/v1/Users.create',
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",
 	'post /api/v1/projects': 'api/v1/Projects.create',

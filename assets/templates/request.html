@@ -6,7 +6,7 @@
 
 		<p>{{request.current.description}}</p>
 
-		<div class="row">
+		<div class="row" ng-controller="AuthenticationsController as auths">
 			<div class="column" ng-controller="VersionsController as versions">
 
 				<h5>Basic info</h5>
@@ -21,7 +21,10 @@
 
 					<li>
 						Authentication:
-						<a ng-show="request.current.authentication">{{request.current.authentication.name}}</a>
+						<a ng-show="request.current.authentication"
+							ng-click="auths.openEditWindow(request.current.authentication.id, request.current.environmentsId)">
+							{{request.current.authentication.name}}
+						</a>
 						<span ng-show="!request.current.authentication">Nic</span>
 					</li>
 					<li>
@@ -50,6 +53,56 @@
 							URL segment
 							<input type="text" ng-model="versions.formData.urlSegment">
 						</label>
+
+						<button type="submit" class="button success">Save</button>
+					</form>
+
+					<!-- Close button -->
+					<button class="close-button" data-close aria-label="Close modal" type="submit">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+
+				<div class="reveal" id="edit-authentication" data-reveal>
+					<h3>Edit authentication</h3>
+
+					<form ng-submit="auths.edit()">
+						<label>
+							Name
+							<input type="text" ng-model="auths.formData.name">
+						</label>
+
+						<label>
+							Username
+							<input type="text" ng-model="auths.formData.username">
+						</label>
+
+						<label>
+							Password
+							<input type="text" ng-model="auths.formData.password">
+						</label>
+
+						<label>
+							Authentication type
+
+							<select ng-model="auths.formData.type">
+								<option value="base">Base Auth</option>
+								<option value="bearer">Bearer token</option>
+							</select>
+						</label>
+
+						<div ng-show="auths.formData.type == 'bearer'">
+							<label>
+								API method
+								<input type="text" ng-model="auths.formData.apiMethod">
+							</label>
+
+							<label>
+								Token property
+								<input type="text" ng-model="auths.formData.tokenProperty">
+							</label>
+						</div>
 
 						<button type="submit" class="button success">Save</button>
 					</form>

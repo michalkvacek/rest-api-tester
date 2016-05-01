@@ -7,8 +7,9 @@ app.controller ('VersionsController', ['$scope', 'versionsService', function ($s
 	self.projectId = {};
 	self.formData = {};
 
-	self.init = function (projectId) {
+	self.init = function (projectId, selectedVersion) {
 		self.projectId = projectId;
+		self.formData.versionsId = selectedVersion;
 
 		versionsService.overview (projectId).then (function (response) {
 			self.overview = response.data;

@@ -112,7 +112,7 @@ module.exports = {
 				url: req.param ('url'),
 				httpMethod: req.param ('httpMethod'),
 				versionsId: req.param ('versionsId'),
-				// authorizationsId: req.param('authorizationsId')
+				authenticationsId: req.param('authenticationsId')
 			}).then (function (edited) {
 				return res.ok (edited);
 			});
@@ -155,6 +155,10 @@ module.exports = {
 			findCriterium.include.push ({model: versions});
 		}
 
+		if (req.param ('withAuth', false)) {
+			findCriterium.include.push ({model: authentications});
+		}
+		
 		if (req.param ('withHttpParams', false)) {
 			findCriterium.include.push ({model: httpParameters});
 		}
