@@ -51,12 +51,29 @@
 				</tbody>
 			</table>
 		</div>
+
+		<div ng-show="request.current.queryString.length > 0">
+			<h5>{{request.current.httpMethod}} parameters</h5>
+
+			<table>
+				<thead>
+				<tr>
+					<th>Parameter name</th>
+					<th>Parameter value</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="param in request.current.httpParameters">
+					<td>{{param.name}}</td>
+					<td>{{param.value}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
 	</div>
 	<div class="row controls align-right">
-		<a href="./editor.html" data-open="edit-request" class="has-tip warning tiny button" data-tooltip
-			aria-haspopup="true"
-			data-disable-hover="false"
-			title="Edit request"><i class="fi-pencil"></i> <span
+		<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"><i class="fi-pencil"></i> <span
 				  class="show-for-medium">Edit</span></a>
 
 		&nbsp;

@@ -30,8 +30,8 @@ module.exports = {
 		var parameters = {
 			projectsId: req.param ('projectId'),
 			environmentsId: req.param ('environmentId'),
-			testsId: req.param ('testId'),
-			requestsId: req.param ('requestId'),
+			testsId: req.param ('testsId'),
+			requestsId: req.param ('requestsId'),
 			name: req.param ('name'),
 			value: req.param ('value'),
 		};

@@ -43,6 +43,12 @@ module.exports.routes = {
 	'put /api/v1/headers/:headerId': 'api/v1/Headers.update',
 	'delete /api/v1/headers/:headerId': 'api/v1/Headers.delete',
 
+	'get /api/v1/requests/:requestId/httpParameters': 'api/v1/HttpParameters.index',
+	'get /api/v1/requests/:requestId/httpParameters/:httpParameterId': 'api/v1/HttpParameters.detail',
+	'post /api/v1/requests/:requestId/httpParameters': 'api/v1/HttpParameters.create',
+	'put /api/v1/requests/:requestId/httpParameters/:httpParameterId': 'api/v1/HttpParameters.update',
+	'delete /api/v1/requests/:requestId/httpParameters/:httpParameterId': 'api/v1/HttpParameters.delete',
+
 	// 'get /api/v1/project/:projectId/versions': 'api/v1/Versions.index',
 	// 'get /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.detail',
 	// 'post /api/v1/project/:projectId/versions': 'api/v1/Versions.create',
@@ -60,6 +66,7 @@ module.exports.routes = {
 
 	'post /api/v1/request/:requestId/assertions': 'api/v1/Assertions.assignToRequest',
 
+	'put /api/v1/requests/:requestId': 'api/v1/Requests.edit',
 	'put /api/v1/assertions/:assertionId': 'api/v1/Assertions.update',
 	'put /api/v1/tests/:testId': 'api/v1/Tests.update',
 	'put /api/v1/tests/:testId/schedule': 'api/v1/Tests.scheduleRun',

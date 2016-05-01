@@ -75,7 +75,7 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', 'h
 	};
 
 	self.headers.newHeaderWindow = function (testId) {
-		self.formData.headers.testId = testId;
+		self.formData.headers.testsId = testId;
 
 		$ ('#new-header').foundation ('open');
 	};

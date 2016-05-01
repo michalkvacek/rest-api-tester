@@ -99,7 +99,27 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		});
+	},
 
+	edit: function (req, res) {
+		requests.find ({where: {id: req.requestId}}).then (function (request) {
+
+			if (!request) return res.notFound ();
+
+			request.update ({
+				name: req.param ('name'),
+				description: req.param ('description'),
+				url: req.param ('url'),
+				httpMethod: req.param ('httpMethod'),
+				versionsId: req.param ('versionsId'),
+				// authorizationsId: req.param('authorizationsId')
+			}).then (function (edited) {
+				return res.ok (edited);
+			});
+
+		}, function (error) {
+			return res.serverError (error);
+		})
 	},
 
 	detail: function (req, res) {
@@ -114,6 +134,13 @@ module.exports = {
 			findCriterium.include.push ({
 				model: assertions,
 				as: 'assertions'
+			});
+		}
+
+		if (req.param ('withEnvironment', false)) {
+			findCriterium.include.push ({
+				model: environments,
+				as: 'environment'
 			});
 		}
 
@@ -171,7 +198,7 @@ module.exports = {
 				['createdAt', 'DESC']
 			]
 		}).then (function (response) {
-			return res.ok(response);
+			return res.ok (response);
 		});
 	}
 };

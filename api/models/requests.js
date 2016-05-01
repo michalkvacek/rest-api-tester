@@ -45,6 +45,10 @@ module.exports = {
 		environmentsId: {
 			type: Sequelize.INTEGER,
 			allowNull: true
+		},
+		lastRunStatus: {
+			type: Sequelize.ENUM ('waiting_for_response', 'evaluating', 'failed', 'success'),
+			allowNull: false
 		}
 	},
 	options: {

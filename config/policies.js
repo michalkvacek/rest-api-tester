@@ -42,9 +42,13 @@ module.exports.policies = {
 		index: ['jwToken', 'environmentIdRequired'],
 		create: ['jwToken', 'environmentIdRequired'],
 		detail: ['jwToken', 'requestIdRequired'],
+		edit: ['jwToken', 'requestIdRequired'],
 		assertions: ['jwToken', 'requestIdRequired'],
 		lastResponse: ['jwToken', 'requestIdRequired'],
 		'*': ['jwToken', 'environmentIdRequired']
+	},
+	'api/v1/HttpParameters': {
+		'*': ['jwToken', 'requestIdRequired']
 	},
 	'api/v1/Assertions': {
 		assignToRequest: ['jwToken', 'requestIdRequired'],

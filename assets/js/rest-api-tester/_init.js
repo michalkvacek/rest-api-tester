@@ -69,6 +69,11 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			template: window.JST['assets/templates/request.html'],
 			controller: 'RequestsController',
 			controllerAs: 'request'
+		}).state ('request_editor', {
+			url: '/requests/:requestId/editor',
+			template: window.JST['assets/templates/requestEditor.html'],
+			controller: 'RequestsController',
+			controllerAs: 'request'
 		});
 	}]).run (function ($rootScope) {
 
