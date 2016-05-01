@@ -144,6 +144,13 @@ module.exports = {
 			});
 		}
 
+		if (req.param('withTests', false)) {
+			findCriterium.include.push ({
+				model: tests,
+				as: 'tests'
+			});
+		}
+
 		if (req.param ('withVersion', false)) {
 			findCriterium.include.push ({model: versions});
 		}

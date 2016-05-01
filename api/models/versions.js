@@ -16,13 +16,12 @@ module.exports = {
 				key: 'id'
 			}
 		},
-		createdAt: {
-			type: Sequelize.DATE,
-			allowNull: true
-		},
-		updatedAt: {
-			type: Sequelize.DATE,
-			allowNull: true
+		projectsId: {
+			type: Sequelize.INTEGER,
+			references: {
+				model: 'projects',
+				key: 'id'
+			}
 		},
 		name: {
 			type: Sequelize.STRING,
@@ -37,5 +36,17 @@ module.exports = {
 			allowNull: true
 		}
 	},
-	tableName: 'versions'
+	options: {
+		tableName: 'versions'
+	},
+	// create relationships with other models
+	associations: function () {
+		versions.hasMany (requests, {
+			as: 'requests',
+			foreignKey: {
+				name: 'versionsId',
+				allowNull: true
+			}
+		});
+	}
 };

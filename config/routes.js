@@ -49,11 +49,11 @@ module.exports.routes = {
 	'put /api/v1/requests/:requestId/httpParameters/:httpParameterId': 'api/v1/HttpParameters.update',
 	'delete /api/v1/requests/:requestId/httpParameters/:httpParameterId': 'api/v1/HttpParameters.delete',
 
-	// 'get /api/v1/project/:projectId/versions': 'api/v1/Versions.index',
-	// 'get /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.detail',
-	// 'post /api/v1/project/:projectId/versions': 'api/v1/Versions.create',
-	// 'put /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.update',
-	// 'delete /api/v1/project/:projectId/versions/:versionId': 'api/v1/Versions.delete',
+	'get /api/v1/projects/:projectId/versions': 'api/v1/Versions.index',
+	'get /api/v1/projects/:projectId/versions/:versionId': 'api/v1/Versions.detail',
+	'post /api/v1/projects/:projectId/versions': 'api/v1/Versions.create',
+	'put /api/v1/projects/:projectId/versions/:versionId': 'api/v1/Versions.update',
+	'delete /api/v1/projects/:projectId/versions/:versionId': 'api/v1/Versions.delete',
 
 	'post /api/v1/registration': 'api/v1/Users.create',
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",

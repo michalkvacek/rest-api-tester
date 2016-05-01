@@ -53,6 +53,9 @@ module.exports.policies = {
 	'api/v1/Assertions': {
 		assignToRequest: ['jwToken', 'requestIdRequired'],
 		'*': ['jwToken']
+	},
+	'api/v1/Versions': {
+		'*': ['jwToken', 'projectIdRequired']
 	}
 }
 ;

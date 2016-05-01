@@ -7,6 +7,7 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 
 			var queryString = '?withHeaders=1';
 			queryString += "&withVersion=1";
+			queryString += "&withTests=1";
 			queryString += "&withEnvironment=1";
 			queryString += "&withHttpParams=1";
 

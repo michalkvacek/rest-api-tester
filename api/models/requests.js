@@ -48,7 +48,7 @@ module.exports = {
 		},
 		lastRunStatus: {
 			type: Sequelize.ENUM ('waiting_for_response', 'evaluating', 'failed', 'success'),
-			allowNull: false
+			allowNull: true
 		}
 	},
 	options: {
@@ -91,7 +91,7 @@ module.exports = {
 			foreignKey: {
 				name: 'versionsId',
 				as: 'version',
-				allowNull: false
+				allowNull: true
 			}
 		});
 

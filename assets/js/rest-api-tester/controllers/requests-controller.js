@@ -8,8 +8,10 @@ app.controller ('RequestsController', [
 
 		$scope.requestId = null;
 		self.lastResponse = self.current = self.formData = self.detail = {};
-		self.httpParametersData = self.headersData = {};
-		self.headers = self.httpParameters = {};
+		self.httpParametersData = {};
+		self.headersData = {};
+		self.headers = {};
+		self.httpParameters = {};
 
 
 		// set some default values
@@ -92,7 +94,7 @@ app.controller ('RequestsController', [
 			var id = $stateParams.requestId;
 
 			requestsService.edit (id, self.formData).then (function (response) {
-				$state.go ('request', {requestId: id});
+				// $state.go ('request', {requestId: id});
 			})
 		};
 
@@ -137,12 +139,7 @@ app.controller ('RequestsController', [
 			})
 		};
 
-		self.headers.create = function () {
-			headersService.create (self.headersData).then (function (response) {
-				self.initDetailForEdit ();
-				$ ('#new-header').foundation ('close');
-			})
-		};
+		//-----------------------------------
 
 		self.httpParameters.openEditWindow = function (httpParameterId) {
 			self.httpParameterId = httpParameterId;
