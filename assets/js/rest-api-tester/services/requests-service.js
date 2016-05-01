@@ -2,10 +2,17 @@ var app = angular.module ('restApiTester');
 
 app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
 	return {
-		detail: function (environmentsId, testId, id) {
+		detail: function (id, testId) {
 			var d = $q.defer ();
 
-			$http.get ('/api/v1/requests/' + id + '?withHeaders=1&testsId=' + testId).then (d.resolve, d.reject);
+			var queryString = '?withHeaders=1';
+			queryString += "&withVersion=1";
+			queryString += "&withHttpParams=1";
+
+			if (typeof testId != 'undefined')
+				queryString += '&testsId=' + testId;
+
+			$http.get ('/api/v1/requests/' + id + queryString).then (d.resolve, d.reject);
 
 			return d.promise;
 		},
@@ -20,6 +27,22 @@ app.service ('requestsService', ['$http', '$q', '$rootScope', function ($http, $
 			}
 
 			$http.get ('/api/v1/environments/' + environmentsId + '/requests' + queryString).then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+
+		edit: function (requestId, data) {
+			var d = $q.defer ();
+
+			$http.put ('/api/v1/requests/'+requestId, data).then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+
+		lastResponse: function (requestId) {
+			var d = $q.defer ();
+
+			$http.get ('/api/v1/requests/'+requestId+"/lastResponse").then (d.resolve, d.reject);
 
 			return d.promise;
 		},

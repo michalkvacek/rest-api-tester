@@ -97,7 +97,14 @@ module.exports = {
 				allowNull: false
 			}
 		});
-		
+
+		requests.hasMany (httpParameters, {
+			foreignKey: {
+				name: 'requestsId',
+				allowNull: false
+			}
+		});
+
 		requests.belongsToMany (assertions, {
 			through: requestValidatedByAssertions,
 			as: 'assertions',

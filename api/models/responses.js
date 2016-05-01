@@ -27,10 +27,6 @@ module.exports = {
 			type: Sequelize.TEXT,
 			allowNull: false
 		},
-		requestQueryString: {
-			type: Sequelize.JSON,
-			allowNull: true
-		},
 		requestHttpParameters: {
 			type: Sequelize.JSON,
 			allowNull: true
@@ -39,13 +35,17 @@ module.exports = {
 			type: Sequelize.INTEGER,
 			allowNull: false
 		},
-		reponseCode: {
+		responseCode: {
 			type: Sequelize.INTEGER,
 			allowNull: false
 		},
 		responseSize: {
 			type: Sequelize.INTEGER,
 			allowNull: false
+		},
+		responseHeaders: {
+			type: Sequelize.JSON,
+			allowNull: true
 		},
 		responseBodyJson: {
 			type: Sequelize.JSON,

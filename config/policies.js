@@ -43,6 +43,7 @@ module.exports.policies = {
 		create: ['jwToken', 'environmentIdRequired'],
 		detail: ['jwToken', 'requestIdRequired'],
 		assertions: ['jwToken', 'requestIdRequired'],
+		lastResponse: ['jwToken', 'requestIdRequired'],
 		'*': ['jwToken', 'environmentIdRequired']
 	},
 	'api/v1/Assertions': {

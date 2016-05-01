@@ -91,8 +91,7 @@
 		</div>
 		<div class="row controls align-right">
 			<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)">
-				<i
-						  class="fi-check"></i> Add header
+				<i class="fi-check"></i> Add header
 			</button>
 		</div>
 	</div>
@@ -110,9 +109,9 @@
 						 data-allow-all-closed="true">
 						<li class="accordion-item" ng-repeat="request in controller.detail.requests" data-accordion-item>
 							<a href="javascript:void(0)" class="accordion-title"
-								ng-click="reqController.initDetail(request.environmentsId, controller.detail.id, request.id)">
+								ng-click="reqController.initDetail(request.id, controller.detail.id)">
 								<h5>
-
+<!--============================-->
 								<span ng-show="request.lastResponse"
 										ng-class="request.lastResponse.passedAssertions ? 'success fi-check' : 'alert fi-x'"
 										class="label">
@@ -121,7 +120,7 @@
 								<span ng-show="!request.lastResponse" class="label secondary">
 									{{request.name}}
 								</span>
-
+<!--============================-->
 
 									<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
 								</h5>
@@ -141,14 +140,20 @@
 											Assertions
 										</a>
 									</li>
-									<li ng-attr-id="{{ 'response-'+request.id+'-title'}}"
-										 ng-show="request.lastResponse.length > 0"
-										 class="tabs-title">
+									<li ng-attr-id="{{ 'variables-'+request.id+'-title'}}" class="tabs-title">
 										<a href="javascript:void(0)"
-											ng-click="openTab('#request-tabs-'+request.id, '#response-'+request.id)">
-											Last response
+											ng-click="openTab('#variables-tabs-'+request.id, '#assertions-'+request.id); asserts.initRequestVariables(request.id)">
+											Assertions
 										</a>
 									</li>
+									<!--<li ng-attr-id="{{ 'response-'+request.id+'-title'}}"-->
+										 <!--ng-show="request.lastResponse.length > 0"-->
+										 <!--class="tabs-title">-->
+										<!--<a href="javascript:void(0)"-->
+											<!--ng-click="openTab('#request-tabs-'+request.id, '#response-'+request.id)">-->
+											<!--Last response-->
+										<!--</a>-->
+									<!--</li>-->
 								</ul>
 								<div class="tabs-content">
 									<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
@@ -212,38 +217,38 @@
 										</button>
 										<div class="clearfix"></div>
 									</div>
-									<div class="tabs-panel" ng-attr-id="{{'response-'+request.id}}">
+									<!--<div class="tabs-panel" ng-attr-id="{{'response-'+request.id}}">-->
 
-										<div class="row">
-											<div class="column">
-												<h5>Status</h5>
-												<ul>
-													<li>Status code: {{request.lastResponse.responseCode}}</li>
-													<li>Response size: {{request.lastResponse.responseSize / 1024}} kB</li>
-													<li>Response time: {{request.lastResponse.responseTime}} ms</li>
-												</ul>
-											</div>
-											<div class="column">
-												<h5>Response headers</h5>
+										<!--<div class="row">-->
+											<!--<div class="column">-->
+												<!--<h5>Status</h5>-->
+												<!--<ul>-->
+													<!--<li>Status code: {{request.lastResponse.responseCode}}</li>-->
+													<!--<li>Response size: {{request.lastResponse.responseSize / 1024}} kB</li>-->
+													<!--<li>Response time: {{request.lastResponse.responseTime}} ms</li>-->
+												<!--</ul>-->
+											<!--</div>-->
+											<!--<div class="column">-->
+												<!--<h5>Response headers</h5>-->
 
-												<ul>
-													<li ng-repeat="responseHeaders in request.lastResponse.responseHeader">
-														<strong>{{responseHeaders[0]}}</strong>: {{responseHeaders[1]}}
-													</li>
-												</ul>
-											</div>
-										</div>
+												<!--<ul>-->
+													<!--<li ng-repeat="responseHeaders in request.lastResponse.responseHeader">-->
+														<!--<strong>{{responseHeaders[0]}}</strong>: {{responseHeaders[1]}}-->
+													<!--</li>-->
+												<!--</ul>-->
+											<!--</div>-->
+										<!--</div>-->
 
-										<div class="row">
-											<div class="column">
-												<h5>Response body</h5>
+										<!--<div class="row">-->
+											<!--<div class="column">-->
+												<!--<h5>Response body</h5>-->
 
-												<code class="response">
-													{{request.lastResponse.responseBodyRaw}}
-												</code>
-											</div>
-										</div>
-									</div>
+												<!--<code class="response">-->
+													<!--{{request.lastResponse.responseBodyRaw}}-->
+												<!--</code>-->
+											<!--</div>-->
+										<!--</div>-->
+									<!--</div>-->
 								</div>
 							</div>
 

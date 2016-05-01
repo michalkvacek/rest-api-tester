@@ -18,12 +18,19 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsSe
 	};
 
 	self.initRequestAssertions = function (requestId) {
+
+		if (typeof requestId == 'undefined')
+			requestId = $stateParams.requestId;
+
 		assertionsService.getAssertions (requestId).then (function (response) {
 			self.assertions[requestId] = response.data;
 		})
 	};
 
 	self.newAssertionWindow = function (requestId) {
+		if (typeof requestId == 'undefined')
+			requestId = $stateParams.requestId;
+		
 		self.requestId = requestId;
 		self.initTypes ();
 

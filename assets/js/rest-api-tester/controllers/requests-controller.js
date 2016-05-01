@@ -1,11 +1,11 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('RequestsController', ['$scope', 'requestsService', 'testsService', '$stateParams', function ($scope, requestsService) {
+app.controller ('RequestsController', ['$scope', 'requestsService', '$stateParams', function ($scope, requestsService, $stateParams) {
 
 	var self = this;
 
 	$scope.requestId = null;
-	self.formData = self.detail = {};
+	self.lastResponse = self.current = self.formData = self.detail = {};
 
 	// set some default values
 	self.formData.httpMethod = 'GET';
@@ -16,15 +16,28 @@ app.controller ('RequestsController', ['$scope', 'requestsService', 'testsServic
 		environmentOverview: false
 	};
 
-	self.initDetail = function (environmentId, testId, id) {
+	self.initDetail = function (id, testId) {
+		
+		if (typeof id == 'undefined') 
+			id = $stateParams.requestId;
 
 		if (self.initiliazed.detail == id)
 			return;
 
-		requestsService.detail (environmentId, testId, id).then (function (response) {
+		requestsService.detail (id, testId).then (function (response) {
 			self.detail[id] = response.data;
+			self.current = self.detail[id];
 			self.initiliazed.detail = id;
 		});
+	};
+
+	self.initLastResponse = function(requestId) {
+		if (typeof requestId == 'undefined')
+			requestId = $stateParams.requestId;
+
+		requestsService.lastResponse(requestId).then(function (response) {
+			self.lastResponse = response.data;
+		})
 	};
 
 	self.initEnvironmentOverview = function (environmentId, options) {

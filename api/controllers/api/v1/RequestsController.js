@@ -117,7 +117,29 @@ module.exports = {
 			});
 		}
 
+		if (req.param ('withVersion', false)) {
+			findCriterium.include.push ({model: versions});
+		}
+
+		if (req.param ('withHttpParams', false)) {
+			findCriterium.include.push ({model: httpParameters});
+		}
+
 		requests.find (findCriterium).then (function (request) {
+
+			request = request.toJSON ();
+
+			// get query string parameters
+			request.queryString = [];
+			var parts = request.url.split ('?', 2);
+			if (parts.length > 1) {
+				var qs = parts[1].split ('&'), parameters;
+
+				for (i in qs) {
+					parameters = qs[i].split ('=');
+					request.queryString.push ({name: parameters[0], value: parameters[1] || ''})
+				}
+			}
 
 			if (req.param ('withHeaders', false)) {
 				headers.findAll ({
@@ -130,8 +152,6 @@ module.exports = {
 						]
 					}
 				}).then (function (headers) {
-
-					request = request.toJSON ();
 					request.headers = headers;
 
 					return res.ok (request);
@@ -142,8 +162,17 @@ module.exports = {
 		}, function (err) {
 			return res.serverError (err);
 		});
-
 	},
 
+	lastResponse: function (req, res) {
+		responses.find ({
+			where: {requestsId: req.requestId},
+			order: [
+				['createdAt', 'DESC']
+			]
+		}).then (function (response) {
+			return res.ok(response);
+		});
+	}
 };
 

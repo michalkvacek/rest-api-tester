@@ -31,6 +31,7 @@ module.exports.routes = {
 	'get /api/v1/environments/:environmentId/requests': 'api/v1/Requests.index',
 	'get /api/v1/requests/:requestId': 'api/v1/Requests.detail',
 	'get /api/v1/requests/:requestId/assertions': 'api/v1/Requests.assertions',
+	'get /api/v1/requests/:requestId/lastResponse': 'api/v1/Requests.lastResponse',
 
 	'get /api/v1/tests/:testId': 'api/v1/Tests.detail',
 	'get /api/v1/assertions/types': 'api/v1/Assertions.types',

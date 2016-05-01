@@ -25,5 +25,16 @@ module.exports = {
 			allowNull: true
 		}
 	},
-	tableName: 'httpParameters'
+	options: {
+		tableName: 'httpParameters',
+		timestamps: false
+	}, 
+	associations: function () {
+		headers.belongsTo (requests, {
+			foreignKey: {
+				name: 'requestsId',
+				allowNull: true
+			}
+		});
+	}
 };
