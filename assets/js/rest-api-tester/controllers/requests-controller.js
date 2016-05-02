@@ -1,8 +1,8 @@
 var app = angular.module ('restApiTester');
 
 app.controller ('RequestsController', [
-	'$scope', 'requestsService', 'headersService', 'httpParametersService', '$state', '$stateParams',
-	function ($scope, requestsService, headersService, httpParametersService, $state, $stateParams) {
+	'$scope', '$rootScope', 'requestsService', 'headersService', 'httpParametersService', '$state', '$stateParams',
+	function ($scope, $rootScope, requestsService, headersService, httpParametersService, $state, $stateParams) {
 
 		var self = this;
 
@@ -12,7 +12,6 @@ app.controller ('RequestsController', [
 		self.headersData = {};
 		self.headers = {};
 		self.httpParameters = {};
-
 
 		// set some default values
 		self.formData.httpMethod = 'GET';
@@ -32,9 +31,18 @@ app.controller ('RequestsController', [
 				return;
 
 			requestsService.detail (id, testId).then (function (response) {
-				self.detail[id] = response.data;
+				var request = response.data;
+
+				self.detail[id] = request;
 				self.current = self.detail[id];
 				self.initiliazed.detail = id;
+
+				$rootScope.breadcrumbs = [{
+					label: 'Request: ' + request.name,
+					href: $state.href ('request', {requestId: request.id})
+				}];
+
+				$rootScope.setEnvironment (request.environmentsId);
 			});
 		};
 
@@ -42,9 +50,24 @@ app.controller ('RequestsController', [
 			var id = $stateParams.requestId;
 
 			requestsService.detail (id).then (function (response) {
-				self.environment = response.data.environment;
+				var request = response.data;
 
+				self.environment = response.data.environment;
 				delete response.data.environment;
+
+				// create breadcrumbs links
+				$rootScope.breadcrumbs = [
+					{
+						label: 'Request: ' + request.name,
+						href: $state.href ('request', {requestId: request.id})
+					},
+					{
+						label: 'Editor',
+						href: $state.href ('request_editor', {requestId: request.id})
+					}
+				];
+
+				$rootScope.setEnvironment (request.environmentsId);
 
 				self.formData = response.data;
 			});
@@ -102,8 +125,8 @@ app.controller ('RequestsController', [
 			if (typeof requestId == 'undefined')
 				requestId = $stateParams.requestId;
 
-			requestsService.delete(requestId).then(function (response) {
-				$state.go('tests', {environmentId: environmentId});
+			requestsService.delete (requestId).then (function (response) {
+				$state.go ('tests', {environmentId: environmentId});
 			});
 		};
 
@@ -177,7 +200,7 @@ app.controller ('RequestsController', [
 
 			$ ('#new-httpParameter').foundation ('open');
 		};
-		
+
 		self.httpParameters.delete = function (id) {
 			var confirmation = confirm ('Opravdu?');
 			var requestId = $stateParams.requestId;
@@ -198,6 +221,6 @@ app.controller ('RequestsController', [
 				$ ('#new-httpParameter').foundation ('close');
 			})
 		};
-		
+
 		return self;
 	}]);

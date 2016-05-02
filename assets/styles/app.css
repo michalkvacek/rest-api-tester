@@ -201,6 +201,9 @@ li.separator {
 .title-bar {
 	background: #eee;
 }
+.title-bar, .title-bar a {
+	color: black;
+}
 
 #content {
 	height: 100%;

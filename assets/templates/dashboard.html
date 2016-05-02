@@ -1,5 +1,5 @@
-<div class="row content align-center dashboard" data-equalizer>
-	<div class="column no-padding small-12 medium-6 large-4" ng-repeat="environment in environments">
+<div class="row content align-center dashboard" ng-init="environments.initOverview()" data-equalizer>
+	<div class="column no-padding small-12 medium-6 large-4" ng-repeat="environment in environments.overview">
 		<div class="environment with-shadow has-controls">
 
 			<div class="content-holder" data-equalizer-watch>
@@ -55,24 +55,24 @@
 
 		<h3>Add environment</h3>
 
-		<form ng-submit="controller.create()">
+		<form ng-submit="environments.create()">
 			<label>
 				Name
 
-				<input type="text" placeholder="Environment name" ng-model="formData.name" />
+				<input type="text" placeholder="Environment name" ng-model="environments.formData.name" />
 			</label>
 
 			<label>
 				API endpoint
 
-				<input type="text" placeholder="https://api.example.com/api/v1" ng-model="formData.apiEndpoint" />
+				<input type="text" placeholder="https://api.example.com/api/v1" ng-model="environments.formData.apiEndpoint" />
 			</label>
 
 
 			<label>
 				Description
 
-			<textarea rows="2" name="description" ng-model="formData.description"
+			<textarea rows="2" name="description" ng-model="environments.formData.description"
 						 placeholder="Some brief description of this API environment"></textarea>
 			</label>
 

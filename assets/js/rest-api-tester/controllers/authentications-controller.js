@@ -10,6 +10,8 @@ app.controller ('AuthenticationsController', ['$scope', 'authenticationsService'
 	self.init = function (environmentId) {
 		self.environmentId = environmentId;
 
+		$scope.setEnvironment(environmentId);
+
 		authenticationsService.overview (environmentId).then (function (response) {
 			self.overview = response.data;
 		});

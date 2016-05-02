@@ -10,7 +10,19 @@ module.exports = {
 		if (typeof  callback != "function")
 			throw new Error ('Callback not a function');
 
-		callback (null, []);
+		projects.findAll ({
+			include: [{
+				model: environments,
+				include: {model: users, as: 'teamMembers', where: {id: userId}}
+			}]
+		}).then (function (data) {
+			// data obtained without error (warning does not matter)
+			return callback (null, data);
+		}).catch (function (err) {
+			// catch errors which may occure
+			console.error (err);
+			return callback (err, null);
+		});
 	},
 
 	/**

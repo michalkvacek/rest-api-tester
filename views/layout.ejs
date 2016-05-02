@@ -13,8 +13,7 @@
 	<!--STYLES END-->
 </head>
 
-<body>
-
+<body ng-controller="ProjectsController as projects" ng-init="projects.initOverview()">
 <div class="column no-padding" data-sticky-container>
 	<header class="sticky" data-sticky data-options="marginTop:0;" style="width:100%">
 		<nav id="main-menu" class="row title-bar">
@@ -22,28 +21,10 @@
 				<ul class="menu">
 					<li class="menu-text">
 						<ul class="breadcrumbs">
-							<li>Projects</li>
-						</ul>
-					</li>
-				</ul>
-
-			</div>
-
-			<div class="column shrink align-right">
-				<ul class="menu dropdown" data-disable-hover="true" data-dropdown-menu>
-					<li>
-						<form class="search">
-							<label>
-								<input type="search" class="quick-search">
-							</label>
-						</form>
-					</li>
-					<li class="separator"></li>
-					<li>
-						<button class="fi-sound"></button>
-						<ul class="menu" ng-controller="NotificationsController as notification">
-							<li ng-repeat="notify in notification.notificationsList">{{notify.message}}</li>
-							<li ng-show="!notification.notificationsList.length"><a>Zadne notifikace</a></li>
+							<li><a ui-sref="projects">Projects</a></li>
+							<li ng-show="currentProject.id"><a ui-sref="dashboard({projectId: currentProject.id})">{{currentProject.name}}</a></li>
+							<li ng-show="currentEnvironment.id"><a ui-sref="tests({environmentId: currentEnvironment.id})">{{currentEnvironment.name}}</a></li>
+							<li ng-repeat="breadcrumb in breadcrumbs"><a ng-href="{{breadcrumb.href}}">{{breadcrumb.label}}</a></li></li>
 						</ul>
 					</li>
 				</ul>
@@ -65,38 +46,33 @@
 			</div>
 		</div>
 
-		<!--<div class="row">-->
-		<!--<ul class="menu dropdown vertical" data-disable-hover="true" data-dropdown-menu>-->
-		<!--<li><a href="#">Google Maps API</a>-->
-		<!--<ul class="menu">-->
-		<!--<li class="active"><a href="#">Google Maps API</a></li>-->
-		<!--<li><a href="#">Facebook API</a></li>-->
-
-		<!--<li><a href="#" class="button success">Add new</a></li>-->
-		<!--</ul>-->
-		<!--</li>-->
-		<!--<li><a href="#">Production</a>-->
-		<!--<ul class="menu">-->
-		<!--<li class="active"><a href="#">Production</a></li>-->
-		<!--<li><a href="#">Testing</a></li>-->
-		<!--<li><a href="#">Development</a></li>-->
-		<!--<li><a href="#" class="button success">Add new</a></li>-->
-		<!--</ul>-->
-		<!--</li>-->
-		<!--<li class="separator"></li>-->
-		<!--<li class="text-center">google.com/maps/api</li>-->
-		<!--<li class="separator"></li>-->
-		<!--<li><a href="#" class="button success"><i class="fi-play"> Run all tests</i></a></li>-->
-		<!--<li class="separator"></li>-->
-		<!--</ul>-->
-		<!--</div>-->
+		<div class="row">
+			<ul class="menu dropdown vertical" data-dropdown-menu>
+				<li><a href="javascript:void(0)">{{currentProject.name || "Vyberte projekt"}}</a>
+					<ul class="menu">
+						<li ng-repeat="project in projects.overview"
+						    ng-class="currentProject.id == project.id ? 'active' : ''">
+							<a href="javascript:void(0)" ng-click="selectProject(project)">{{project.name}}</a>
+						</li>
+					</ul>
+				</li>
+				<li ng-repeat="environment in availableEnvironments" ng-class="currentEnvironment.id == environment.id ? 'active' : ''">
+					<a href="javascript:void(0)" ng-click="selectEnvironment(environment, {redirectToTests: true})">{{environment.name}}</a>
+				</li>
+				<li class="separator"></li>
+				<li class="text-center" ng-show="currentEnvironment.apiEndpoint">{{currentEnvironment.apiEndpoint}}</li>
+				<li class="separator"></li>
+				<li ng-show="currentEnvironment.id"><a class="button success"><i class="fi-play"> Run all tests</i></a></li>
+				<li class="separator"></li>
+			</ul>
+		</div>
 
 		<div class="test-results" ng-controller="TestsResultsController as tests">
 			<h5 ng-show="tests.results.length" class="text-center">Last tests</h5>
 
 			<ul ng-show="tests.results.length" class="menu vertical">
 				<li ng-repeat="result in tests.results">
-					<a ui-sref="test.detail({testId: result.test.id})">
+					<a ui-sref="test_detail({testId: result.test.id})">
 						<span class="badge success fi-check"></span>
 						{{result.test.name}}
 					</a>
@@ -136,7 +112,7 @@
 <script src="/js/app.js"></script>
 <script src="/js/rest-api-tester/controllers/assertions-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/authentications-controller.js"></script>
-<script src="/js/rest-api-tester/controllers/dashboard-controller.js"></script>
+<script src="/js/rest-api-tester/controllers/environments-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/headers-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/logged-user-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/login-controller.js"></script>
@@ -148,5 +124,7 @@
 <script src="/js/rest-api-tester/controllers/tests-results-controller.js"></script>
 <script src="/js/rest-api-tester/controllers/versions-controller.js"></script>
 <!--SCRIPTS END-->
+
+
 </body>
 </html>

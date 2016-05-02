@@ -1,6 +1,6 @@
 <div class="content">
 	<div class="project-overview row" data-equalizer>
-		<div class="column no-padding" ng-repeat="project in projects">
+		<div class="column no-padding" ng-repeat="project in projects.overview">
 			<div class="with-shadow project text-center has-controls">
 				<div class="content" data-equalizer-watch>
 					<h3><a ui-sref="dashboard({projectId: project.id})">{{project.name}}</a></h3>
@@ -32,7 +32,7 @@
 			</div>
 		</div>
 
-		<div ng-show="!projects.length" class="callout warning">nenalezeno</div>
+		<div ng-show="!projects.overview.length" class="callout warning">nenalezeno</div>
 	</div>
 
 	<script>$ ('.project-overview').foundation ()</script>
@@ -43,17 +43,17 @@
 	<div class="reveal" id="new-project" data-reveal>
 		<h3>Add project</h3>
 
-		<form ng-submit="controller.create()">
+		<form ng-submit="projects.create()">
 			<label>
 				Name
 
-				<input type="text" placeholder="Project name" ng-model="formData.name" />
+				<input type="text" placeholder="Project name" ng-model="projects.formData.name" />
 			</label>
 
 			<label>
 				Description
 
-			<textarea rows="2" name="description" ng-model="formData.description"
+			<textarea rows="2" name="description" ng-model="projects.formData.description"
 						 placeholder="Some brief description of this API"></textarea>
 			</label>
 

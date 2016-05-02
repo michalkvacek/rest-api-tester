@@ -1,6 +1,7 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', 'headersService', function ($scope, $stateParams, testsService, headersService) {
+app.controller ('TestsController', ['$scope', '$rootScope', '$state', '$stateParams', 'testsService', 'headersService',
+	function ($scope, $rootScope, $state, $stateParams, testsService, headersService) {
 
 	var self = this;
 
@@ -21,6 +22,8 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', 'h
 		var environmentId = $stateParams.environmentId || $scope.environmentId;
 		var testId = $stateParams.testId || $scope.testId;
 
+		$rootScope.setEnvironment(environmentId);
+
 		testsService.getStatistics (ageInDays, {
 			environmentId: environmentId,
 			testId: testId
@@ -32,6 +35,8 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', 'h
 	self.initTestOverview = function () {
 		var environmentId = $stateParams.environmentId;
 
+		$rootScope.setEnvironment(environmentId);
+
 		testsService.getOverview (environmentId).then (function (tests) {
 			self.tests = tests.data;
 		});
@@ -40,16 +45,28 @@ app.controller ('TestsController', ['$scope', '$stateParams', 'testsService', 'h
 	self.initDetail = function () {
 		var testId = $stateParams.testId;
 
-		testsService.getDetail (testId).then (function (test) {
+		testsService.getDetail (testId).then (function (response) {
+			var test = response.data;
 			$scope.testId = testId;
-			$scope.environmentId = test.data.environmentsId;
+			$scope.environmentId = test.environmentsId;
 
-			self.detail = test.data;
+			$rootScope.breadcrumbs = [{
+				label: 'Test: '+test.name,
+				href: $state.href('test_detail', {testId: test.id})
+			}];
+
+			console.log($rootScope.breadcrumbs);
+
+			$rootScope.setEnvironment(test.environmentsId);
+
+			self.detail = test;
 		});
 	};
 
 	self.newTest = function () {
 		var environmentId = $stateParams.environmentId;
+
+		$rootScope.setEnvironment(environmentId);
 
 		testsService.create (environmentId, self.formData).then (function (response) {
 			self.initTestOverview ();
