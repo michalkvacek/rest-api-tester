@@ -59,6 +59,30 @@ app.service ('testsService', ['$http', '$q', function ($http, $q) {
 
 			return d.promise;
 		},
+
+		schedule: function (testId, data) {
+			var d = $q.defer ();
+
+			$http.put ('/api/v1/tests/'+testId+'/schedule', data).then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+
+		runAll: function (environmentId) {
+			var d = $q.defer ();
+
+			$http.post ('/api/v1/environments/'+environmentId+'/runTests', {}).then (d.resolve, d.reject);
+
+			return d.promise;
+		},
+		
+		run: function (testId) {
+			var d = $q.defer ();
+
+			$http.post ('/api/v1/tests/'+testId+'/run', {}).then (d.resolve, d.reject);
+
+			return d.promise;
+		},
 		
 		create: function (environmentId, data) {
 			var d = $q.defer ();

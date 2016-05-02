@@ -213,10 +213,34 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		})
-	}
-	,
-	scheduleRun: function (req, res) {
+	},
 
+	run: function (req, res) {
+		tests.find ({where: {id: req.testId}}).then (function (test) {
+			runnedTests.create ({
+				testName: test.name,
+				testsId: req.testId,
+				testDescription: test.description,
+				status: 'waiting_for_response'
+			}).then (function (runnedTest) {
+				return res.created (runnedTest);
+			}, function (err) {
+				return res.serverError (err);
+			});
+		});
+	},
+
+	scheduleRun: function (req, res) {
+		tests.find ({where: {id: req.testId}}).then (function (test) {
+			test.update ({
+				runInterval: req.param ('runInterval'),
+				nextRun: new Date (req.param ('nextRun'))
+			}).then (function (edit) {
+				return res.ok (edit);
+			}, function (err) {
+				return res.serverError (err);
+			})
+		})
 	}
 }
 ;

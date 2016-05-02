@@ -9,6 +9,7 @@
 
 	<!--STYLES-->
 	<link rel="stylesheet" href="/styles/vendor/foundation/foundation-flex.css">
+	<link rel="stylesheet" href="/styles/vendor/foundation/foundation-datepicker.min.css">
 	<link rel="stylesheet" href="/styles/app.css">
 	<!--STYLES END-->
 </head>
@@ -22,9 +23,13 @@
 					<li class="menu-text">
 						<ul class="breadcrumbs">
 							<li><a ui-sref="projects">Projects</a></li>
-							<li ng-show="currentProject.id"><a ui-sref="dashboard({projectId: currentProject.id})">{{currentProject.name}}</a></li>
-							<li ng-show="currentEnvironment.id"><a ui-sref="tests({environmentId: currentEnvironment.id})">{{currentEnvironment.name}}</a></li>
-							<li ng-repeat="breadcrumb in breadcrumbs"><a ng-href="{{breadcrumb.href}}">{{breadcrumb.label}}</a></li></li>
+							<li ng-show="currentProject.id"><a ui-sref="dashboard({projectId: currentProject.id})">{{currentProject.name}}</a>
+							</li>
+							<li ng-show="currentEnvironment.id"><a ui-sref="tests({environmentId: currentEnvironment.id})">{{currentEnvironment.name}}</a>
+							</li>
+							<li ng-repeat="breadcrumb in breadcrumbs"><a ng-href="{{breadcrumb.href}}">{{breadcrumb.label}}</a>
+							</li>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -56,13 +61,19 @@
 						</li>
 					</ul>
 				</li>
-				<li ng-repeat="environment in availableEnvironments" ng-class="currentEnvironment.id == environment.id ? 'active' : ''">
+				<li ng-repeat="environment in availableEnvironments"
+				    ng-class="currentEnvironment.id == environment.id ? 'active' : ''">
 					<a href="javascript:void(0)" ng-click="selectEnvironment(environment, {redirectToTests: true})">{{environment.name}}</a>
 				</li>
 				<li class="separator"></li>
 				<li class="text-center" ng-show="currentEnvironment.apiEndpoint">{{currentEnvironment.apiEndpoint}}</li>
 				<li class="separator"></li>
-				<li ng-show="currentEnvironment.id"><a class="button success"><i class="fi-play"> Run all tests</i></a></li>
+				<li ng-show="currentEnvironment.id">
+					<a href="javascript:void(0)"
+					   ng-click="tests.runAll(currentEnvironmentId)" class="button success">
+						<i class="fi-play"> Run all tests</i>
+					</a>
+				</li>
 				<li class="separator"></li>
 			</ul>
 		</div>
@@ -93,6 +104,7 @@
 <script src="/js/dependencies/jquery.min.js"></script>
 <script src="/js/dependencies/angular/angular.min.js"></script>
 <script src="/js/dependencies/angular-ui-router/angular-ui-router.min.js"></script>
+<script src="/js/dependencies/foundation-datepicker.min.js"></script>
 <script src="/js/dependencies/foundation/foundation.js"></script>
 <script src="/js/dependencies/foundation/vendor/what-input.min.js"></script>
 <script src="/js/dependencies/underscore-min.js"></script>

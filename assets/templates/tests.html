@@ -36,7 +36,7 @@
 				ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
 				last 24 hours</a>
 			&nbsp;
-			<a href="javascript:void(0)" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
+			<a href="javascript:void(0)" ng-click="tests.runAll(currentEnvironmentId)" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
 		</div>
 	</div>
 </div>
@@ -49,6 +49,11 @@
 				<h5 class="text-center">{{test.name}}</h5>
 
 				{{test.description}}
+
+				<span ng-show="test.nextRun != null" class="label warning">
+					<i class="fi-calendar"></i>
+					Next run: {{test.nextRun | date : 'short'}}
+				</span>
 
 				<div class="row align-right" ng-switch="test.lastRunStatus">
 					<span ng-switch-when="success" class="label success fi-check"> Passing</span>
@@ -68,46 +73,45 @@
 					data-disable-hover="false"
 					title="Run now"><i class="fi-play"></i> <span class="show-for-medium">Run now</span></a>
 				&nbsp;
-				<a href="#" class="has-tip button tiny warning" data-open="schedule-test" data-tooltip
-					aria-haspopup="true"
-					data-disable-hover="false"
-					title="Schedule run"><i class="fi-calendar"></i> <span
+				<a href="javascript:void(0)" class="button tiny warning" ng-click="tests.setupSchedule(test)"
+					data-open="schedule-test"><i class="fi-calendar"></i> <span
 						  class="show-for-medium">Schedule</span></a>
 			</div>
 		</div>
 	</div>
 </div>
-<div class="reveal" id="schedule-test" data-reveal>
+<div class="reveal large" id="schedule-test" data-reveal>
 
-	<form>
+	<h3>Schedule test run</h3>
+
+	<form ng-submit="tests.schedule()">
 		<div class="row">
 			<div class="column shrink">
-				Run...
+				<label>
+					Run...
+
+					<select ng-model="tests.scheduleData.run">
+						<option value="periodicaly">Periodicaly</option>
+						<option value="once">Only once</option>
+					</select>
+				</label>
 
 			</div>
-			<div class="column">
+			<div class="column" ng-show="tests.scheduleData.run == 'periodicaly'">
 				<label>
-					each 30 minutes
-					<input type="radio" name="schedule" />
+					every
+					<select ng-model='tests.scheduleData.runInterval'>
+						<option value="30">30 minutes</option>
+						<option value="60">hour</option>
+						<option value="360">6 hours</option>
+						<option value="8640">day</option>
+					</select>
 				</label>
-
+			</div>
+			<div class="column large-6">
 				<label>
-					each hour
-					<input type="radio" name="schedule" />
-				</label>
-
-				<label>
-					each 6 hours
-					<input type="radio" name="schedule" />
-				</label>
-
-				<label>
-					each day
-					<input type="radio" name="schedule" />
-				</label>
-				<label>
-					at
-					<input type="datetime" name="run-at" />
+					Next run at
+					<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />
 
 				</label>
 			</div>

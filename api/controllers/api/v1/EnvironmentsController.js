@@ -37,10 +37,6 @@ module.exports = {
 			});
 		}
 
-		if (req.param ('withResults', false)) {
-
-		}
-
 		environments.findAll (findCriterium).then (function (environments) {
 			return res.json (environments);
 		}).catch (function (err) {
@@ -75,7 +71,37 @@ module.exports = {
 		}).catch (function (error) {
 			return res.serverError (error);
 		})
+	},
+	/**
+	 * Schedule all tests in environment for running now
+	 *
+	 * @param req
+	 * @param res
+	 */
+	runTests: function (req, res) {
+		tests.findAll ({
+			where: {environmentsId: req.environmentId},
+			include: [{
+				model: requests,
+				as: 'requests'
+			}]
+		}).then (function (envTests) {
 
+			for (i in envTests) {
+				if (envTests[i].requests.length == 0)
+					continue;
+
+				runnedTests.create ({
+					testName: envTests[i].name,
+					testDescription: envTests[i].description,
+					testsId: envTests[i].id,
+					status: 'waiting_for_response'
+				});
+			}
+
+			// lets hope everything will run fine
+			return res.ok ();
+		});
 	}
 };
 

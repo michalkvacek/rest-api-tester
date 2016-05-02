@@ -31,7 +31,7 @@ module.exports = {
 			allowNull: true
 		},
 		runInterval: {
-			type: 'TINTERVAL',
+			type: Sequelize.INTEGER,
 			allowNull: true
 		},
 		lastRun: {

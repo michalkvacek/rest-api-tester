@@ -37,6 +37,8 @@ module.exports.routes = {
 	'get /api/v1/assertions/types': 'api/v1/Assertions.types',
 	'get /api/v1/assertions/:assertionId': 'api/v1/Assertions.detail',
 
+	'post /api/v1/environments/:environmentId/runTests': 'api/v1/Environments.runTests',
+	
 	'get /api/v1/headers': 'api/v1/Headers.index',
 	'get /api/v1/headers/:headerId': 'api/v1/Headers.detail',
 	'post /api/v1/headers': 'api/v1/Headers.create',
@@ -78,6 +80,8 @@ module.exports.routes = {
 	'put /api/v1/assertions/:assertionId': 'api/v1/Assertions.update',
 	'put /api/v1/tests/:testId': 'api/v1/Tests.update',
 	'put /api/v1/tests/:testId/schedule': 'api/v1/Tests.scheduleRun',
+	
+	'post /api/v1/tests/:testId/run': 'api/v1/Tests.run',
 
 	'delete /api/v1/requests/:requestId': 'api/v1/Requests.delete',
 	'delete /api/v1/assertions/:assertionId': 'api/v1/Assertions.delete',

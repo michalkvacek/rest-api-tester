@@ -17,6 +17,10 @@ app.controller ('EnvironmentsController', ['$scope', 'environmentsService', '$st
 
 	};
 
+	self.runAllTests = function () {
+		
+	};
+	
 	self.create = function () {
 		var projectId = $stateParams.projectId;
 
