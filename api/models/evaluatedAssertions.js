@@ -16,14 +16,6 @@ module.exports = {
 				key: 'id'
 			}
 		},
-		requestsId: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-			references: {
-				model: 'requests',
-				key: 'id'
-			}
-		},
 		createdAt: {
 			type: Sequelize.DATE,
 			allowNull: true
@@ -57,5 +49,18 @@ module.exports = {
 			allowNull: false
 		}
 	},
-	tableName: 'evaluatedAsserions'
+	options: {
+		tableName: 'evaluatedAssertions',
+		updatedAt: false
+	},
+	// create relationships with other models
+	associations: function () {
+
+		evaluatedAssertions.belongsTo (responses, {
+			foreignKey: {
+				name: 'responsesId',
+				allowNull: false
+			}
+		});
+	}
 };

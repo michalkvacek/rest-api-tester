@@ -56,23 +56,31 @@ module.exports = {
 		// convert to miliseconds
 		age *= 24 * 3600 * 1000;
 
-		var findCriterium = {
-			where: {
+		var findCriterium = {include: []};
+
+		// filter statistics
+		if (!req.param ('testResultId', false)) {
+
+			// common statistics
+
+			findCriterium.where = {
 				createdAt: {
 					$gt: new Date (new Date () - age)
 				}
-			},
-			include: []
-		};
+			};
+			if (req.param ('environmentId', false)) {
+				findCriterium.where.environmentsId = req.param ('environmentId')
+			}
 
-		if (req.param ('environmentId', false)) {
-			findCriterium.where.environmentsId = req.param ('environmentId')
+			if (req.param ('testId', false)) {
+				findCriterium.where.testsId = req.param ('testId')
+			}
+		} else {
+			// statistics for evaluated test
+			findCriterium.where = {runnedTestsId: req.param ('testResultId')}
 		}
 
-		if (req.param ('testId', false)) {
-			findCriterium.where.testsId = req.param ('testId')
-		}
-
+		// find all responses and calculate statistics data
 		responses.findAll (findCriterium).then (function (data) {
 			stats.testedRequests = data.length;
 
@@ -115,8 +123,8 @@ module.exports = {
 			});
 		}
 
-		if (req.param('withResults', false)) {
-			findCriterium.include.push({
+		if (req.param ('withResults', false)) {
+			findCriterium.include.push ({
 				model: runnedTests,
 			})
 		}
@@ -147,11 +155,13 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		});
-	},
+	}
+	,
 
 	_assignRequests: function (testId, requestIds) {
 		// todo
-	},
+	}
+	,
 
 	assignRequests: function (req, res) {
 		var requestIds = req.param ('requestIds', {});
@@ -164,7 +174,8 @@ module.exports = {
 		} else {
 			return sails.controllers.Tests._assignRequests (testId, requestIds);
 		}
-	},
+	}
+	,
 
 	/**
 	 * Create new test in given environment
@@ -186,7 +197,8 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		});
-	},
+	}
+	,
 
 	update: function (req, res) {
 		tests.find ({where: {id: req.testId}}).then (function (test) {
@@ -201,7 +213,8 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		})
-	},
+	}
+	,
 	scheduleRun: function (req, res) {
 
 	}

@@ -19,9 +19,25 @@ module.exports = {
 				key: 'id'
 			}
 		},
+		runnedTestsId: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'runnedTests',
+				key: 'id'
+			}
+		},
 		createdAt: {
 			type: Sequelize.DATE,
 			allowNull: true
+		},
+		requestMethod: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
+		requestName: {
+			type: Sequelize.TEXT,
+			allowNull: false
 		},
 		requestUrl: {
 			type: Sequelize.TEXT,
@@ -83,6 +99,14 @@ module.exports = {
 			foreignKey: {
 				name: 'environmentsId',
 				as: 'environment',
+				allowNull: false
+			}
+		});
+
+		responses.hasMany (evaluatedAssertions, {
+			foreignKey: {
+				name: 'responsesId',
+				// as: 'assertions',
 				allowNull: false
 			}
 		});

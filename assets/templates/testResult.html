@@ -1,0 +1,154 @@
+<div class="row content" ng-init="result.init()">
+	<div class="column with-shadow">
+		<h3>{{result.test.testName}}
+			<small>(results from {{result.test.createdAt | date : 'medium'}})</small>
+		</h3>
+
+		{{result.test.testDescription}}
+	</div>
+</div>
+
+<div class="row" ng-init="result.initStatistics()">
+	<div class="column with-shadow">
+		<div class="row text-center">
+			<div class="column">
+				<h4>{{result.statistics.health}} %</h4>
+				<small>Assertions passed</small>
+			</div>
+			<div class="column">
+				<h4>{{result.statistics.avgResponseTime}} ms</h4>
+				<small>Average response time</small>
+			</div>
+			<div class="column">
+				<h4>{{result.statistics.maxResponseTime}} ms</h4>
+				<small>Longest response time</small>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="column with-shadow">
+		<h4>Requests</h4>
+
+		<div class="row">
+			<div class="column no-padding">
+				<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
+					<li class="accordion-item" data-accordion-item ng-repeat="response in result.test.responses">
+						<a href="javascript:void(0)" class="accordion-title">
+							<h5><span ng-class="response.status == 'success' ? 'fi-check success' : 'fi-x alert'"
+										 class="label"> {{response.requestName}}</span>
+								<small>({{response.requestMethod}} {{response.requestUrl}})</small>
+							</h5>
+						</a>
+						<div class="accordion-content" data-tab-content ng-attr-id="{{'request-tabs-'+response.id}}">
+							<ul class="tabs">
+								<li class="tabs-title" ng-attr-id="{{'request-'+response.id+'-title'}}">
+									<a href="javascript:void(0)"
+										ng-click="openTab('#request-tabs-'+response.id, '#request-'+response.id)">Request</a></li>
+								<li class="tabs-title is-active" ng-attr-id="{{'assertions-'+response.id+'-title'}}">
+									<a href="javascript:void(0)" aria-selected="true"
+										ng-click="openTab('#request-tabs-'+response.id, '#assertions-'+response.id)">Assertions</a>
+								</li>
+								<li class="tabs-title" ng-attr-id="{{'response-'+response.id+'-title'}}">
+									<a href="javascript:void(0)"
+										ng-click="openTab('#request-tabs-'+response.id, '#response-'+response.id)">Response</a>
+								</li>
+							</ul>
+							<div class="tabs-content">
+								<div class="tabs-panel" ng-attr-id="{{'request-'+response.id}}">
+									<h4>{{response.requestName}}</h4>
+
+									<div class="row">
+										<div class="column">
+											<h5>Request headers</h5>
+
+											<ul>
+												<li ng-repeat="(header, value) in response.requestHeaders">
+													<strong>{{header}}</strong>: {{value}}
+												</li>
+											</ul>
+										</div>
+
+										<div class="column">
+											<h5>{{response.requestMethod}} parameters</h5>
+
+											<ul>
+												<li ng-repeat="(parameter, value) in response.requestHttpParameters">
+													<strong>{{parameter}}</strong>: {{value}}
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="tabs-panel is-active" ng-attr-id="{{'assertions-'+response.id}}">
+									<table>
+										<thead>
+										<tr>
+											<th></th>
+											<th>Assertion name</th>
+											<th>Property name</th>
+											<th>Expected value</th>
+											<th>Recieved value</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr ng-repeat="assert in response.evaluatedAssertions">
+											<td><span ng-class="assert.passed ? 'success fi-check' : 'fi-x alert'"
+														 class="badge"></span></td>
+											<td>{{assert.assertionName}}</td>
+											<td>{{assert.assertionProperty}}</td>
+											<td>{{assert.assertionExpectedValue}}</td>
+											<td>{{assert.recievedValue}}</td>
+										</tr>
+										</tbody>
+									</table>
+									<div class="clearfix"></div>
+								</div>
+								<div class="tabs-panel" ng-attr-id="{{'response-'+response.id}}">
+
+									<div class="row">
+										<div class="column">
+											<h5>Status</h5>
+											<ul>
+												<li>Status code: {{response.responseCode}}</li>
+												<li>Response size: {{response.responseSize / 1024 | number: 1}} kB</li>
+												<li>Response time: {{response.responseTime}} ms</li>
+											</ul>
+										</div>
+										<div class="column" ng-show="response.responseHeaders.length > 0">
+											<h5>Response headers</h5>
+
+											<ul>
+												<li ng-repeat="(header, value) in response.responseHeaders">
+													<strong>{{header}}</strong>: {{value}}
+												</li>
+
+											</ul>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="column">
+											<h5>Response body</h5>
+
+											<code class="response">
+												{{response.responseBodyRaw}}
+											</code>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<script ng-if="$last">$ (function () {
+							Foundation.reInit ('accordion', 'tabs');
+						});</script>
+
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

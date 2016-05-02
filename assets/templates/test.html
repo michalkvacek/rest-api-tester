@@ -236,7 +236,7 @@
 
 			<div class="row">
 				<div class="column no-padding">
-					<a ng-repeat="result in controller.detail.runnedTests" ui-sref="test_result({runnedTestId: result.id})"
+					<a ng-repeat="result in controller.detail.runnedTests" ui-sref="test_result({testResultId: result.id})"
 						ng-class="result.status == 'success' ? 'fi-check success' : 'fi-x alert'"
 						class="button tiny"> {{result.createdAt | date : 'shortDate' }}</a>
 				</div>

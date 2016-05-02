@@ -16,7 +16,6 @@ module.exports = {
 				key: 'id'
 			}
 		},
-
 		testName: {
 			type: Sequelize.STRING,
 			allowNull: false
@@ -39,6 +38,13 @@ module.exports = {
 			foreignKey: {
 				name: 'testsId',
 				as: 'results',
+				allowNull: false
+			}
+		});
+		
+		runnedTests.hasMany (responses, {
+			foreignKey: {
+				name: 'runnedTestsId',
 				allowNull: false
 			}
 		});

@@ -61,7 +61,7 @@ module.exports.routes = {
 	'put /api/v1/environments/:environmentId/auths/:authId': 'api/v1/Authentications.update',
 	'delete /api/v1/environments/:environmentId/auths/:authId': 'api/v1/Authentications.delete',
 
-
+	'get /api/v1/testResults/:testResultId': 'api/v1/Results.detail',
 
 	'post /api/v1/registration': 'api/v1/Users.create',
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",
