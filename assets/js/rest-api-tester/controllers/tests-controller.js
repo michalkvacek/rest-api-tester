@@ -8,7 +8,7 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 		self.formData = self.detail = self.tests = self.statistics = {};
 		self.formData.headers = {};
 		self.statisticsButton = 7;
-		self.scheduleData = {run: 'periodicaly', schedule: "60"};
+		self.scheduleData = {run: 'periodicaly', runInterval: "60"};
 
 		self.headers = {};
 
@@ -138,6 +138,10 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 		};
 
 		self.schedule = function () {
+
+			if (self.scheduleData.run == 'once')
+				delete self.scheduleData.runInterval;
+
 			testsService.schedule (self.scheduleData.testsId, self.scheduleData).then (function (response) {
 
 				self.initTestOverview ();
@@ -156,13 +160,13 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 
 		self.run = function (testId) {
 			testsService.run (testId).then (function (response) {
-				$rootScope.loadTests(false);
+				$rootScope.loadTests (false);
 			});
 		};
 
 		self.runAll = function (environmentId) {
 			testsService.runAll (environmentId).then (function (response) {
-				$rootScope.loadTests(false);
+				$rootScope.loadTests (false);
 			});
 		};
 

@@ -233,9 +233,12 @@ module.exports = {
 
 	scheduleRun: function (req, res) {
 		tests.find ({where: {id: req.testId}}).then (function (test) {
+
+			var nextRun = req.param ('nextRun', null);
+
 			test.update ({
-				runInterval: req.param ('runInterval'),
-				nextRun: new Date (req.param ('nextRun'))
+				runInterval: req.param ('runInterval', null),
+				nextRun: nextRun ? new Date (nextRun) : null
 			}).then (function (edit) {
 				return res.ok (edit);
 			}, function (err) {
