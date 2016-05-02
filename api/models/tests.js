@@ -55,6 +55,13 @@ module.exports = {
 			}
 		});
 
+		tests.belongsTo (environments, {
+			foreignKey: {
+				name: 'environmentsId',
+				allowNull: false
+			}
+		});
+		
 		tests.hasMany (runnedTests, {
 			foreignKey: {
 				name: 'testsId',

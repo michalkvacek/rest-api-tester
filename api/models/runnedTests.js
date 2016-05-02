@@ -20,6 +20,14 @@ module.exports = {
 			type: Sequelize.STRING,
 			allowNull: false
 		},
+		environmentsId: {
+			type: Sequelize.INTEGER,
+			allowNull: true,
+			references: {
+				model: 'environments',
+				key: 'id'
+			}
+		},
 		testDescription: {
 			type: Sequelize.STRING,
 			allowNull: true
@@ -41,7 +49,7 @@ module.exports = {
 				allowNull: false
 			}
 		});
-		
+
 		runnedTests.hasMany (responses, {
 			foreignKey: {
 				name: 'runnedTestsId',

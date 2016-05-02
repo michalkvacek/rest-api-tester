@@ -78,18 +78,22 @@
 			</ul>
 		</div>
 
-		<div class="test-results" ng-controller="TestsResultsController as tests">
-			<h5 ng-show="tests.results.length" class="text-center">Last tests</h5>
+		<ul class="test-results menu vertical" ng-controller="TestsResultsController as tests">
 
-			<ul ng-show="tests.results.length" class="menu vertical">
-				<li ng-repeat="result in tests.results">
-					<a ui-sref="test_detail({testId: result.test.id})">
-						<span class="badge success fi-check"></span>
-						{{result.test.name}}
-					</a>
-				</li>
-			</ul>
-		</div>
+			<li ng-repeat="result in testList">
+				<a ui-sref="test_result({testResultId: result.id})" ng-switch="result.status">
+
+					<span ng-switch-when="success" class="badge success fi-check"></span>
+					<span ng-switch-when="failed" class="badge alert fi-x"></span>
+					<span ng-switch-when="waiting_for_response" class="badge primary fi-clock"></span>
+					<span ng-switch-when="evaluating" class="badge warning fi-eye"></span>
+
+					&nbsp;
+
+					{{result.testName}}
+				</a>
+			</li>
+		</ul>
 	</aside>
 
 	<%- body %>

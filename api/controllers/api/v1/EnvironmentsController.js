@@ -83,7 +83,11 @@ module.exports = {
 			where: {environmentsId: req.environmentId},
 			include: [{
 				model: requests,
-				as: 'requests'
+				as: 'requests',
+				include: [
+					{model: httpParameters},
+					{model: headers}
+				]
 			}]
 		}).then (function (envTests) {
 
@@ -91,17 +95,23 @@ module.exports = {
 				if (envTests[i].requests.length == 0)
 					continue;
 
+				// taky predelat do service
+				
 				runnedTests.create ({
 					testName: envTests[i].name,
 					testDescription: envTests[i].description,
+					environmentsId: envTests[i].environmentsId,
 					testsId: envTests[i].id,
 					status: 'waiting_for_response'
+				}). then(function (preparedResult) {
+					// insert requests
+					
 				});
 			}
 
 			// lets hope everything will run fine
 			return res.ok ();
 		});
-	}
+	},
 };
 

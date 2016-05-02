@@ -1,4 +1,4 @@
-<div class="row content align-center dashboard" ng-init="environments.initOverview()" data-equalizer>
+<div class="row content align-center dashboard" ng-init="environments.initOverview(); " data-equalizer>
 	<div class="column no-padding small-12 medium-6 large-4" ng-repeat="environment in environments.overview">
 		<div class="environment with-shadow has-controls">
 
@@ -6,10 +6,15 @@
 				<h4 class="text-center">{{environment.name}}</h4>
 
 				<div class="row tests text-center">
-					<a href="test-result.html" ng-repeat="result in environment.results"
-						data-ng-class="{'success': true, 'alert' : false }" data-tooltip aria-haspopup="true"
-						class="has-tip badge success"
-						data-disable-hover="false" title="Address, 12.3 15:12"><i class="fi-check"></i></a>
+					<a ng-repeat="result in dashboardTests | filter: {environmentsId: environment.id} | orderBy:'updatedAt'"
+						ui-sref="test_result({testResultId: result.id})"
+						title="{{result.testName}}, {{result.updatedAt | date : 'short'}}" ng-switch="result.status">
+
+						<span ng-switch-when="success" class="badge success fi-check"></span>
+						<span ng-switch-when="failed" class="badge alert fi-x"></span>
+						<span ng-switch-when="waiting_for_response" class="badge primary fi-clock"></span>
+						<span ng-switch-default="evaluating" class="badge warning fi-eye"></span>
+					</a>
 				</div>
 
 				<div class="row small">
@@ -21,16 +26,16 @@
 					</div>
 				</div>
 
-				<h5 ng-show="environment.results.length">Last failed tests</h5>
-				<div ng-show="environment.results.length" class="failed-tests">
-					<div class="row" ng-repeat="result in environment.results"> <!-- filter: {result.status: false} -->
-						<p>
-							<a ui-sref="test_detail({testId: result.id})"><i class="fi-x badge alert"></i> Address</a>
-							<small>11.2. 16:00</small>
-						</p>
+				<div ng-show="failedDasboardTests[environment.id].length>0">
+					<h5>Last failed tests</h5>
+					<div class="failed-tests">
+						<div class="row" ng-repeat="result in failedDasboardTests[environment.id]">
+							<p>
+								<a ui-sref="test_result({testResultId: result.id})"><i class="fi-x badge alert"></i> {{result.testName}}</a>
+								<small>{{result.updatedAt | date : 'short'}}</small>
+							</p>
+						</div>
 					</div>
-
-
 				</div>
 			</div>
 			<div class="row controls align-right">
@@ -49,7 +54,8 @@
 	</div>
 
 
-	<a data-open="new-environment" id="add-project" class="button success material-add-button"><i class="fi-plus"></i></a>
+	<a data-open="new-environment" id="add-project" class="button success material-add-button"><i
+			  class="fi-plus"></i></a>
 
 	<div class="reveal" id="new-environment" data-reveal>
 
@@ -65,7 +71,8 @@
 			<label>
 				API endpoint
 
-				<input type="text" placeholder="https://api.example.com/api/v1" ng-model="environments.formData.apiEndpoint" />
+				<input type="text" placeholder="https://api.example.com/api/v1"
+						 ng-model="environments.formData.apiEndpoint" />
 			</label>
 
 

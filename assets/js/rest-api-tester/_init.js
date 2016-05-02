@@ -95,11 +95,10 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			$rootScope.availableEnvironments = {};
 			$rootScope.currentEnvironmentId = {};
 			$rootScope.breadcrumbs = {};
-			
+			$rootScope.enableLoadingDashboardTests = false;
 		});
 
 	$rootScope.$on ('$viewContentLoaded', function () {
 		$ ('#loaded-view').foundation ();
-
 	});
 });

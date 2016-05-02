@@ -163,6 +163,7 @@ module.exports = {
 			findCriterium.include.push ({model: httpParameters});
 		}
 
+		// toto predelat do service - aby se to dalo pouzit i v runnedTests, resp. pri vkladani do db.
 		requests.find (findCriterium).then (function (request) {
 
 			request = request.toJSON ();

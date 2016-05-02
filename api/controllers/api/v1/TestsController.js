@@ -220,6 +220,7 @@ module.exports = {
 			runnedTests.create ({
 				testName: test.name,
 				testsId: req.testId,
+				environmentsId: test.environmentsId,
 				testDescription: test.description,
 				status: 'waiting_for_response'
 			}).then (function (runnedTest) {

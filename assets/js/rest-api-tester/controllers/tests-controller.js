@@ -156,13 +156,13 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 
 		self.run = function (testId) {
 			testsService.run (testId).then (function (response) {
-				console.log (response);
+				$rootScope.loadTests(false);
 			});
 		};
 
 		self.runAll = function (environmentId) {
 			testsService.runAll (environmentId).then (function (response) {
-				console.log (response);
+				$rootScope.loadTests(false);
 			});
 		};
 

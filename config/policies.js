@@ -50,6 +50,9 @@ module.exports.policies = {
 		lastResponse: ['jwToken', 'requestIdRequired'],
 		'*': ['jwToken', 'environmentIdRequired']
 	},
+	'api/v1/Results': {
+		'*': ['jwToken']
+	},
 	'api/v1/HttpParameters': {
 		'*': ['jwToken', 'requestIdRequired']
 	},
