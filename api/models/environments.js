@@ -99,7 +99,7 @@ module.exports = {
 					usersId: environment.usersId
 				}).then (function (test) {
 					requests.create ({
-						usersId: project.usersId,
+						usersId: environment.usersId,
 						environmentsId: environment.id,
 						url: '/',
 						httpMethod: 'GET',
