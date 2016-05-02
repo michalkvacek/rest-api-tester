@@ -158,24 +158,30 @@ module.exports = {
 	}
 	,
 
-	_assignRequests: function (testId, requestIds) {
-		// todo
-	}
-	,
+	addRequest: function (req, res) {
+		requestsInTest.max ('position', {
+			where: {testsId: req.testId}
+		}).then (function (position) {
+			if (!position)
+				position = 0;
 
-	assignRequests: function (req, res) {
-		var requestIds = req.param ('requestIds', {});
-		var testId = req.param ('testId');
+			requestsInTest.create ({
+				testsId: req.testId,
+				requestsId: req.requestId,
+				position: parseInt (position) + 1
+			}).then (function (assignedTest) {
+				return res.created (assignedTest);
+			})
+		}, function (error) {
+			return res.serverError (error);
+		});
+	},
 
-		if (req.param ('deleteExisting', false)) {
-			requestsInTests.destroy ({where: {testsId: testId}}).then (function () {
-				return sails.controllers.Tests._assignRequests (testId, requestIds);
-			});
-		} else {
-			return sails.controllers.Tests._assignRequests (testId, requestIds);
-		}
-	}
-	,
+	removeRequest: function (req, res) {
+		requestsInTest.destroy ({where: {testsId: req.testId, requestsId: req.requestId}}).then (function () {
+			return res.ok ('deleted');
+		});
+	},
 
 	/**
 	 * Create new test in given environment

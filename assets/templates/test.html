@@ -8,7 +8,8 @@
 					{{controller.detail.description}}
 				</div>
 				<div class="column shrink" ng-switch="controller.detail.lastRunStatus">
-					<a href="javascript:void(0)" ng-click="controller.run(controller.detail.id)"  class="button success small fi-play"> Run now</a>
+					<a href="javascript:void(0)" ng-click="controller.run(controller.detail.id)"
+						class="button success small fi-play"> Run now</a>
 					<a href="javascript:void(0)" ng-click="controller.openEditWindow()"
 						class="button primary small fi-pencil"> Edit</a>
 					<br />
@@ -16,8 +17,6 @@
 					<span ng-switch-when="success" class="label success fi-check"> Passing</span>
 					<span ng-switch-when="failed" class="label alert fi-x"> Not passing</span>
 					<span ng-show="controller.detail.nextRun" class="label warning fi-calendar"> Next run: {{controller.detail.nextRun | date : 'short' }}</span>
-					<span ng-show="!controller.detail.nextRun" class="label fi-calendar"> Schedule run</span>
-
 				</div>
 			</div>
 		</div>
@@ -78,14 +77,14 @@
 						 data-allow-all-closed="true">
 						<li class="accordion-item" ng-repeat="request in controller.detail.requests" data-accordion-item>
 							<a href="javascript:void(0)" class="accordion-title"
-								ng-click="reqController.initDetail(request.id, controller.detail.id)">
+								ng-click="reqController.initDetail(request.id, controller.detail.id, false)">
 								<h5>
 								<span ng-show="request.lastRunStatus"
 										ng-class="request.lastRunStatus =='success' ? 'success fi-check' : 'alert fi-x'"
 										class="label">
 									{{request.name}}
 								</span>
-								<span ng-show="!request.lastResponse" class="label secondary">
+								<span ng-show="!request.lastRunStatus" class="label secondary">
 									{{request.name}}
 								</span>
 
@@ -112,9 +111,10 @@
 									<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
 										<h4>
 											<a ui-sref="request({requestId: request.id})">
-												<i class="fi-magnifying-glass"></i>
 												{{request.name}}
-												<small ng-show="request.validation">({{request.validation.name}})</small>
+												<small ng-show="request.authenticationsId > 0">
+													({{reqController.detail[request.id].authentication.name}})
+												</small>
 											</a>
 										</h4>
 
@@ -128,6 +128,22 @@
 												</li>
 											</ul>
 										</div>
+
+										<a class="button success tiny" ui-sref="request({requestId: request.id})">
+											<i class="fi-magnifying-glass"></i>
+											Detail
+										</a>
+
+										<a class="button primary tiny" ui-sref="request_editor({requestId: request.id})">
+											<i class="fi-pencil"></i>
+											Edit
+										</a>
+
+										<a class="button alert tiny" ng-click="controller.removeRequest(request.id)">
+											<i class="fi-x"></i>
+											Delete from test
+										</a>
+
 									</div>
 									<div class="tabs-panel" ng-attr-id="{{ 'assertions-'+request.id }}">
 
@@ -422,22 +438,16 @@
 			</div>
 
 			<div class="tabs-panel" id="existing-request">
-				<form ng-submit="controller.assign()">
-					<label ng-repeat="availableRequest in request.environmentRequests">
-						<input type="checkbox" ng-model="request.formData.availableRequest[availableRequest.id]" />
+				<button class="button"
+						  ng-repeat="availableRequest in request.environmentRequests"
+						  ng-class="controller.assignedRequestIds.hasOwnProperty(availableRequest.id) ? 'warning disabled' : 'success'"
+						  ng-click="controller.assignRequest(availableRequest.id)">
+					{{availableRequest.name}}
+					<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
+				</button>
 
-						<span>{{availableRequest.name}}</span>
-						<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
-					</label>
+				<div class="callout warning" ng-show="request.environmentRequests.length == 0">Nedostupne</div>
 
-					<div class="callout warning" ng-show="request.environmentRequests.length == 0">Nedostupne</div>
-
-					<div class="row">
-						<div class="column">
-							<button type="submit" class="button success float-right">Add</button>
-						</div>
-					</div>
-				</form>
 			</div>
 		</div>
 

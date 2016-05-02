@@ -73,8 +73,6 @@ module.exports.routes = {
 	'post /api/v1/environments/:environmentId/tests': 'api/v1/Tests.create',
 	'post /api/v1/environments/:environmentId/requests': 'api/v1/Requests.create',
 
-	'post /api/v1/tests/:testId/assignRequests': 'api/v1/Tests.assignRequests',
-
 	'post /api/v1/request/:requestId/assertions': 'api/v1/Assertions.assignToRequest',
 
 	'put /api/v1/requests/:requestId': 'api/v1/Requests.edit',
@@ -86,4 +84,6 @@ module.exports.routes = {
 
 	'delete /api/v1/requests/:requestId': 'api/v1/Requests.delete',
 	'delete /api/v1/assertions/:assertionId': 'api/v1/Assertions.delete',
+	'delete /api/v1/tests/:testId/requests/:requestId': 'api/v1/Tests.removeRequest',
+	'post /api/v1/tests/:testId/requests/:requestId': 'api/v1/Tests.addRequest',
 };

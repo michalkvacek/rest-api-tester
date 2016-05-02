@@ -13,23 +13,39 @@ module.exports = {
 			include: []
 		};
 
-		var ignoredTest = req.param ('ignoreTest', false);
+		if (req.param ('withAssertions', false)) {
+			findCriterium.include.push ({
+				model: assertions,
+				as: 'assertions'
+			});
+		}
 
-		// todo nejak vyresit ignorovany test - potreba pro pridavani requestu do testu
-		// idealne nejak jako select * from requests where id not in (select requestsId from requestsInTests where testsId = ignoredTest)
-		//   * ale optimalni cestou, idealne nejak pres antijoin, pripadne kombinaci outer joinu a where klauzule
+		if (req.param ('withEnvironment', false)) {
+			findCriterium.include.push ({
+				model: environments,
+				as: 'environment'
+			});
+		}
 
-		// if (ignoredTest) {
-		// 	findCriterium.include.push ({
-		// 		model: tests,
-		// 		as: 'tests',
-		// 		where: {
-		// 			id: {
-		// 				$ne: ignoredTest
-		// 			}
-		// 		}
-		// 	});
-		// }
+		if (req.param ('withTests', false)) {
+			findCriterium.include.push ({
+				model: tests,
+				as: 'tests'
+			});
+		}
+
+		if (req.param ('withVersion', false)) {
+			findCriterium.include.push ({model: versions});
+		}
+
+		if (req.param ('withAuth', false)) {
+			findCriterium.include.push ({model: authentications});
+		}
+
+		if (req.param ('withHttpParams', false)) {
+			findCriterium.include.push ({model: httpParameters});
+		}
+
 
 		requests.findAll (findCriterium).then (function (data) {
 			return res.ok (data);
@@ -221,7 +237,7 @@ module.exports = {
 			if (!request)
 				return res.notFound ();
 
-			// request.destroy ();
+			request.destroy ();
 
 			return res.ok ('deleted');
 		}, function (err) {

@@ -12,6 +12,8 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 
 		self.headers = {};
 
+		self.assignedRequestIds = {};
+
 		$scope.$on ('addedRequestIntoTest', function (event, request) {
 			if (request.hasOwnProperty ('assignedToTest') && request.assignedToTest.testsId == $scope.testId)
 				self.initDetail ();
@@ -42,18 +44,29 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 			});
 		};
 
-		self.initDetail = function () {
+		self.initDetail = function (refreshBreadcrumbs) {
 			var testId = $stateParams.testId;
+
+			if (typeof refreshBreadcrumbs == 'undefined')
+				refreshBreadcrumbs = true;
 
 			testsService.getDetail (testId).then (function (response) {
 				var test = response.data;
 				$scope.testId = testId;
 				$scope.environmentId = test.environmentsId;
 
-				$rootScope.breadcrumbs = [{
-					label: 'Test: ' + test.name,
-					href: $state.href ('test_detail', {testId: test.id})
-				}];
+				self.assignedRequestIds = {};
+
+				// save request ids
+				for (i in test.requests) {
+					self.assignedRequestIds[test.requests[i].id] = true;
+				}
+				
+				if (refreshBreadcrumbs)
+					$rootScope.breadcrumbs = [{
+						label: 'Test: ' + test.name,
+						href: $state.href ('test_detail', {testId: test.id})
+					}];
 
 				$rootScope.setEnvironment (test.environmentsId);
 
@@ -170,14 +183,22 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 			});
 		};
 
-		self.assign = function () {
+		self.assignRequest = function (requestId) {
 			var testId = $stateParams.testId;
 
-			// todo
-
-			testsService.assignRequest ().then (function (response) {
-
+			testsService.assignRequest (testId, requestId).then (function (response) {
+				self.initDetail ();
 			});
+		};
+		
+		self.removeRequest = function (requestId) {
+			var testId = $stateParams.testId;
+
+			if (confirm ('Really?')) {
+				testsService.removeRequest (testId, requestId).then (function (response) {
+					self.initDetail ();
+				});
+			}
 		};
 
 		return self;

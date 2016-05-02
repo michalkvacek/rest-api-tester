@@ -38,6 +38,8 @@ module.exports.policies = {
 		scheduleRun: ['jwToken', 'testIdRequired'],
 		run: ['jwToken', 'testIdRequired'],
 		statistics: ['jwToken'],
+		removeRequest: ['jwToken', 'requestIdRequired', 'testIdRequired'],
+		addRequest: ['jwToken', 'requestIdRequired', 'testIdRequired'],
 		'*': ['jwToken', 'environmentIdRequired']
 	},
 	'api/v1/Requests': {

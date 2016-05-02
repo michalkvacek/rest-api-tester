@@ -22,11 +22,14 @@ app.controller ('RequestsController', [
 			environmentOverview: false
 		};
 
-		self.initDetail = function (id, testId) {
+		self.initDetail = function (id, testId, updateBreadcrumbs) {
 
 			if (typeof id == 'undefined')
 				id = $stateParams.requestId;
 
+			if (typeof updateBreadcrumbs == 'undefined')
+				updateBreadcrumbs = true;
+			
 			if (self.initiliazed.detail == id)
 				return;
 
@@ -37,7 +40,8 @@ app.controller ('RequestsController', [
 				self.current = self.detail[id];
 				self.initiliazed.detail = id;
 
-				$rootScope.breadcrumbs = [{
+				if (updateBreadcrumbs)
+					$rootScope.breadcrumbs = [{
 					label: 'Request: ' + request.name,
 					href: $state.href ('request', {requestId: request.id})
 				}];
