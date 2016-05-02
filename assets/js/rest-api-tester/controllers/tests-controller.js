@@ -55,8 +55,6 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$state', '$statePar
 				href: $state.href('test_detail', {testId: test.id})
 			}];
 
-			console.log($rootScope.breadcrumbs);
-
 			$rootScope.setEnvironment(test.environmentsId);
 
 			self.detail = test;
@@ -70,6 +68,8 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$state', '$statePar
 
 		testsService.create (environmentId, self.formData).then (function (response) {
 			self.initTestOverview ();
+
+			$('#new-test').foundation('close');
 		});
 	};
 

@@ -65,37 +65,6 @@
 		</div>
 	</div>
 
-
-	<div class="column with-shadow has-controls">
-		<div class="row">
-			<div class="column no-padding">
-
-				<h4>Headers</h4>
-
-				<table>
-					<tr ng-repeat="header in controller.detail.headers">
-						<td>{{header.name}}</td>
-						<td>{{header.value}}</td>
-						<td class="text-right">
-							<a href="javascript:void(0)"
-								ng-click="controller.headers.openEditWindow(header.id)">
-								<i class="fi-pencil"></i>
-							</a>
-							<a href="javascript:void(0)" ng-click="controller.headers.delete(header.id)">
-								<i class="fi-x"></i>
-							</a>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div class="row controls align-right">
-			<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)">
-				<i class="fi-check"></i> Add header
-			</button>
-		</div>
-	</div>
-
 	<div class="row">
 		<div class="column has-controls with-shadow">
 			<h4>Requests</h4>
@@ -135,12 +104,6 @@
 									<li ng-attr-id="{{ 'assertions-'+request.id+'-title'}}" class="tabs-title">
 										<a href="javascript:void(0)"
 											ng-click="openTab('#request-tabs-'+request.id, '#assertions-'+request.id); asserts.initRequestAssertions(request.id)">
-											Assertions
-										</a>
-									</li>
-									<li ng-attr-id="{{ 'variables-'+request.id+'-title'}}" class="tabs-title">
-										<a href="javascript:void(0)"
-											ng-click="openTab('#variables-tabs-'+request.id, '#assertions-'+request.id); asserts.initRequestVariables(request.id)">
 											Assertions
 										</a>
 									</li>
@@ -228,6 +191,37 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="column with-shadow has-controls">
+		<div class="row">
+			<div class="column no-padding">
+
+				<h4>Headers</h4>
+
+				<table>
+					<tr ng-repeat="header in controller.detail.headers">
+						<td>{{header.name}}</td>
+						<td>{{header.value}}</td>
+						<td class="text-right">
+							<a href="javascript:void(0)"
+								ng-click="controller.headers.openEditWindow(header.id)">
+								<i class="fi-pencil"></i>
+							</a>
+							<a href="javascript:void(0)" ng-click="controller.headers.delete(header.id)">
+								<i class="fi-x"></i>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row controls align-right">
+			<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)">
+				<i class="fi-check"></i> Add header
+			</button>
+		</div>
+	</div>
+
 
 	<div class="row" ng-show="controller.detail.runnedTests.length">
 		<div class="column with-shadow">
