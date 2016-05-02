@@ -8,7 +8,7 @@
 					{{controller.detail.description}}
 				</div>
 				<div class="column shrink" ng-switch="controller.detail.lastRunStatus">
-					<button class="button success small fi-play"> Run now</button>
+					<a href="javascript:void(0)" ng-click="controller.run(controller.detail.id)"  class="button success small fi-play"> Run now</a>
 					<a href="javascript:void(0)" ng-click="controller.openEditWindow()"
 						class="button primary small fi-pencil"> Edit</a>
 					<br />
