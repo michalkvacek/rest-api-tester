@@ -1,4 +1,4 @@
-var app = angular.module ('restApiTester', ['ui.router']);
+var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar']);
 
 app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 	function ($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -40,6 +40,9 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 		}).state ('projects_settings', {
 			url: '/project/{projectId}/settings',
 			template: window.JST['assets/templates/projectSettings.html']
+		}).state ('environment_settings', {
+			url: '/environments/{environmentId}/settings',
+			template: window.JST['assets/templates/environmentSettings.html']
 		}).state ('dashboard', {
 			url: '/project/{projectId}/dashboard',
 			template: window.JST['assets/templates/dashboard.html']

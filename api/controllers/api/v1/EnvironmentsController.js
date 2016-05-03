@@ -25,8 +25,7 @@ module.exports = {
 		if (req.param ('withMembers', false)) {
 			findCriterium.include.push ({
 				model: users,
-				as: 'teamMembers',
-				where: {id: req.token.id}
+				as: 'teamMembers'
 			})
 		}
 
@@ -42,7 +41,34 @@ module.exports = {
 		}).catch (function (err) {
 			console.error (err);
 		});
+	},
 
+	detail: function (req, res) {
+		var findCriterium = {
+			where: {id: req.environmentId},
+			include: []
+		};
+
+		// include team members in each environment?
+		if (req.param ('withMembers', false)) {
+			findCriterium.include.push ({
+				model: users,
+				as: 'teamMembers'
+			})
+		}
+
+		if (req.param ('withTests', false)) {
+			findCriterium.include.push ({
+				model: tests,
+				as: 'tests'
+			});
+		}
+
+		environments.find (findCriterium).then (function (environments) {
+			return res.json (environments);
+		}).catch (function (err) {
+			return res.serverError (err);
+		});
 	},
 
 	/**
@@ -96,6 +122,27 @@ module.exports = {
 
 			return res.ok ('deleted');
 		})
+	},
+
+	deleteUser: function (req, res) {
+		var userId = req.param ('userId', false);
+
+		if (!userId)
+			return res.badRequest ('missing userId');
+
+		if (userId == req.token.id)
+			return res.forbidden ('cannot delete self');
+
+		userBelongsToEnvironment.find ({
+			where: {
+				usersId: userId,
+				environmentsId: req.environmentId
+			}
+		}).then(function (data) {
+			data.destroy();
+			
+			return res.ok('deleted');
+		});
 	},
 
 	/**

@@ -76,6 +76,10 @@ app.controller ('ProjectsController', ['$rootScope', '$state', '$stateParams', '
 		$rootScope.currentProjectId = projectId;
 		setProjectAndEnvironment ();
 	};
+	
+	$rootScope.refreshProjectOverview = function () {
+		self.initOverview();
+	};
 
 	self.initOverview = function () {
 		projectsService.getOverview ().then (function (response) {

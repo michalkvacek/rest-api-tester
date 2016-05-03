@@ -1,0 +1,203 @@
+<div ng-controller="EnvironmentsController as environment" class="row content" id="environment-edit"
+	  ng-init="enableLoadingDashboardTests = false; environment.loadDetail()">
+	<div class="column with-shadow">
+		<ul class="tabs" id="project-settings">
+			<li id="basic-info-title" class="tabs-title is-active">
+				<a href="javascript:void(0)"
+					ng-click="openTab('#environment-edit', '#basic-info')" aria-selected="true">
+					Basic info
+				</a>
+			</li>
+			<li id="headers-title" class="tabs-title">
+				<a href="javascript:void(0)"
+					ng-click="openTab('#environment-edit', '#headers')">
+					Headers
+				</a>
+			</li>
+			<li id="users-title" class="tabs-title">
+				<a href="javascript:void(0)"
+					ng-click="openTab('#environment-edit', '#users')">
+					Users
+				</a>
+			</li>
+		</ul>
+
+		<div class="tabs-content">
+			<div class="tabs-panel is-active" id="basic-info">
+				<form ng-submit="environment.edit()" ng-if="environment.detail.id"
+						ng-init="environment.formData = environment.detail">
+					<label>
+						Environment name
+
+						<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.name" />
+					</label>
+
+					<label>
+						Environment description
+
+						<textarea rows="3" ng-blur="environment.edit()"
+									 ng-model="environment.formData.description"></textarea>
+					</label>
+
+					<label>
+						API endpoint
+
+						<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.apiEndpoint" />
+					</label>
+
+				</form>
+			</div>
+
+			<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers">
+
+				<div class="content-holder">
+					<table ng-if="environment.detail.id"
+							 ng-init="headers.initOverview({projectId: environment.detail.projectsId, environmentId: environment.detail.id})">
+						<tr ng-repeat="header in headers.overview">
+							<td>{{header.name}}</td>
+							<td>{{header.value}}</td>
+							<td class="text-right">
+								<span ng-show="header.environmentsId == environment.detail.id">
+								<a href="javascript:void(0)"
+									data-open="edit-header"
+									ng-click="headers.formData = header">
+									<i class="fi-pencil"></i>
+								</a>
+								<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
+									<i class="fi-x"></i>
+								</a>
+									</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="row controls align-right">
+					<a href="javascript:void(0)" ng-click="headers.formData = {environmentsId: environment.detail.id}"
+						data-open="new-header" class="success tiny button">
+						<i class="fi-plus"></i>
+						<span class="show-for-medium"> Add header</span></a>
+				</div>
+
+				<div class="reveal" id="edit-header" data-reveal>
+					<h3>Edit header</h3>
+
+					<form ng-submit="headers.edit()">
+						<div class="row">
+							<div class="column">
+								<label>
+									Name
+									<input type="text" ng-model="headers.formData.name">
+								</label>
+							</div>
+							<div class="column">
+								<label>
+									Value
+									<input type="text" ng-model="headers.formData.value">
+								</label>
+							</div>
+						</div>
+						<button type="submit" class="button success">Save</button>
+					</form>
+
+					<!-- Close button -->
+					<button class="close-button" data-close aria-label="Close modal" type="button">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+
+				<div class="reveal" id="new-header" data-reveal>
+					<h3>New header</h3>
+
+					<form ng-submit="headers.create()">
+						<div class="row">
+							<div class="column">
+								<label>
+									Name
+									<input type="text" ng-model="headers.formData.name">
+								</label>
+							</div>
+							<div class="column">
+								<label>
+									Value
+									<input type="text" ng-model="headers.formData.value">
+								</label>
+							</div>
+						</div>
+						<button type="submit" class="button success">Save</button>
+					</form>
+
+					<!-- Close button -->
+					<button class="close-button" data-close aria-label="Close modal" type="button">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="tabs-panel" id="users">
+				<table class="users">
+					<thead>
+					<tr>
+						<th></th>
+						<th>Name</th>
+						<th>E-mail</th>
+						<th>Role</th>
+						<th></th>
+					</tr>
+					</thead>
+					<tr ng-repeat="user in environment.detail.teamMembers">
+						<td><img gravatar-src="user.email" alt="avatar" /></td>
+						<td>{{user.name}}</td>
+						<td>{{user.email}}</td>
+						<td>{{user.userBelongsToEnvironment.userRole}}</td>
+						<td class="text-right">
+							<a href="javascript:void(0)" ng-click="environment.removeUser(user.id)"
+								class="button small warning">
+								<i class="fi-lock"></i>
+								Remove user
+							</a>
+						</td>
+					</tr>
+				</table>
+
+				<div class="text-right">
+					<a href="javascript:void(0)"
+						data-open="new-user" class="success  button">
+						<i class="fi-plus"></i>
+						<span class="show-for-medium"> Add user</span></a>
+				</div>
+
+				<div class="reveal" data-reveal id="new-user">
+					<h4>Add user</h4>
+					<form ng-submit="environment.assignUser()">
+						<label>Role
+							<select ng-model="environment.addUser.role">
+								<option value="manager">Manager</option>
+								<option value="tester">Tester</option>
+								<option value="viewer">Viewer</option>
+							</select>
+						</label>
+
+						<label>
+							E-mail
+							<input type="email" ng-model="environment.addUser.email">
+						</label>
+
+						<button type="submit" class="float-right button primary">Add user</button>
+
+					</form>
+
+					<!-- Close button -->
+					<button class="close-button" data-close aria-label="Close modal" type="button">
+						<span aria-hidden="true">&times;</span>
+					</button>
+
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+</div>

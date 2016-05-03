@@ -13,14 +13,20 @@ module.exports = {
 			allowNull: false,
 			unique: true
 		},
+		language: {
+			type: Sequelize.ENUM ('cs', 'en'),
+			allowNull: false,
+			defaultValue: 'en'
+		},
+
 		password: {
 			type: Sequelize.STRING,
 			allowNull: false
 		},
-		active: {
+		notifications: {
 			type: Sequelize.BOOLEAN,
 			allowNull: false,
-			defaultValue: false
+			defaultValue: true
 		}
 	},
 	options: {

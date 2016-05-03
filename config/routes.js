@@ -40,7 +40,10 @@ module.exports.routes = {
 	'post /api/v1/environments/:environmentId/runTests': 'api/v1/Environments.runTests',
 	
 	'put /api/v1/environments/:environmentId': 'api/v1/Environments.update',
+	'get /api/v1/environments/:environmentId': 'api/v1/Environments.detail',
 	'delete /api/v1/environments/:environmentId': 'api/v1/Environments.delete',
+	'post /api/v1/environments/:environmentId/users': 'api/v1/Users.assignToEnvironment',
+	'delete /api/v1/environments/:environmentId/users/:userId': 'api/v1/Environments.deleteUser',
 
 	'get /api/v1/projects/:projectId': 'api/v1/Projects.detail',
 	'put /api/v1/projects/:projectId': 'api/v1/Projects.update',
@@ -74,6 +77,10 @@ module.exports.routes = {
 	'get /api/v1/testResults/:testResultId': 'api/v1/Results.detail',
 
 	'post /api/v1/registration': 'api/v1/Users.create',
+	'get /api/v1/users/me': 'api/v1/Users.loggedUser',
+	'post /api/v1/forgottenPassword': 'api/v1/Users.forgottenPassword',
+	'put /api/v1/users/me': 'api/v1/Users.edit',
+	
 	'post /api/v1/login': "api/v1/Auth.passwordLogin",
 	'post /api/v1/projects': 'api/v1/Projects.create',
 	'post /api/v1/projects/:projectId/environments': 'api/v1/Environments.create',
