@@ -89,6 +89,10 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			parent: 'auth',
 			url: '/requests/:requestId/editor',
 			template: window.JST['assets/templates/requestEditor.html']
+		}).state ('user', {
+			parent: 'auth',
+			url: '/user',
+			template: window.JST['assets/templates/user.html']
 		});
 
 	}]).run (function ($rootScope) {

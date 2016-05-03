@@ -11,7 +11,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 		$rootScope.dashboardTests = [];
 		$rootScope.failedDasboardTests = {};
 
-		$rootScope.loadDasboardTests = function (withTimeout) {
+		$rootScope.loadDashboardTests = function (withTimeout) {
 			var projectId = $stateParams.projectId, test = {};
 
 			// turn off loading results for dashboard
@@ -39,11 +39,11 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 
 				// run again after 30 seconds - if wanted
 				if (withTimeout)
-					$timeout ($rootScope.loadDasboardTests, 30 * 1000);
+					$timeout ($rootScope.loadDashboardTests, 30 * 1000);
 			});
 		};
 
-		$rootScope.loadDasboardTests ();
+		$rootScope.loadDashboardTests ();
 
 		self.initOverview = function (projectId, selectedEnvironmentId) {
 			if (typeof projectId == 'undefined')

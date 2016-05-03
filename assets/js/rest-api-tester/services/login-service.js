@@ -1,59 +1,54 @@
 var app = angular.module ('restApiTester');
 
-app.service ('loginService', ['$http', '$timeout', '$q', function ($http, $timeout, $q) {
+app.service ('loginService', ['$http', '$timeout', '$rootScope', '$q', function ($http, $timeout, $rootScope, $q) {
 
-	var lastAuth = null,
-		identity = {};
+	var lastAuth = null;
+	$rootScope.identity = {};
 
-	var periodicalLogin = function () {
-		$timeout(periodicalLogin, 5*60*1000);
+	var periodicalLogin = function (withTimeout) {
+
+		if (typeof withTimeout == 'undefined' || withTimeout)
+			$timeout (periodicalLogin, 5 * 60 * 1000);
 
 		var now = new Date ();
 
-		if (now - lastAuth > 1 * 10 * 1000) {
+		if (now - lastAuth > 60 * 10 * 1000) {
 			$http.get ('/api/v1/users/me').then (function (response) {
 				if (response.status == 200) {
-					identity = response.data;
+					$rootScope.identity = response.data;
 					lastAuth = now;
-					return true;
 
+					return true;
 				} else {
-					identity = {};
-					localStorage.removeItem('auth_token');
+					$rootScope.identity = {};
+					localStorage.removeItem ('auth_token');
+
 					return false
 				}
 			});
 		} else {
-
-			identity.cas = new Date();
-
-
 			return true;
 		}
 	};
 
-	periodicalLogin();
-	
+	periodicalLogin ();
 
 	return {
 		localAuth: function (data) {
 			var d = $q.defer ();
 			$http.post ('/api/v1/login', data).then (function (response) {
-
-				console.log (response.data);
-
 				localStorage.setItem ('auth_token', response.data.token);
+
+				// set identity
+				$rootScope.identity = response.data.user;
 
 				return d.resolve (response);
 			}, d.reject);
 
 			return d.promise;
 		},
-		isAuthenticated: function() {
-			return localStorage.getItem('auth_token') != null;
-		},
-		getIdentity: function() {
-			return identity;
+		isAuthenticated: function () {
+			return localStorage.getItem ('auth_token') != null;
 		}
 	}
 }]);

@@ -13,16 +13,15 @@ module.exports = {
 
 			// create user
 			users.create (userInfo).then (function (user) {
-				
+
 				if (userInfo.environmentId && userInfo.role) {
-					userService.assignToEnvironment(user.id, userInfo.environmentId, userInfo.role);
+					userService.assignToEnvironment (user.id, userInfo.environmentId, userInfo.role);
 				}
-				
+
 				// send email
 				email.registrationEmail (userInfo.password, user, function (err, email) {
-					callback(user);
+					callback (user);
 				});
-				
 
 			}, callbackErr);
 		});
@@ -45,4 +44,5 @@ module.exports = {
 			userRole: role
 		}).then (callback, callbackErr);
 	}
-};
+}
+;

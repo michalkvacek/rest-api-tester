@@ -37,10 +37,10 @@
 	</header>
 </div>
 
-<div class="row" id="content">
+<div class="row" id="content" ng-controller="LoggedUserController as loggedUser">
 
-	<aside class="column no-padding large-2" id="side-menu">
-		<div class="user-profile align-center" ng-controller="LoggedUserController as loggedUser">
+	<aside class="column no-padding large-2" id="side-menu" ng-show="identity.email">
+		<div class="user-profile align-center">
 			<a ui-sref="user">
 				<img gravatar-src="identity.email" gravatar-size="35" alt="profile" />
 				<strong>{{identity.name}}</strong>
@@ -75,7 +75,6 @@
 		</div>
 
 		<ul class="test-results menu vertical" ng-controller="TestsResultsController as tests">
-
 			<li ng-repeat="result in testList">
 				<a ui-sref="test_result({testResultId: result.id})" ng-switch="result.status">
 

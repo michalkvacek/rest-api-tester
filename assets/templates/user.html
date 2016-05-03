@@ -1,0 +1,41 @@
+<div class="row" ng-controller="UsersController as user">
+	<div class="column with-shadow">
+
+		<form  ng-submit="user.edit()" ng-init="user.initProfile()">
+			<label>
+				Name
+
+				<input type="text" ng-model="user.profile.name">
+			</label>
+
+			<label>
+				E-mail
+
+				<input type="text" ng-model="user.profile.email">
+			</label>
+
+			<label>
+				Language
+
+				<select ng-model="user.profile.language">
+					<option value="cs">Czech</option>
+					<option value="en">English</option>
+				</select>
+			</label>
+
+			<label>
+				Password
+
+				<input type="text" ng-model="user.profile.password">
+			</label>
+
+			<label>
+				Send notifications on failed test?
+
+				<input type="checkbox" ng-model="user.profile.notifications">
+			</label>
+
+			<button type="submit" class="success button">Save</button>
+		</form>
+	</div>
+</div>

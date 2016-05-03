@@ -132,7 +132,11 @@ module.exports = {
 			}
 
 			user.update (update).then (function (updated) {
-				return res.ok ();
+				updated = updated.toJSON();
+
+				delete updated.password;
+
+				return res.ok (updated);
 			});
 		});
 	}
