@@ -13,10 +13,6 @@ module.exports = {
 		description: {
 			type: Sequelize.TEXT,
 			allowNull: true
-		},
-		extraCode: {
-			type: Sequelize.TEXT,
-			allowNull: true
 		}
 	},
 	options: {

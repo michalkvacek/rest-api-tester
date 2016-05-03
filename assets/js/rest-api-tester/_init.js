@@ -102,6 +102,13 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 
 	}]).run (function ($rootScope) {
 
+	$rootScope.Object = Object;	
+	
+	$rootScope.emptyObject = function(object) {
+		return Object.keys(object).length == 0;
+	};
+	
+
 	$rootScope.openTab = function (tabsContainer, tab) {
 
 		var tabButtons = tabsContainer + ' .tabs-title';

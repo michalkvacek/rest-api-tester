@@ -138,10 +138,10 @@ module.exports = {
 				usersId: userId,
 				environmentsId: req.environmentId
 			}
-		}).then(function (data) {
-			data.destroy();
-			
-			return res.ok('deleted');
+		}).then (function (data) {
+			data.destroy ();
+
+			return res.ok ('deleted');
 		});
 	},
 
@@ -152,39 +152,12 @@ module.exports = {
 	 * @param res
 	 */
 	runTests: function (req, res) {
-		tests.findAll ({
-			where: {environmentsId: req.environmentId},
-			include: [{
-				model: requests,
-				as: 'requests',
-				include: [
-					{model: httpParameters},
-					{model: headers}
-				]
-			}]
-		}).then (function (envTests) {
 
-			for (i in envTests) {
-				if (envTests[i].requests.length == 0)
-					continue;
-
-				// taky predelat do service
-
-				runnedTests.create ({
-					testName: envTests[i].name,
-					testDescription: envTests[i].description,
-					environmentsId: envTests[i].environmentsId,
-					testsId: envTests[i].id,
-					status: 'waiting_for_response'
-				}).then (function (preparedResult) {
-					// insert requests
-
-				});
-			}
-
-			// lets hope everything will run fine
-			return res.ok ();
+		testRunner.addToQueue ({environmentsId: req.environmentId}, function (err) {
+			console.log (err);
 		});
-	},
+
+		return res.ok ();
+	}
 };
 

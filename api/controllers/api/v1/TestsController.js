@@ -210,19 +210,12 @@ module.exports = {
 	},
 
 	run: function (req, res) {
-		tests.find ({where: {id: req.testId}}).then (function (test) {
-			runnedTests.create ({
-				testName: test.name,
-				testsId: req.testId,
-				environmentsId: test.environmentsId,
-				testDescription: test.description,
-				status: 'waiting_for_response'
-			}).then (function (runnedTest) {
-				return res.created (runnedTest);
-			}, function (err) {
-				return res.serverError (err);
-			});
+		testRunner.addToQueue({id: req.testId}, function (err) {
+			console.log(err);
 		});
+		
+		return res.ok();
+
 	},
 
 	scheduleRun: function (req, res) {

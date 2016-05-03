@@ -70,6 +70,13 @@ module.exports = {
 			}
 		});
 
+		tests.hasMany (headers, {
+			foreignKey: {
+				name: 'testsId',
+				allowNull: true
+			}
+		});
+
 		/**
 		 * Users, who manages this environment
 		 */

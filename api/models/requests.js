@@ -113,7 +113,7 @@ module.exports = {
 		requests.hasMany (httpParameters, {
 			foreignKey: {
 				name: 'requestsId',
-				allowNull: false
+				allowNull: true
 			}
 		});
 

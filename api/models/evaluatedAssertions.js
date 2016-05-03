@@ -36,10 +36,6 @@ module.exports = {
 			type: Sequelize.TEXT,
 			allowNull: true
 		},
-		assertionExtraCode: {
-			type: Sequelize.TEXT,
-			allowNull: true
-		},
 		recievedValue: {
 			type: Sequelize.TEXT,
 			allowNull: true

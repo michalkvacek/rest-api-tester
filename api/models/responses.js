@@ -19,6 +19,14 @@ module.exports = {
 				key: 'id'
 			}
 		},
+		testsId: {
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'tests',
+				key: 'id'
+			}
+		},
 		runnedTestsId: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -49,27 +57,28 @@ module.exports = {
 		},
 		responseTime: {
 			type: Sequelize.INTEGER,
-			allowNull: false
+			allowNull: true
 		},
 		responseCode: {
 			type: Sequelize.INTEGER,
-			allowNull: false
+			allowNull: true
 		},
 		responseSize: {
 			type: Sequelize.INTEGER,
-			allowNull: false
+			allowNull: true
+		},
+		requestHeaders: {
+			type: Sequelize.JSON,
+			allowNull: true
 		},
 		responseHeaders: {
 			type: Sequelize.JSON,
 			allowNull: true
 		},
-		responseBodyJson: {
-			type: Sequelize.JSON,
-			allowNull: true
-		},
+
 		responseBodyRaw: {
 			type: Sequelize.TEXT,
-			allowNull: false
+			allowNull: true
 		},
 		passedAssertions: {
 			type: Sequelize.BOOLEAN,
@@ -91,6 +100,14 @@ module.exports = {
 			foreignKey: {
 				name: 'requestsId',
 				as: 'request',
+				allowNull: false
+			}
+		});
+
+		responses.belongsTo (tests, {
+			foreignKey: {
+				name: 'testsId',
+				as: 'test',
 				allowNull: false
 			}
 		});
