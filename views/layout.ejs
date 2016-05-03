@@ -40,14 +40,11 @@
 <div class="row" id="content">
 
 	<aside class="column no-padding large-2" id="side-menu">
-		<div class="user-profile" ng-controller="LoggedUserController as loggedUser">
-			<div class="row align-center" ng-show="loggedUser.avatar">
-				<img ng-src="{{loggedUser.avatar}}" alt="profile" />
-			</div>
-
-			<div class="row align-center">
-				<strong>{{loggedUser.name}}</strong>
-			</div>
+		<div class="user-profile align-center" ng-controller="LoggedUserController as loggedUser">
+			<a ui-sref="user">
+				<img gravatar-src="identity.email" gravatar-size="35" alt="profile" />
+				<strong>{{identity.name}}</strong>
+			</a>
 		</div>
 
 		<div class="row">

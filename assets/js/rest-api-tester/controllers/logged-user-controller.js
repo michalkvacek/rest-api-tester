@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('LoggedUserController', ['$scope', '$location', function ($scope, $location) {
+app.controller ('LoggedUserController', ['$scope', '$location', 'loginService', function ($scope, $location, loginService) {
 
 	var self = this;
 
