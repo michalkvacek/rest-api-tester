@@ -15,6 +15,11 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 					}
 
 					return config;
+				},
+				responseError: function (config) {
+					console.log(config);
+
+					return config;
 				}
 			};
 		});
