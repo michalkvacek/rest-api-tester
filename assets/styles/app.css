@@ -63,6 +63,9 @@ nav .quick-search {
 	font-weight: normal;
 }
 
+.project .environment {
+	min-width: 20em;
+}
 .project .environments .label {
 	font-size: 70% !important;
 }

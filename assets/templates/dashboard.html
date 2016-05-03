@@ -1,5 +1,5 @@
 <div class="row content align-center dashboard" ng-controller="EnvironmentsController as environments" ng-init="environments.initOverview(); " data-equalizer>
-	<div class="column no-padding small-12 medium-6 large-4" ng-repeat="environment in environments.overview">
+	<div class="column no-padding " ng-repeat="environment in environments.overview">
 		<div class="environment with-shadow has-controls">
 
 			<div class="content-holder" data-equalizer-watch>
@@ -51,6 +51,8 @@
 					title="Environment settings"><i class="fi-wrench"></i> Environment settings</a>
 			</div>
 		</div>
+
+		<script ng-if="$last && $index > 0">Foundation.reInit('equalizer')</script>
 	</div>
 
 
