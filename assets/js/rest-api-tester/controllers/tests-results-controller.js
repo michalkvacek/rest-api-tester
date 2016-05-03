@@ -1,6 +1,7 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$timeout', 'testsResultsService', function ($scope, $rootScope, $stateParams, $timeout, testsResultsService) {
+app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', 'testsResultsService',
+	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, testsResultsService) {
 
 	var self = this;
 
@@ -28,6 +29,17 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 
 		testsResultsService.getDetail (resultId).then (function (response) {
 			$rootScope.setEnvironment (response.data.environmentsId);
+
+			$rootScope.breadcrumbs = [
+				{
+					label: 'Test: ' + response.data.testName,
+					href: $state.href ('test_detail', {testId: response.data.testsId})
+				},
+				{
+					label: 'Result from '+$filter ('date') (response.data.updatedAt, 'short'),
+					href: $state.href ('test_result', {testResultId: response.data.id})
+				}];
+
 			self.test = response.data;
 		});
 	};
