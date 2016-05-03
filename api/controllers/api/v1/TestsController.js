@@ -16,19 +16,7 @@ module.exports = {
 	 */
 	index: function (req, res) {
 		tests.findAll ({where: {environmentsId: req.environmentId}}).then (function (data) {
-
-			if (req.param ('withStatistics', false)) {
-				var testIds = [];
-				for (test in data) {
-					testIds.push (data[test].id)
-				}
-
-				// todo dodelat statistiky (pocet request + pocet assertions + "zdravi" = vsechny_testy/uspesne_testy)
-
-				console.log (testIds);
-			}
-
-			return res.json (data);
+			return res.ok (data);
 		});
 	},
 

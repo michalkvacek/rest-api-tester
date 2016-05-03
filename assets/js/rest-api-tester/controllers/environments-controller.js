@@ -46,15 +46,11 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$timeout', '
 
 		self.initOverview = function () {
 			var projectId = $stateParams.projectId;
-			$scope.setEnvironment (undefined, projectId);
+			$rootScope.setEnvironment (undefined, projectId);
 
 			environmentsService.getOverview (projectId).then (function (response) {
 				self.overview = response.data;
 			});
-		};
-
-		self.runAllTests = function () {
-
 		};
 
 		self.create = function () {
@@ -64,6 +60,21 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$timeout', '
 				self.initOverview ();
 				$ ('#new-environment').foundation ('close');
 			});
+		};
+
+		self.edit = function (environmentId) {
+			environmentsService.create (environmentId, self.formData).then (function (data) {
+				self.initOverview ();
+				$ ('#edit-environment').foundation ('close');
+			});
+		};
+
+		self.delete = function (environmentId) {
+			if (confirm('Really?')) {
+				environmentsService.delete(environmentId).then(function (response) {
+					self.initOverview();
+				});
+			}
 		};
 
 		return self;

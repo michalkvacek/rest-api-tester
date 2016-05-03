@@ -1,6 +1,6 @@
 module.exports = {
 	index: function (req, res) {
-		var where = {};
+		var where = [];
 
 		if (req.param ('testId')) {
 			where.push ({testsId: req.param ('testId')});
@@ -18,22 +18,19 @@ module.exports = {
 		if (where.length == 0)
 			return res.badRequest ();
 
-		headers.findAll ({
-			where: {$or: where}
-		}).then (function (headers) {
-
+		headers.findAll ({where: {$or: where}}).then (function (headers) {
 			return res.ok (headers);
 		});
 	},
 
 	create: function (req, res) {
 		var parameters = {
-			projectsId: req.param ('projectId'),
-			environmentsId: req.param ('environmentId'),
+			projectsId: req.param ('projectsId'),
+			environmentsId: req.param ('environmentsId'),
 			testsId: req.param ('testsId'),
 			requestsId: req.param ('requestsId'),
 			name: req.param ('name'),
-			value: req.param ('value'),
+			value: req.param ('value')
 		};
 
 		headers.create (parameters).then (function (header) {

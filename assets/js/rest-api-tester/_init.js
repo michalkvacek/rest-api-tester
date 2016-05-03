@@ -39,37 +39,25 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			template: window.JST['assets/templates/projects.html']
 		}).state ('projects_settings', {
 			url: '/project/{projectId}/settings',
-			template: window.JST['assets/templates/homepage.html']
+			template: window.JST['assets/templates/projectSettings.html']
 		}).state ('dashboard', {
 			url: '/project/{projectId}/dashboard',
-			template: window.JST['assets/templates/dashboard.html'],
-			controller: 'EnvironmentsController',
-			controllerAs: 'environments'
+			template: window.JST['assets/templates/dashboard.html']
 		}).state ('tests', {
 			url: '/environment/{environmentId:int}/tests',
-			template: window.JST['assets/templates/tests.html'],
-			controller: 'TestsController',
-			controllerAs: 'tests'
+			template: window.JST['assets/templates/tests.html']
 		}).state ('test_detail', {
 			url: '/tests/{testId:int}',
-			template: window.JST['assets/templates/test.html'],
-			controller: 'TestsController',
-			controllerAs: 'controller'
+			template: window.JST['assets/templates/test.html']
 		}).state ('test_result', {
 			url: '/tests/results/{testResultId:int}',
-			template: window.JST['assets/templates/testResult.html'],
-			controller: 'TestsResultsController',
-			controllerAs: 'result'
+			template: window.JST['assets/templates/testResult.html']
 		}).state ('request', {
 			url: '/requests/:requestId',
-			template: window.JST['assets/templates/request.html'],
-			controller: 'RequestsController',
-			controllerAs: 'request'
+			template: window.JST['assets/templates/request.html']
 		}).state ('request_editor', {
 			url: '/requests/:requestId/editor',
-			template: window.JST['assets/templates/requestEditor.html'],
-			controller: 'RequestsController',
-			controllerAs: 'request'
+			template: window.JST['assets/templates/requestEditor.html']
 		});
 	}]).run (function ($rootScope) {
 

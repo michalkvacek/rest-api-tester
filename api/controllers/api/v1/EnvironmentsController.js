@@ -72,6 +72,32 @@ module.exports = {
 			return res.serverError (error);
 		})
 	},
+
+	update: function (req, res) {
+		environments.find ({where: {id: req.environmentId}}).then (function (environment) {
+
+			environment.update ({
+				name: req.param ('name'),
+				description: req.param ('description'),
+				apiEndpoint: req.param ('apiEndpoint')
+			}).then (function (edit) {
+				return res.ok (environment);
+			}, function (error) {
+				return res.notFound (error);
+			});
+		}, function (error) {
+			return res.notFound (error);
+		});
+	},
+
+	delete: function (req, res) {
+		environments.findOne ({where: {id: req.environmentId}}).then (function (env) {
+			env.destroy ();
+
+			return res.ok ('deleted');
+		})
+	},
+
 	/**
 	 * Schedule all tests in environment for running now
 	 *
@@ -96,16 +122,16 @@ module.exports = {
 					continue;
 
 				// taky predelat do service
-				
+
 				runnedTests.create ({
 					testName: envTests[i].name,
 					testDescription: envTests[i].description,
 					environmentsId: envTests[i].environmentsId,
 					testsId: envTests[i].id,
 					status: 'waiting_for_response'
-				}). then(function (preparedResult) {
+				}).then (function (preparedResult) {
 					// insert requests
-					
+
 				});
 			}
 

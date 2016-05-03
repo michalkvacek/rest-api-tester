@@ -39,6 +39,13 @@ module.exports.routes = {
 
 	'post /api/v1/environments/:environmentId/runTests': 'api/v1/Environments.runTests',
 	
+	'put /api/v1/environments/:environmentId': 'api/v1/Environments.update',
+	'delete /api/v1/environments/:environmentId': 'api/v1/Environments.delete',
+
+	'get /api/v1/projects/:projectId': 'api/v1/Projects.detail',
+	'put /api/v1/projects/:projectId': 'api/v1/Projects.update',
+	'delete /api/v1/projects/:projectId': 'api/v1/Projects.delete',
+	
 	'get /api/v1/headers': 'api/v1/Headers.index',
 	'get /api/v1/headers/:headerId': 'api/v1/Headers.detail',
 	'post /api/v1/headers': 'api/v1/Headers.create',

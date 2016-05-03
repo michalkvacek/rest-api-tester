@@ -1,326 +1,329 @@
-<div class="column with-shadow has-controls" ng-init="request.initDetail()">
-	<div class="content-holder">
-		<h4>{{request.current.name}}
-			<small>({{request.current.httpMethod}} {{request.current.url}})</small>
-		</h4>
-
-		<p>{{request.current.description}}</p>
-
-		<div class="row" ng-controller="AuthenticationsController as auths">
-			<div class="column" ng-controller="VersionsController as versions">
-
-				<h5>Basic info</h5>
-				<ul>
-
-					<li>In tests:
-
-						<a ng-repeat="test in request.current.tests" ui-sref="test_detail({testId: test.id})">
-							{{test.name}}
-						</a>
-					</li>
-
-					<li>
-						Authentication:
-						<a ng-show="request.current.authentication"
-							ng-click="auths.openEditWindow(request.current.authentication.id, request.current.environmentsId)">
-							{{request.current.authentication.name}}
-						</a>
-						<span ng-show="!request.current.authentication">Nic</span>
-					</li>
-					<li>
-						API version:
-						<a ng-show="request.current.version"
-							ng-click="versions.openEditWindow(request.current.version.id, request.current.version.projectsId)">
-							{{request.current.version.name}}
-						</a>
-						<span ng-show="!request.current.version">Nic</span>
-					</li>
-				</ul>
-
-				<!--Modal window for version edit-->
-				<div class="reveal" id="edit-version" data-reveal>
-					<h3>Edit version</h3>
-					<form ng-submit="versions.edit(request.current.version.projectsId)">
-						<label>
-							Name
-							<input type="text" ng-model="versions.formData.name">
-						</label>
-						<label>
-							Description
-							<textarea rows="2" ng-model="versions.formData.description"></textarea>
-						</label>
-						<label>
-							URL segment
-							<input type="text" ng-model="versions.formData.urlSegment">
-						</label>
-
-						<button type="submit" class="button success">Save</button>
-					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="submit">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-
-				<div class="reveal" id="edit-authentication" data-reveal>
-					<h3>Edit authentication</h3>
-
-					<form ng-submit="auths.edit()">
-						<label>
-							Name
-							<input type="text" ng-model="auths.formData.name">
-						</label>
-
-						<label>
-							Username
-							<input type="text" ng-model="auths.formData.username">
-						</label>
-
-						<label>
-							Password
-							<input type="text" ng-model="auths.formData.password">
-						</label>
-
-						<label>
-							Authentication type
-
-							<select ng-model="auths.formData.type">
-								<option value="base">Base Auth</option>
-								<option value="bearer">Bearer token</option>
-							</select>
-						</label>
-
-						<div ng-show="auths.formData.type == 'bearer'">
-							<label>
-								API method
-								<input type="text" ng-model="auths.formData.apiMethod">
-							</label>
-
-							<label>
-								Token property
-								<input type="text" ng-model="auths.formData.tokenProperty">
-							</label>
-						</div>
-
-						<button type="submit" class="button success">Save</button>
-					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="submit">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-			</div>
-			<div class="column">
-				<h5>Headers</h5>
-				<ul>
-					<li ng-repeat="header in request.current.headers">
-						<strong>{{header.name}}</strong>: {{header.value}}
-					</li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="column" ng-show="request.current.queryString.length > 0">
-
-				<h5>Query string parameters</h5>
-
-				<table>
-					<thead>
-					<tr>
-						<th>Parameter name</th>
-						<th>Parameter value</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr ng-repeat="param in request.current.queryString">
-						<td>{{param.name}}</td>
-						<td>{{param.value}}</td>
-					</tr>
-					</tbody>
-				</table>
-
-			</div>
-
-			<div class="column" ng-show="request.current.httpParameters.length > 0">
-				<h5>{{request.current.httpMethod}} parameters</h5>
-
-				<table>
-					<thead>
-					<tr>
-						<th>Parameter name</th>
-						<th>Parameter value</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr ng-repeat="param in request.current.httpParameters">
-						<td>{{param.name}}</td>
-						<td>{{param.value}}</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="row controls align-right">
-		<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"><i class="fi-pencil"></i> <span
-				  class="show-for-medium">Edit</span></a>
-
-		&nbsp;
-		<a href="javascript:void(0)" ng-click="request.delete(request.current.environmentsId, request.current.id)"
-			class="alert tiny button">
-			<i class="fi-x"></i>
-			<span class="show-for-medium">Delete</span>
-		</a>
-	</div>
-</div>
-
-<div class="row" ng-controller="AssertionsController as asserts">
-	<div class="column with-shadow has-controls" ng-init="asserts.initRequestAssertions()">
+<div ng-controller="RequestsController as request">
+	<div class="column with-shadow has-controls" ng-init="request.initDetail()">
 		<div class="content-holder">
-			<div class="callout warning"
-				  ng-show="asserts.assertions[request.current.id].length == 0">
-				Prazdne
+			<h4>{{request.current.name}}
+				<small>({{request.current.httpMethod}} {{request.current.url}})</small>
+			</h4>
+
+			<p>{{request.current.description}}</p>
+
+			<div class="row" ng-controller="AuthenticationsController as auths">
+				<div class="column" ng-controller="VersionsController as versions">
+
+					<h5>Basic info</h5>
+					<ul>
+
+						<li>In tests:
+
+							<a ng-repeat="test in request.current.tests" ui-sref="test_detail({testId: test.id})">
+								{{test.name}}
+							</a>
+						</li>
+
+						<li>
+							Authentication:
+							<a ng-show="request.current.authentication"
+								ng-click="auths.openEditWindow(request.current.authentication.id, request.current.environmentsId)">
+								{{request.current.authentication.name}}
+							</a>
+							<span ng-show="!request.current.authentication">Nic</span>
+						</li>
+						<li>
+							API version:
+							<a ng-show="request.current.version"
+								ng-click="versions.openEditWindow(request.current.version.id, request.current.version.projectsId)">
+								{{request.current.version.name}}
+							</a>
+							<span ng-show="!request.current.version">Nic</span>
+						</li>
+					</ul>
+
+					<!--Modal window for version edit-->
+					<div class="reveal" id="edit-version" data-reveal>
+						<h3>Edit version</h3>
+						<form ng-submit="versions.edit(request.current.version.projectsId)">
+							<label>
+								Name
+								<input type="text" ng-model="versions.formData.name">
+							</label>
+							<label>
+								Description
+								<textarea rows="2" ng-model="versions.formData.description"></textarea>
+							</label>
+							<label>
+								URL segment
+								<input type="text" ng-model="versions.formData.urlSegment">
+							</label>
+
+							<button type="submit" class="button success">Save</button>
+						</form>
+
+						<!-- Close button -->
+						<button class="close-button" data-close aria-label="Close modal" type="submit">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+
+					<div class="reveal" id="edit-authentication" data-reveal>
+						<h3>Edit authentication</h3>
+
+						<form ng-submit="auths.edit()">
+							<label>
+								Name
+								<input type="text" ng-model="auths.formData.name">
+							</label>
+
+							<label>
+								Username
+								<input type="text" ng-model="auths.formData.username">
+							</label>
+
+							<label>
+								Password
+								<input type="text" ng-model="auths.formData.password">
+							</label>
+
+							<label>
+								Authentication type
+
+								<select ng-model="auths.formData.type">
+									<option value="base">Base Auth</option>
+									<option value="bearer">Bearer token</option>
+								</select>
+							</label>
+
+							<div ng-show="auths.formData.type == 'bearer'">
+								<label>
+									API method
+									<input type="text" ng-model="auths.formData.apiMethod">
+								</label>
+
+								<label>
+									Token property
+									<input type="text" ng-model="auths.formData.tokenProperty">
+								</label>
+							</div>
+
+							<button type="submit" class="button success">Save</button>
+						</form>
+
+						<!-- Close button -->
+						<button class="close-button" data-close aria-label="Close modal" type="submit">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+				</div>
+				<div class="column">
+					<h5>Headers</h5>
+					<ul>
+						<li ng-repeat="header in request.current.headers">
+							<strong>{{header.name}}</strong>: {{header.value}}
+						</li>
+					</ul>
+				</div>
 			</div>
 
-			<table ng-show="asserts.assertions[request.current.id].length > 0">
-				<thead>
-				<tr>
-					<th>Assertion name</th>
-					<th>Property name</th>
-					<th>Expected value</th>
-					<th></th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr ng-repeat="assertion in asserts.assertions[request.current.id]">
-					<td>{{assertion.assertion.name}}</td>
-					<td>{{assertion.property}}</td>
-					<td>{{assertion.expectedValue}}</td>
-					<td>
-						<a href="javascript:void(0)"
-							ng-click="asserts.editAssertionWindow(assertion.id)">
-							<i class="fi-pencil" data-open="edit-assertion"></i>
-						</a>
-						<a href="javascript:void(0)"
-							ng-click="asserts.deleteAssertion(assertion.id, request.current.id)">
-							<i class="fi-x"></i>
-						</a>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
+			<div class="row">
+				<div class="column" ng-show="request.current.queryString.length > 0">
 
+					<h5>Query string parameters</h5>
+
+					<table>
+						<thead>
+						<tr>
+							<th>Parameter name</th>
+							<th>Parameter value</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="param in request.current.queryString">
+							<td>{{param.name}}</td>
+							<td>{{param.value}}</td>
+						</tr>
+						</tbody>
+					</table>
+
+				</div>
+
+				<div class="column" ng-show="request.current.httpParameters.length > 0">
+					<h5>{{request.current.httpMethod}} parameters</h5>
+
+					<table>
+						<thead>
+						<tr>
+							<th>Parameter name</th>
+							<th>Parameter value</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="param in request.current.httpParameters">
+							<td>{{param.name}}</td>
+							<td>{{param.value}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
 		<div class="row controls align-right">
-			<a href="javascript:void(0)" ng-click="asserts.newAssertionWindow()"
-				class="has-tip success tiny button" data-tooltip aria-haspopup="true"
-				data-disable-hover="false"
-				title="Add new assertion for this request"><i class="fi-plus"></i> <span class="show-for-medium"> Add assertion</span></a>
+			<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"><i
+					  class="fi-pencil"></i> <span
+					  class="show-for-medium">Edit</span></a>
+
+			&nbsp;
+			<a href="javascript:void(0)" ng-click="request.delete(request.current.environmentsId, request.current.id)"
+				class="alert tiny button">
+				<i class="fi-x"></i>
+				<span class="show-for-medium">Delete</span>
+			</a>
 		</div>
 	</div>
 
-	<div class="reveal" id="edit-assertion" data-reveal>
-		<h3>Edit assertion</h3>
+	<div class="row" ng-controller="AssertionsController as asserts">
+		<div class="column with-shadow has-controls" ng-init="asserts.initRequestAssertions()">
+			<div class="content-holder">
+				<div class="callout warning"
+					  ng-show="asserts.assertions[request.current.id].length == 0">
+					Prazdne
+				</div>
 
-		<form ng-submit="asserts.editAssertion()">
-			<label>
-				Assertion type
-
-				<select name="input-type" ng-model="asserts.formData.assertionType">
-					<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
-				</select>
-			</label>
-
-			<label>
-				Property
-
-				<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
-			</label>
-
-			<label>
-				Value
-
-				<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
-			</label>
-
-			<button type="submit" class="button success">Edit</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-	<div class="reveal" id="new-assertion" data-reveal>
-		<h3>Add new assertion</h3>
-
-		<form ng-submit="asserts.newAssertion()">
-			<label>
-				Assertion type
-
-				<select name="input-type" ng-model="asserts.formData.assertionType">
-					<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
-				</select>
-			</label>
-
-			<label>
-				Property
-
-				<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
-			</label>
-
-			<label>
-				Value
-
-				<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
-			</label>
-
-			<button type="submit" class="button success">Create new</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-
-</div>
-
-<div class="row" ng-init="request.initLastResponse()" ng-show="request.lastResponse.id > 0">
-	<div class="column with-shadow">
-		<h4>Last request call</h4>
-
-		<div class="row">
-			<div class="column">
-				<h5>Status</h5>
-				<ul>
-					<li>Status code: {{request.lastResponse.responseCode}}</li>
-					<li>Response size: {{request.lastResponse.responseSize / 1024 | number: 1}} kB</li>
-					<li>Response time: {{request.lastResponse.responseTime}} ms</li>
-				</ul>
+				<table ng-show="asserts.assertions[request.current.id].length > 0">
+					<thead>
+					<tr>
+						<th>Assertion name</th>
+						<th>Property name</th>
+						<th>Expected value</th>
+						<th></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="assertion in asserts.assertions[request.current.id]">
+						<td>{{assertion.assertion.name}}</td>
+						<td>{{assertion.property}}</td>
+						<td>{{assertion.expectedValue}}</td>
+						<td>
+							<a href="javascript:void(0)"
+								ng-click="asserts.editAssertionWindow(assertion.id)">
+								<i class="fi-pencil" data-open="edit-assertion"></i>
+							</a>
+							<a href="javascript:void(0)"
+								ng-click="asserts.deleteAssertion(assertion.id, request.current.id)">
+								<i class="fi-x"></i>
+							</a>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 			</div>
-			<div class="column">
-				<h5>Response headers</h5>
 
-				<ul>
-					<li ng-repeat="(header, value) in request.lastResponse.responseHeaders">
-						<strong>{{header}}</strong>: {{value}}
-					</li>
-				</ul>
+			<div class="row controls align-right">
+				<a href="javascript:void(0)" ng-click="asserts.newAssertionWindow()"
+					class="has-tip success tiny button" data-tooltip aria-haspopup="true"
+					data-disable-hover="false"
+					title="Add new assertion for this request"><i class="fi-plus"></i> <span class="show-for-medium"> Add assertion</span></a>
 			</div>
 		</div>
 
-		<h5>Response body</h5>
+		<div class="reveal" id="edit-assertion" data-reveal>
+			<h3>Edit assertion</h3>
 
-		<code class="response">
-			{{request.lastResponse.responseBodyRaw}}
-		</code>
+			<form ng-submit="asserts.editAssertion()">
+				<label>
+					Assertion type
+
+					<select name="input-type" ng-model="asserts.formData.assertionType">
+						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
+					</select>
+				</label>
+
+				<label>
+					Property
+
+					<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
+				</label>
+
+				<label>
+					Value
+
+					<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
+				</label>
+
+				<button type="submit" class="button success">Edit</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<div class="reveal" id="new-assertion" data-reveal>
+			<h3>Add new assertion</h3>
+
+			<form ng-submit="asserts.newAssertion()">
+				<label>
+					Assertion type
+
+					<select name="input-type" ng-model="asserts.formData.assertionType">
+						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
+					</select>
+				</label>
+
+				<label>
+					Property
+
+					<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
+				</label>
+
+				<label>
+					Value
+
+					<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
+				</label>
+
+				<button type="submit" class="button success">Create new</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+
+	</div>
+
+	<div class="row" ng-init="request.initLastResponse()" ng-show="request.lastResponse.id > 0">
+		<div class="column with-shadow">
+			<h4>Last request call</h4>
+
+			<div class="row">
+				<div class="column">
+					<h5>Status</h5>
+					<ul>
+						<li>Status code: {{request.lastResponse.responseCode}}</li>
+						<li>Response size: {{request.lastResponse.responseSize / 1024 | number: 1}} kB</li>
+						<li>Response time: {{request.lastResponse.responseTime}} ms</li>
+					</ul>
+				</div>
+				<div class="column">
+					<h5>Response headers</h5>
+
+					<ul>
+						<li ng-repeat="(header, value) in request.lastResponse.responseHeaders">
+							<strong>{{header}}</strong>: {{value}}
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<h5>Response body</h5>
+
+			<code class="response">
+				{{request.lastResponse.responseBodyRaw}}
+			</code>
+		</div>
 	</div>
 </div>

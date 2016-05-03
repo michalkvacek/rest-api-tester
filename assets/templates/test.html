@@ -1,84 +1,85 @@
-<div ng-controller="AssertionsController as asserts">
-	<div class="row content" ng-init="controller.initDetail()">
-		<div class="column with-shadow has-controls">
-			<div class="row">
-				<div class="column no-padding">
-					<h3>{{controller.detail.name}}</h3>
+<div ng-controller="TestsController as tests">
+	<div ng-controller="AssertionsController as asserts">
+		<div class="row content" ng-init="tests.initDetail()">
+			<div class="column with-shadow has-controls">
+				<div class="row">
+					<div class="column no-padding">
+						<h3>{{tests.detail.name}}</h3>
 
-					{{controller.detail.description}}
-				</div>
-				<div class="column shrink" ng-switch="controller.detail.lastRunStatus">
-					<a href="javascript:void(0)" ng-click="controller.run(controller.detail.id)"
-						class="button success small fi-play"> Run now</a>
-					<a href="javascript:void(0)" ng-click="controller.openEditWindow()"
-						class="button primary small fi-pencil"> Edit</a>
-					<br />
+						{{tests.detail.description}}
+					</div>
+					<div class="column shrink" ng-switch="tests.detail.lastRunStatus">
+						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
+							class="button success small fi-play"> Run now</a>
+						<a href="javascript:void(0)" ng-click="tests.openEditWindow()"
+							class="button primary small fi-pencil"> Edit</a>
+						<br />
 
-					<span ng-switch-when="success" class="label success fi-check"> Passing</span>
-					<span ng-switch-when="failed" class="label alert fi-x"> Not passing</span>
-					<span ng-show="controller.detail.nextRun" class="label warning fi-calendar"> Next run: {{controller.detail.nextRun | date : 'short' }}</span>
+						<span ng-switch-when="success" class="label success fi-check"> Passing</span>
+						<span ng-switch-when="failed" class="label alert fi-x"> Not passing</span>
+						<span ng-show="tests.detail.nextRun" class="label warning fi-calendar"> Next run: {{tests.detail.nextRun | date : 'short' }}</span>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="row" ng-init="controller.initStatistics(controller.statisticsButton)" ng-show="controller.statistics">
-		<div class="column with-shadow has-controls">
-			<div class="row text-center">
-				<div class="column">
-					<h4>{{controller.statistics.health || '--'}} %</h4>
-					<small>Health</small>
-				</div>
-				<div class="column">
-					<h4>{{controller.statistics.avgResponseTime || '--'}} ms</h4>
-					<small>Average response time</small>
-				</div>
-				<div class="column">
-					<h4>{{controller.statistics.maxResponseTime || '--'}} ms</h4>
-					<small>Longest response time</small>
-				</div>
-				<div class="column">
-					<h4>{{controller.statistics.testedRequests || '--'}}</h4>
-					tested requests
+		<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)" ng-show="tests.statistics">
+			<div class="column with-shadow has-controls">
+				<div class="row text-center">
+					<div class="column">
+						<h4>{{tests.statistics.health || '--'}} %</h4>
+						<small>Health</small>
+					</div>
+					<div class="column">
+						<h4>{{tests.statistics.avgResponseTime || '--'}} ms</h4>
+						<small>Average response time</small>
+					</div>
+					<div class="column">
+						<h4>{{tests.statistics.maxResponseTime || '--'}} ms</h4>
+						<small>Longest response time</small>
+					</div>
+					<div class="column">
+						<h4>{{tests.statistics.testedRequests || '--'}}</h4>
+						tested requests
+					</div>
+
 				</div>
 
-			</div>
-
-			<div class="row controls align-right">
-				<a href="javascript:void(0)"
-					ng-click="controller.initStatistics(30); controller.statisticsButton = 30"
-					ng-class="(controller.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
-					30 days
-				</a>
-				&nbsp;
-				<a href="javascript:void(0)"
-					ng-click="controller.initStatistics(7); controller.statisticsButton = 7"
-					ng-class="(controller.statisticsButton == 7) ? 'primary' : 'secondary'"
-					class="button tiny">7 days</a>
-				&nbsp;
-				<a href="javascript:void(0)"
-					ng-click="controller.initStatistics(1); controller.statisticsButton = 1"
-					ng-class="(controller.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
-					last 24 hours</a>
+				<div class="row controls align-right">
+					<a href="javascript:void(0)"
+						ng-click="tests.initStatistics(30); tests.statisticsButton = 30"
+						ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
+						30 days
+					</a>
+					&nbsp;
+					<a href="javascript:void(0)"
+						ng-click="tests.initStatistics(7); tests.statisticsButton = 7"
+						ng-class="(tests.statisticsButton == 7) ? 'primary' : 'secondary'"
+						class="button tiny">7 days</a>
+					&nbsp;
+					<a href="javascript:void(0)"
+						ng-click="tests.initStatistics(1); tests.statisticsButton = 1"
+						ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
+						last 24 hours</a>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="row">
-		<div class="column has-controls with-shadow">
-			<h4>Requests</h4>
+		<div class="row">
+			<div class="column has-controls with-shadow">
+				<h4>Requests</h4>
 
-			<div ng-show="controller.detail.requests.length == 0" class="callout warning">Zadny request</div>
+				<div ng-show="tests.detail.requests.length == 0" class="callout warning">Zadny request</div>
 
-			<div class="row content-holder" ng-show="controller.detail.requests.length"
-				  ng-controller="RequestsController as reqController">
-				<div class="column no-padding">
-					<ul class="accordion" id="requests-list" data-accordion data-multi-expand="true"
-						 data-allow-all-closed="true">
-						<li class="accordion-item" ng-repeat="request in controller.detail.requests" data-accordion-item>
-							<a href="javascript:void(0)" class="accordion-title"
-								ng-click="reqController.initDetail(request.id, controller.detail.id, false)">
-								<h5>
+				<div class="row content-holder" ng-show="tests.detail.requests.length"
+					  ng-controller="RequestsController as reqController">
+					<div class="column no-padding">
+						<ul class="accordion" id="requests-list" data-accordion data-multi-expand="true"
+							 data-allow-all-closed="true">
+							<li class="accordion-item" ng-repeat="request in tests.detail.requests" data-accordion-item>
+								<a href="javascript:void(0)" class="accordion-title"
+									ng-click="reqController.initDetail(request.id, tests.detail.id, false)">
+									<h5>
 								<span ng-show="request.lastRunStatus"
 										ng-class="request.lastRunStatus =='success' ? 'success fi-check' : 'alert fi-x'"
 										class="label">
@@ -88,404 +89,404 @@
 									{{request.name}}
 								</span>
 
-									<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
-								</h5>
-								<small>{{request.description}}</small>
-							</a>
-							<div class="accordion-content" ng-attr-id="{{ 'request-tabs-'+request.id}}" data-tab-content>
-								<ul class="tabs">
-									<li ng-attr-id="{{ 'request-'+request.id+'-title'}}" class="tabs-title is-active">
-										<a href="javascript:void(0)"
-											ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
-											aria-selected="true">
-											Request</a>
-									</li>
-									<li ng-attr-id="{{ 'assertions-'+request.id+'-title'}}" class="tabs-title">
-										<a href="javascript:void(0)"
-											ng-click="openTab('#request-tabs-'+request.id, '#assertions-'+request.id); asserts.initRequestAssertions(request.id)">
-											Assertions
-										</a>
-									</li>
-								</ul>
-								<div class="tabs-content">
-									<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
-										<h4>
-											<a ui-sref="request({requestId: request.id})">
-												{{request.name}}
-												<small ng-show="request.authenticationsId > 0">
-													({{reqController.detail[request.id].authentication.name}})
-												</small>
+										<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
+									</h5>
+									<small>{{request.description}}</small>
+								</a>
+								<div class="accordion-content" ng-attr-id="{{ 'request-tabs-'+request.id}}" data-tab-content>
+									<ul class="tabs">
+										<li ng-attr-id="{{ 'request-'+request.id+'-title'}}" class="tabs-title is-active">
+											<a href="javascript:void(0)"
+												ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
+												aria-selected="true">
+												Request</a>
+										</li>
+										<li ng-attr-id="{{ 'assertions-'+request.id+'-title'}}" class="tabs-title">
+											<a href="javascript:void(0)"
+												ng-click="openTab('#request-tabs-'+request.id, '#assertions-'+request.id); asserts.initRequestAssertions(request.id)">
+												Assertions
 											</a>
-										</h4>
+										</li>
+									</ul>
+									<div class="tabs-content">
+										<div class="tabs-panel is-active" ng-attr-id="{{ 'request-'+request.id}}">
+											<h4>
+												<a ui-sref="request({requestId: request.id})">
+													{{request.name}}
+													<small ng-show="request.authenticationsId > 0">
+														({{reqController.detail[request.id].authentication.name}})
+													</small>
+												</a>
+											</h4>
 
-										<p>{{request.description}}</p>
+											<p>{{request.description}}</p>
 
-										<div class="headers" ng-show="reqController.detail[request.id].headers.length > 0">
-											<h5>Headers</h5>
-											<ul>
-												<li ng-repeat="header in reqController.detail[request.id].headers">
-													<strong>{{header.name}}</strong>: {{header.value}}
-												</li>
-											</ul>
+											<div class="headers" ng-show="reqController.detail[request.id].headers.length > 0">
+												<h5>Headers</h5>
+												<ul>
+													<li ng-repeat="header in reqController.detail[request.id].headers">
+														<strong>{{header.name}}</strong>: {{header.value}}
+													</li>
+												</ul>
+											</div>
+
+											<a class="button success tiny" ui-sref="request({requestId: request.id})">
+												<i class="fi-magnifying-glass"></i>
+												Detail
+											</a>
+
+											<a class="button primary tiny" ui-sref="request_editor({requestId: request.id})">
+												<i class="fi-pencil"></i>
+												Edit
+											</a>
+
+											<a class="button alert tiny" ng-click="tests.removeRequest(request.id)">
+												<i class="fi-x"></i>
+												Delete from test
+											</a>
+
 										</div>
+										<div class="tabs-panel" ng-attr-id="{{ 'assertions-'+request.id }}">
 
-										<a class="button success tiny" ui-sref="request({requestId: request.id})">
-											<i class="fi-magnifying-glass"></i>
-											Detail
-										</a>
+											<div class="callout warning"
+												  ng-show="asserts.assertions[request.id].length == 0">
+												Prazdne
+											</div>
 
-										<a class="button primary tiny" ui-sref="request_editor({requestId: request.id})">
-											<i class="fi-pencil"></i>
-											Edit
-										</a>
-
-										<a class="button alert tiny" ng-click="controller.removeRequest(request.id)">
-											<i class="fi-x"></i>
-											Delete from test
-										</a>
-
-									</div>
-									<div class="tabs-panel" ng-attr-id="{{ 'assertions-'+request.id }}">
-
-										<div class="callout warning"
-											  ng-show="asserts.assertions[request.id].length == 0">
-											Prazdne
+											<table ng-show="asserts.assertions[request.id].length > 0">
+												<thead>
+												<tr>
+													<th>Assertion name</th>
+													<th>Property name</th>
+													<th>Expected value</th>
+													<th></th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr ng-repeat="assertion in asserts.assertions[request.id]">
+													<td>{{assertion.assertion.name}}</td>
+													<td>{{assertion.property}}</td>
+													<td>{{assertion.expectedValue}}</td>
+													<td>
+														<a href="javascript:void(0)"
+															ng-click="asserts.editAssertionWindow(assertion.id)">
+															<i class="fi-pencil" data-open="edit-assertion"></i>
+														</a>
+														<a href="javascript:void(0)"
+															ng-click="asserts.deleteAssertion(assertion.id, request.id)">
+															<i class="fi-x"></i>
+														</a>
+													</td>
+												</tr>
+												</tbody>
+											</table>
+											<button ng-click="asserts.newAssertionWindow(request.id)"
+													  class="button success float-right"
+													  id="add-assert-3"><i
+													  class="fi-plus"></i> Add assertion
+											</button>
+											<div class="clearfix"></div>
 										</div>
-
-										<table ng-show="asserts.assertions[request.id].length > 0">
-											<thead>
-											<tr>
-												<th>Assertion name</th>
-												<th>Property name</th>
-												<th>Expected value</th>
-												<th></th>
-											</tr>
-											</thead>
-											<tbody>
-											<tr ng-repeat="assertion in asserts.assertions[request.id]">
-												<td>{{assertion.assertion.name}}</td>
-												<td>{{assertion.property}}</td>
-												<td>{{assertion.expectedValue}}</td>
-												<td>
-													<a href="javascript:void(0)"
-														ng-click="asserts.editAssertionWindow(assertion.id)">
-														<i class="fi-pencil" data-open="edit-assertion"></i>
-													</a>
-													<a href="javascript:void(0)"
-														ng-click="asserts.deleteAssertion(assertion.id, request.id)">
-														<i class="fi-x"></i>
-													</a>
-												</td>
-											</tr>
-											</tbody>
-										</table>
-										<button ng-click="asserts.newAssertionWindow(request.id)"
-												  class="button success float-right"
-												  id="add-assert-3"><i
-												  class="fi-plus"></i> Add assertion
-										</button>
-										<div class="clearfix"></div>
 									</div>
 								</div>
-							</div>
 
-							<script ng-if="controller.detail.requests.length > 0 && $last">$ (function () {
-								Foundation.reInit ('accordion');
-							});</script>
-						</li>
-					</ul>
+								<script ng-if="tests.detail.requests.length > 0 && $last">$ (function () {
+									Foundation.reInit ('accordion');
+								});</script>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row controls align-right">
+					<a href="javascript:void(0)" class="has-tip top success tiny button" data-open="new-request-window"
+						data-tooltip
+						aria-haspopup="true"
+						data-disable-hover="false"
+						title="Add new request">
+						<i class="fi-plus"></i> <span class="show-for-medium"> Add request</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="column with-shadow has-controls">
+			<div class="row">
+				<div class="column no-padding">
+
+					<h4>Headers</h4>
+
+					<table>
+						<tr ng-repeat="header in tests.detail.headers">
+							<td>{{header.name}}</td>
+							<td>{{header.value}}</td>
+							<td class="text-right">
+								<a href="javascript:void(0)"
+									ng-click="tests.headers.openEditWindow(header.id)">
+									<i class="fi-pencil"></i>
+								</a>
+								<a href="javascript:void(0)" ng-click="tests.headers.delete(header.id)">
+									<i class="fi-x"></i>
+								</a>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div class="row controls align-right">
-				<a href="javascript:void(0)" class="has-tip top success tiny button" data-open="new-request-window"
-					data-tooltip
-					aria-haspopup="true"
-					data-disable-hover="false"
-					title="Add new request">
-					<i class="fi-plus"></i> <span class="show-for-medium"> Add request</span>
-				</a>
+				<button class="button success tiny" ng-click="tests.headers.newHeaderWindow(tests.detail.id)">
+					<i class="fi-check"></i> Add header
+				</button>
 			</div>
 		</div>
-	</div>
 
-	<div class="column with-shadow has-controls">
-		<div class="row">
-			<div class="column no-padding">
 
-				<h4>Headers</h4>
+		<div class="row" ng-show="tests.detail.runnedTests.length">
+			<div class="column with-shadow">
+				<h4>Results</h4>
 
-				<table>
-					<tr ng-repeat="header in controller.detail.headers">
-						<td>{{header.name}}</td>
-						<td>{{header.value}}</td>
-						<td class="text-right">
-							<a href="javascript:void(0)"
-								ng-click="controller.headers.openEditWindow(header.id)">
-								<i class="fi-pencil"></i>
-							</a>
-							<a href="javascript:void(0)" ng-click="controller.headers.delete(header.id)">
-								<i class="fi-x"></i>
-							</a>
-						</td>
-					</tr>
-				</table>
+
+				<div class="row">
+					<div class="column no-padding">
+						<a ng-repeat="result in tests.detail.runnedTests" ui-sref="test_result({testResultId: result.id})"
+							ng-class="result.status == 'success' ? 'fi-check success' : 'fi-x alert'"
+							class="button tiny"> {{result.createdAt | date : 'shortDate' }}</a>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="row controls align-right">
-			<button class="button success tiny" ng-click="controller.headers.newHeaderWindow(controller.detail.id)">
-				<i class="fi-check"></i> Add header
+
+		<div class="reveal" id="edit-header" data-reveal>
+			<h3>Edit header</h3>
+
+			<form ng-submit="tests.headers.edit()">
+				<div class="row">
+					<div class="column">
+						<label>
+							Name
+							<input type="text" ng-model="tests.formData.headers.name">
+						</label>
+					</div>
+					<div class="column">
+						<label>
+							Value
+							<input type="text" ng-model="tests.formData.headers.value">
+						</label>
+					</div>
+				</div>
+				<button type="submit" class="button success">Save</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
 			</button>
 		</div>
-	</div>
 
 
-	<div class="row" ng-show="controller.detail.runnedTests.length">
-		<div class="column with-shadow">
-			<h4>Results</h4>
+		<div class="reveal" id="new-header" data-reveal>
+			<h3>New header</h3>
 
-
-			<div class="row">
-				<div class="column no-padding">
-					<a ng-repeat="result in controller.detail.runnedTests" ui-sref="test_result({testResultId: result.id})"
-						ng-class="result.status == 'success' ? 'fi-check success' : 'fi-x alert'"
-						class="button tiny"> {{result.createdAt | date : 'shortDate' }}</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="reveal" id="edit-header" data-reveal>
-		<h3>Edit header</h3>
-
-		<form ng-submit="controller.headers.edit()">
-			<div class="row">
-				<div class="column">
-					<label>
-						Name
-						<input type="text" ng-model="controller.formData.headers.name">
-					</label>
-				</div>
-				<div class="column">
-					<label>
-						Value
-						<input type="text" ng-model="controller.formData.headers.value">
-					</label>
-				</div>
-			</div>
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-
-	<div class="reveal" id="new-header" data-reveal>
-		<h3>New header</h3>
-
-		<form ng-submit="controller.headers.create()">
-			<div class="row">
-				<div class="column">
-					<label>
-						Name
-						<input type="text" ng-model="controller.formData.headers.name">
-					</label>
-				</div>
-				<div class="column">
-					<label>
-						Value
-						<input type="text" ng-model="controller.formData.headers.value">
-					</label>
-				</div>
-			</div>
-			<button type="submit" class="button success">Save</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-	<div class="reveal" id="edit-assertion" data-reveal>
-		<h3>Edit assertion</h3>
-
-		<form ng-submit="asserts.editAssertion()">
-			<label>
-				Assertion type
-
-				<select name="input-type" ng-model="asserts.formData.assertionType">
-					<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
-				</select>
-			</label>
-
-			<label>
-				Property
-
-				<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
-			</label>
-
-			<label>
-				Value
-
-				<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
-			</label>
-
-			<button type="submit" class="button success">Edit</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-	<div class="reveal" id="new-assertion" data-reveal>
-		<h3>Add new assertion</h3>
-
-		<form ng-submit="asserts.newAssertion()">
-			<label>
-				Assertion type
-
-				<select name="input-type" ng-model="asserts.formData.assertionType">
-					<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
-				</select>
-			</label>
-
-			<label>
-				Property
-
-				<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
-			</label>
-
-			<label>
-				Value
-
-				<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
-			</label>
-
-			<button type="submit" class="button success">Create new</button>
-		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-
-	<div class="reveal large" id="new-request-window" data-reveal ng-controller="RequestsController as request">
-
-		<h3>Add request</h3>
-
-		<ul class="tabs">
-			<li id="new-request-title" class="tabs-title is-active">
-				<a ng-click="openTab('#new-request-window', '#new-request')" aria-selected="true">New request</a>
-			</li>
-			<li id="existing-request-title" class="tabs-title">
-				<a ng-click="openTab('#new-request-window', '#existing-request'); request.initEnvironmentOverview(controller.detail.environmentsId, {ignoreTest: controller.detail.id})">
-					Existing requests
-				</a>
-			</li>
-		</ul>
-
-		<div class="tabs-content">
-			<div class="tabs-panel is-active" id="new-request">
-				<form ng-submit="request.create()">
-					<div class="row">
-						<div class="column">
-							<label>
-								Request name
-
-								<input type="text" name="name" ng-model="request.formData.name" />
-
-							</label>
-						</div>
+			<form ng-submit="tests.headers.create()">
+				<div class="row">
+					<div class="column">
+						<label>
+							Name
+							<input type="text" ng-model="tests.formData.headers.name">
+						</label>
 					</div>
-
-					<div class="row">
-						<div class="column large-3">
-							<label>
-								Method
-
-								<select name="httpMethod" ng-model="request.formData.httpMethod">
-									<option value="GET">GET</option>
-									<option value="POST">POST</option>
-									<option value="PUT">PUT</option>
-									<option value="DELETE">DELETE</option>
-									<option value="OPTION">OPTION</option>
-									<option value="PATCH">PATCH</option>
-								</select>
-							</label>
-						</div>
-
-						<div class="column large-9">
-							<label>
-								URL
-
-								<input type="text" name="url" ng-model="request.formData.url"
-										 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
-							</label>
-						</div>
+					<div class="column">
+						<label>
+							Value
+							<input type="text" ng-model="tests.formData.headers.value">
+						</label>
 					</div>
-					<div class="row">
-						<div class="column">
-							<button type="submit" class="button success float-right">Add</button>
-						</div>
-					</div>
-				</form>
-			</div>
+				</div>
+				<button type="submit" class="button success">Save</button>
+			</form>
 
-			<div class="tabs-panel" id="existing-request">
-				<button class="button"
-						  ng-repeat="availableRequest in request.environmentRequests"
-						  ng-class="controller.assignedRequestIds.hasOwnProperty(availableRequest.id) ? 'warning disabled' : 'success'"
-						  ng-click="controller.assignRequest(availableRequest.id)">
-					{{availableRequest.name}}
-					<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
-				</button>
-
-				<div class="callout warning" ng-show="request.environmentRequests.length == 0">Nedostupne</div>
-
-			</div>
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
 		</div>
 
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
+		<div class="reveal" id="edit-assertion" data-reveal>
+			<h3>Edit assertion</h3>
 
+			<form ng-submit="asserts.editAssertion()">
+				<label>
+					Assertion type
 
-	<div class="reveal large" id="edit-test" data-reveal="">
-		<h3>Edit test</h3>
+					<select name="input-type" ng-model="asserts.formData.assertionType">
+						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
+					</select>
+				</label>
 
-		<form ng-submit="controller.edit(controller.detail.id)">
+				<label>
+					Property
 
-			<label>
-				Test name
+					<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
+				</label>
 
-				<input type="text" ng-model="controller.formData.name" />
-			</label>
+				<label>
+					Value
 
-			<label>
-				Description
+					<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
+				</label>
 
-				<textarea rows="2" ng-model="controller.formData.description"></textarea>
-			</label>
+				<button type="submit" class="button success">Edit</button>
+			</form>
 
-			<div class="row">
-				<div class="column">
-					<button type="submit" class="button success float-right">Edit</button>
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<div class="reveal" id="new-assertion" data-reveal>
+			<h3>Add new assertion</h3>
+
+			<form ng-submit="asserts.newAssertion()">
+				<label>
+					Assertion type
+
+					<select name="input-type" ng-model="asserts.formData.assertionType">
+						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
+					</select>
+				</label>
+
+				<label>
+					Property
+
+					<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
+				</label>
+
+				<label>
+					Value
+
+					<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
+				</label>
+
+				<button type="submit" class="button success">Create new</button>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<div class="reveal large" id="new-request-window" data-reveal ng-controller="RequestsController as request">
+
+			<h3>Add request</h3>
+
+			<ul class="tabs">
+				<li id="new-request-title" class="tabs-title is-active">
+					<a ng-click="openTab('#new-request-window', '#new-request')" aria-selected="true">New request</a>
+				</li>
+				<li id="existing-request-title" class="tabs-title">
+					<a ng-click="openTab('#new-request-window', '#existing-request'); request.initEnvironmentOverview(tests.detail.environmentsId, {ignoreTest: tests.detail.id})">
+						Existing requests
+					</a>
+				</li>
+			</ul>
+
+			<div class="tabs-content">
+				<div class="tabs-panel is-active" id="new-request">
+					<form ng-submit="request.create()">
+						<div class="row">
+							<div class="column">
+								<label>
+									Request name
+
+									<input type="text" name="name" ng-model="request.formData.name" />
+
+								</label>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="column large-3">
+								<label>
+									Method
+
+									<select name="httpMethod" ng-model="request.formData.httpMethod">
+										<option value="GET">GET</option>
+										<option value="POST">POST</option>
+										<option value="PUT">PUT</option>
+										<option value="DELETE">DELETE</option>
+										<option value="OPTION">OPTION</option>
+										<option value="PATCH">PATCH</option>
+									</select>
+								</label>
+							</div>
+
+							<div class="column large-9">
+								<label>
+									URL
+
+									<input type="text" name="url" ng-model="request.formData.url"
+											 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="column">
+								<button type="submit" class="button success float-right">Add</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<div class="tabs-panel" id="existing-request">
+					<button class="button"
+							  ng-repeat="availableRequest in request.environmentRequests"
+							  ng-class="tests.assignedRequestIds.hasOwnProperty(availableRequest.id) ? 'warning disabled' : 'success'"
+							  ng-click="tests.assignRequest(availableRequest.id)">
+						{{availableRequest.name}}
+						<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
+					</button>
+
+					<div class="callout warning" ng-show="request.environmentRequests.length == 0">Nedostupne</div>
+
 				</div>
 			</div>
-		</form>
 
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
 
+
+		<div class="reveal large" id="edit-test" data-reveal="">
+			<h3>Edit test</h3>
+
+			<form ng-submit="tests.edit(tests.detail.id)">
+
+				<label>
+					Test name
+
+					<input type="text" ng-model="tests.formData.name" />
+				</label>
+
+				<label>
+					Description
+
+					<textarea rows="2" ng-model="tests.formData.description"></textarea>
+				</label>
+
+				<div class="row">
+					<div class="column">
+						<button type="submit" class="button success float-right">Edit</button>
+					</div>
+				</div>
+			</form>
+
+			<!-- Close button -->
+			<button class="close-button" data-close aria-label="Close modal" type="button">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
 	</div>
 </div>

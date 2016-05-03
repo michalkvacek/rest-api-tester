@@ -1,5 +1,5 @@
 var app = angular.module ('restApiTester');
-app.controller ('ProjectsController', ['$rootScope', '$state', 'projectsService', function ($rootScope, $state, projectsService) {
+app.controller ('ProjectsController', ['$rootScope', '$state', '$stateParams', 'projectsService', function ($rootScope, $state, $stateParams, projectsService) {
 	var self = this;
 
 	self.formData = {};
@@ -36,14 +36,15 @@ app.controller ('ProjectsController', ['$rootScope', '$state', 'projectsService'
 
 			if (project.id == projectId) {
 				$rootScope.selectProject (project);
+
+				if (typeof environmentId == 'undefined')
+					return;
 			}
 
 			for (e in project.environments) {
 				if (project.environments[e].id == environmentId) {
-
 					$rootScope.selectProject (project);
 					$rootScope.selectEnvironment (project.environments[e]);
-
 					return;
 				}
 			}
@@ -84,12 +85,34 @@ app.controller ('ProjectsController', ['$rootScope', '$state', 'projectsService'
 		});
 	};
 
+	self.loadDetail = function () {
+		var projectId = $stateParams.projectId;
+		$rootScope.setEnvironment(undefined, projectId);
+
+		projectsService.detail(projectId).then(function (response) {
+			self.detail = response.data;
+
+			$rootScope.breadcrumbs = [
+				{
+					label: 'Settings',
+					href: $state.href('project_settings', {projectId: response.data.id})
+				}
+			];
+		});
+	};
+
 	self.create = function () {
 		projectsService.create (self.formData).then (function (data) {
 			self.initOverview ();
 		});
 
 		$ ('#new-project').foundation ('close');
+	};
+
+	self.edit= function () {
+		projectsService.edit (self.formData.id, self.formData).then (function (data) {
+			self.initOverview ();
+		});
 	};
 
 	return self;

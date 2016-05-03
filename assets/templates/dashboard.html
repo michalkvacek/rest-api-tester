@@ -1,4 +1,4 @@
-<div class="row content align-center dashboard" ng-init="environments.initOverview(); " data-equalizer>
+<div class="row content align-center dashboard" ng-controller="EnvironmentsController as environments" ng-init="environments.initOverview(); " data-equalizer>
 	<div class="column no-padding small-12 medium-6 large-4" ng-repeat="environment in environments.overview">
 		<div class="environment with-shadow has-controls">
 
@@ -46,7 +46,7 @@
 
 				&nbsp;
 
-				<a href="./environment_settings.html" data-tooltip aria-haspopup="true" class="warning button has-tip tiny"
+				<a ui-sref="environment_settings({environmentId: environment.id})"  data-tooltip aria-haspopup="true" class="warning button has-tip tiny"
 					data-disable-hover="false"
 					title="Environment settings"><i class="fi-wrench"></i> Environment settings</a>
 			</div>

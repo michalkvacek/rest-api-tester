@@ -5,13 +5,14 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 
 		var self = this;
 
-		self.formData = self.detail = self.tests = self.statistics = {};
+		self.formData = {};
+		self.detail = {};
+		self.tests = {};
+		self.statistics = {};
 		self.formData.headers = {};
 		self.statisticsButton = 7;
 		self.scheduleData = {run: 'periodicaly', runInterval: "60"};
-
 		self.headers = {};
-
 		self.assignedRequestIds = {};
 
 		$scope.$on ('addedRequestIntoTest', function (event, request) {
@@ -36,9 +37,7 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$filter', '$state',
 
 		self.initTestOverview = function () {
 			var environmentId = $stateParams.environmentId;
-
 			$rootScope.setEnvironment (environmentId);
-
 			testsService.getOverview (environmentId).then (function (tests) {
 				self.tests = tests.data;
 			});

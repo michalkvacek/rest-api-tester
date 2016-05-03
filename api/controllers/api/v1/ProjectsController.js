@@ -22,6 +22,12 @@ module.exports = {
 		});
 	},
 
+	detail: function (req, res) {
+		projects.find({where: {id: req.projectId}}).then(function (project) {
+			return res.ok(project);
+		});
+	},
+	
 	create: function (req, res) {
 		var name = req.param ('name', null);
 		var description = req.param ('description', null);
@@ -39,6 +45,29 @@ module.exports = {
 				return res.badRequest(err);
 			}
 		});
-	}
+	},
+	update: function (req, res) {
+		projects.find ({where: {id: req.projectId}}).then (function (project) {
+
+			project.update ({
+				name: req.param ('name'),
+				description: req.param ('description')
+			}).then (function (edit) {
+				return res.ok (project);
+			}, function (error) {
+				return res.notFound (error);
+			});
+		}, function (error) {
+			return res.notFound (error);
+		});
+	},
+
+	delete: function (req, res) {
+		projects.findOne ({where: {id: req.projectId}}).then (function (env) {
+			env.destroy ();
+
+			return res.ok ('deleted');
+		})
+	},
 };
 

@@ -1,160 +1,165 @@
-<div class="row content" ng-init="tests.initStatistics(tests.statisticsButton)">
-	<div class="column with-shadow has-controls" ng-show="tests.statistics">
-		<div class="row text-center">
-			<div class="column">
-				<h4>{{tests.statistics.health || '--'}} %</h4>
-				<small>Health</small>
+<div ng-controller="TestsController as tests">
+	<div class="row content">
+		<div class="column with-shadow has-controls" ng-init="tests.initStatistics(tests.statisticsButton)"
+			  ng-show="tests.statistics">
+			<div class="row text-center">
+				<div class="column">
+					<h4>{{tests.statistics.health || '--'}} %</h4>
+					<small>Health</small>
+				</div>
+				<div class="column">
+					<h4>{{tests.statistics.avgResponseTime || '--'}} ms</h4>
+					<small>Average response time</small>
+				</div>
+				<div class="column">
+					<h4>{{tests.statistics.maxResponseTime || '--'}} ms</h4>
+					<small>Longest response time</small>
+				</div>
+				<div class="column">
+					<h4>{{tests.statistics.testedRequests || '--'}}</h4>
+					tested requests
+				</div>
 			</div>
-			<div class="column">
-				<h4>{{tests.statistics.avgResponseTime || '--'}} ms</h4>
-				<small>Average response time</small>
-			</div>
-			<div class="column">
-				<h4>{{tests.statistics.maxResponseTime || '--'}} ms</h4>
-				<small>Longest response time</small>
-			</div>
-			<div class="column">
-				<h4>{{tests.statistics.testedRequests || '--'}}</h4>
-				tested requests
-			</div>
-		</div>
 
-		<div class="row controls align-right">
-			<a href="javascript:void(0)"
-				ng-click="tests.initStatistics(30); tests.statisticsButton = 30"
-				ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
-				30 days
-			</a>
-			&nbsp;
-			<a href="javascript:void(0)"
-				ng-click="tests.initStatistics(7); tests.statisticsButton = 7"
-				ng-class="(tests.statisticsButton == 7) ? 'primary' : 'secondary'"
-				class="button tiny">7 days</a>
-			&nbsp;
-			<a href="javascript:void(0)"
-				ng-click="tests.initStatistics(1); tests.statisticsButton = 1"
-				ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
-				last 24 hours</a>
-			&nbsp;
-			<a href="javascript:void(0)" ng-click="tests.runAll(currentEnvironmentId)" class="button success tiny"><i class="fi-play"> Run all tests</i></a>
+			<div class="row controls align-right">
+				<a href="javascript:void(0)"
+					ng-click="tests.initStatistics(30); tests.statisticsButton = 30"
+					ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
+					30 days
+				</a>
+				&nbsp;
+				<a href="javascript:void(0)"
+					ng-click="tests.initStatistics(7); tests.statisticsButton = 7"
+					ng-class="(tests.statisticsButton == 7) ? 'primary' : 'secondary'"
+					class="button tiny">7 days</a>
+				&nbsp;
+				<a href="javascript:void(0)"
+					ng-click="tests.initStatistics(1); tests.statisticsButton = 1"
+					ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
+					last 24 hours</a>
+				&nbsp;
+				<a href="javascript:void(0)" ng-click="tests.runAll(currentEnvironmentId)" class="button success tiny"><i
+						  class="fi-play"> Run all tests</i></a>
+			</div>
 		</div>
 	</div>
-</div>
 
-<div class="row" data-equalizer ng-init="tests.initTestOverview()">
-	<div class="column no-padding large-4 test" ng-repeat="test in tests.tests">
-		<div class="with-shadow has-controls">
+	<div class="row" data-equalizer ng-init="tests.initTestOverview()">
+		<div class="column no-padding large-4 test" ng-repeat="test in tests.tests">
+			<div class="with-shadow has-controls">
 
-			<div class="content-holder" data-equalizer-watch>
-				<h5 class="text-center">{{test.name}}</h5>
+				<div class="content-holder" data-equalizer-watch>
+					<h5 class="text-center">{{test.name}}</h5>
 
-				<p>
-				{{test.description}}
-				</p>
+					<p>
+						{{test.description}}
+					</p>
 
 				<span ng-show="test.nextRun != null" class="label warning">
 					<i class="fi-calendar"></i>
 					Next run: {{test.nextRun | date : 'short'}}
 				</span>
 
-				<div class="row align-right" ng-switch="test.lastRunStatus">
-					<span ng-switch-when="success" class="label success fi-check"> Passing</span>
-					<span ng-switch-when="failed" class="label alert fi-x"> Not passing!</span>
-					<span ng-switch-when="waiting_for_response" class="label primary fi-check"> Waiting for response</span>
-					<span ng-switch-when="evaluating" class="label warning fi-check"> Running</span>
+					<div class="row align-right" ng-switch="test.lastRunStatus">
+						<span ng-switch-when="success" class="label success fi-check"> Passing</span>
+						<span ng-switch-when="failed" class="label alert fi-x"> Not passing!</span>
+						<span ng-switch-when="waiting_for_response"
+								class="label primary fi-check"> Waiting for response</span>
+						<span ng-switch-when="evaluating" class="label warning fi-check"> Running</span>
+					</div>
 				</div>
-			</div>
-			<div class="row controls align-right">
-				<a ui-sref="test_detail({testId: test.id})" class="has-tip primary tiny button" data-tooltip
-					aria-haspopup="true"
-					data-disable-hover="false"
-					title="Test detail"><i class="fi-magnifying-glass"></i> <span class="show-for-medium">Detail</span></a>
-				&nbsp;
+				<div class="row controls align-right">
+					<a ui-sref="test_detail({testId: test.id})" class="has-tip primary tiny button" data-tooltip
+						aria-haspopup="true"
+						data-disable-hover="false"
+						title="Test detail"><i class="fi-magnifying-glass"></i> <span
+							  class="show-for-medium">Detail</span></a>
+					&nbsp;
 
-				<a href="javascript:void(0)" ng-click="tests.run(test.id)" class="has-tip success tiny button" data-tooltip aria-haspopup="true"
-					data-disable-hover="false"
-					title="Run now"><i class="fi-play"></i> <span class="show-for-medium">Run now</span></a>
-				&nbsp;
-				<a href="javascript:void(0)" class="button tiny warning" ng-click="tests.setupSchedule(test)"
-					data-open="schedule-test"><i class="fi-calendar"></i> <span
-						  class="show-for-medium">Schedule</span></a>
+					<a href="javascript:void(0)" ng-click="tests.run(test.id)" class="has-tip success tiny button"
+						data-tooltip aria-haspopup="true"
+						data-disable-hover="false"
+						title="Run now"><i class="fi-play"></i> <span class="show-for-medium">Run now</span></a>
+					&nbsp;
+					<a href="javascript:void(0)" class="button tiny warning" ng-click="tests.setupSchedule(test)"
+						data-open="schedule-test"><i class="fi-calendar"></i> <span
+							  class="show-for-medium">Schedule</span></a>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="reveal large" id="schedule-test" data-reveal>
+	<div class="reveal large" id="schedule-test" data-reveal>
 
-	<h3>Schedule test run</h3>
+		<h3>Schedule test run</h3>
 
-	<form ng-submit="tests.schedule()">
-		<div class="row">
-			<div class="column shrink">
-				<label>
-					Run...
+		<form ng-submit="tests.schedule()">
+			<div class="row">
+				<div class="column shrink">
+					<label>
+						Run...
 
-					<select ng-model="tests.scheduleData.run">
-						<option value="periodicaly">Periodicaly</option>
-						<option value="once">Only once</option>
-					</select>
-				</label>
+						<select ng-model="tests.scheduleData.run">
+							<option value="periodicaly">Periodicaly</option>
+							<option value="once">Only once</option>
+						</select>
+					</label>
 
+				</div>
+				<div class="column" ng-show="tests.scheduleData.run == 'periodicaly'">
+					<label>
+						every
+						<select ng-model='tests.scheduleData.runInterval'>
+							<option value="30">30 minutes</option>
+							<option value="60">hour</option>
+							<option value="360">6 hours</option>
+							<option value="8640">day</option>
+						</select>
+					</label>
+				</div>
+				<div class="column large-6">
+					<label>
+						Next run at
+						<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />
+
+					</label>
+				</div>
 			</div>
-			<div class="column" ng-show="tests.scheduleData.run == 'periodicaly'">
-				<label>
-					every
-					<select ng-model='tests.scheduleData.runInterval'>
-						<option value="30">30 minutes</option>
-						<option value="60">hour</option>
-						<option value="360">6 hours</option>
-						<option value="8640">day</option>
-					</select>
-				</label>
+
+			<button class="button success float-right" type="submit">Save</button>
+		</form>
+
+		<!-- Close button -->
+		<button class="close-button" data-close aria-label="Close modal" type="button">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<!--Button for creating new resource-->
+	<a data-open="new-test" id="add-test" class="button success material-add-button"><i
+			  class="fi-plus"></i></a>
+
+	<div class="reveal large" id="new-test" data-reveal="">
+		<h3>New test</h3>
+
+		<form ng-submit="tests.newTest()">
+
+			<label>
+				Test name
+
+				<input type="text" ng-model="tests.formData.name" name="name" />
+			</label>
+
+			<label>
+				Description
+
+				<textarea rows="2" ng-model="tests.formData.description" name="description"></textarea>
+			</label>
+
+			<div class="row">
+				<div class="column">
+					<button type="submit" class="button success float-right">Create</button>
+				</div>
 			</div>
-			<div class="column large-6">
-				<label>
-					Next run at
-					<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />
-
-				</label>
-			</div>
-		</div>
-
-		<button class="button success float-right" type="submit">Save</button>
-	</form>
-
-
-	<!-- Close button -->
-	<button class="close-button" data-close aria-label="Close modal" type="button">
-		<span aria-hidden="true">&times;</span>
-	</button>
-</div>
-
-<!--Button for creating new resource-->
-<a data-open="new-test" id="add-test" class="button success material-add-button"><i
-		  class="fi-plus"></i></a>
-
-<div class="reveal large" id="new-test" data-reveal="">
-	<h3>New test</h3>
-
-	<form ng-submit="tests.newTest()">
-
-		<label>
-			Test name
-
-			<input type="text" ng-model="tests.formData.name" name="name" />
-		</label>
-
-		<label>
-			Description
-
-			<textarea rows="2" ng-model="tests.formData.description" name="description"></textarea>
-		</label>
-
-		<div class="row">
-			<div class="column">
-				<button type="submit" class="button success float-right">Create</button>
-			</div>
-		</div>
-	</form>
-
+		</form>
+	</div>
 </div>
