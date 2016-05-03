@@ -25,6 +25,27 @@
 									</label>
 								</div>
 							</div>
+
+							<div class="row">
+								<div class="column large-2">
+									<label>
+										<select ng-blur="request.edit()" name="input-type" ng-model="request.formData.httpMethod">
+											<option>POST</option>
+											<option>GET</option>
+											<option>PUT</option>
+											<option>DELETE</option>
+											<option>PATCH</option>
+											<option>OPTION</option>
+										</select>
+									</label>
+								</div>
+
+								<div class="column large-10">
+									<input ng-blur="request.edit()" type="text"
+											 ng-model="request.formData.url">
+								</div>
+							</div>
+
 							<div class="row">
 								<div class="column">
 									<label>
@@ -48,54 +69,36 @@
 												{{version.name}}
 											</option>
 										</select>
-
-										<a href="javascript:void(0)" class="button success" data-open="new-version">
-											<i class="fi-plus"></i>
-										</a>
 									</label>
+								</div>
+								<div class="column shrink align-bottom">
+									<a href="javascript:void(0)" class="button success" data-open="new-version">
+										<i class="fi-plus"></i>
+									</a>
 								</div>
 
 								<div class="column">
-									<label>
-
-										Authentication
-
-										<select ng-show="auths.overview.length > 0"
-												  ng-blur="request.edit()"
-												  ng-model="request.formData.authenticationsId"
-												  ng-if="request.environment.id"
-												  ng-init="auths.init(request.environment.id)">
-											<option ng-repeat="auth in auths.overview" value="{{auth.id}}">
-												{{auth.name}}
-											</option>
-										</select>
-
-										<a href="javascript:void(0)" class="button success" data-open="new-authentication">
-											<i class="fi-plus"></i>
-										</a>
-									</label>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="column large-2">
-									<label>
-										<select ng-blur="request.edit()" name="input-type" ng-model="request.formData.httpMethod">
-											<option>POST</option>
-											<option>GET</option>
-											<option>PUT</option>
-											<option>DELETE</option>
-											<option>PATCH</option>
-											<option>OPTION</option>
-										</select>
-									</label>
-								</div>
-
-								<div class="column large-10">
-									<div class="input-group">
-										<span class="input-group-label">{{request.environment.apiEndpoint}}</span>
-										<input ng-blur="request.edit()" class="input-group-field" type="text"
-												 ng-model="request.formData.url">
+									<div class="row">
+										<div class="column">
+											<label>
+												Authentication
+												<select ng-show="auths.overview.length > 0"
+														  ng-blur="request.edit()"
+														  ng-model="request.formData.authenticationsId"
+														  ng-if="request.environment.id"
+														  ng-init="auths.init(request.environment.id)">
+													<option ng-repeat="auth in auths.overview" value="{{auth.id}}">
+														{{auth.name}}
+													</option>
+												</select>
+											</label>
+										</div>
+										<div class="column shrink align-bottom">
+											<a href="javascript:void(0)" class="button success"
+												data-open="new-authentication">
+												<i class="fi-plus"></i>
+											</a>
+										</div>
 									</div>
 								</div>
 							</div>
