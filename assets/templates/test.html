@@ -27,11 +27,11 @@
 			<div class="column with-shadow has-controls">
 				<div class="row text-center">
 					<div class="column">
-						<h4>{{tests.statistics.health || '--'}} %</h4>
+						<h4>{{tests.statistics.health | number : 1 || '--'}} %</h4>
 						<small>Health</small>
 					</div>
 					<div class="column">
-						<h4>{{tests.statistics.avgResponseTime || '--'}} ms</h4>
+						<h4>{{tests.statistics.avgResponseTime | number : 1 || '--'}} ms</h4>
 						<small>Average response time</small>
 					</div>
 					<div class="column">

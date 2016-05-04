@@ -90,7 +90,7 @@ module.exports = {
 				responseTimeSum += data[i].responseTime;
 			}
 
-			stats.health = stats.testedRequests > 0 ? (stats.passed + stats.failed) / stats.passed * 100 : 0;
+			stats.health = stats.testedRequests > 0 ? (stats.passed) / stats.testedRequests * 100 : 0;
 			stats.avgResponseSize = stats.testedRequests > 0 ? responseSizeSum / stats.testedRequests : NaN;
 			stats.avgResponseTime = stats.testedRequests > 0 ? responseTimeSum / stats.testedRequests : NaN;
 
@@ -213,8 +213,8 @@ module.exports = {
 		testRunner.addToQueue({id: req.testId}, function (err) {
 			console.log(err);
 		});
-		
-		return res.ok();
+
+		return res.ok ();
 
 	},
 

@@ -85,7 +85,7 @@ module.exports = {
 									status: 'waiting_for_response'
 
 								}).then (function (response) {
-									// ok
+									testRunner.addJob (response);
 								}, callbackError);
 							}
 						}, callbackError);
@@ -93,5 +93,11 @@ module.exports = {
 				}, callbackError);
 			}, callbackError);
 		}, callbackError);
-	}
+	},
+	addJob: function (response) {
+		var publisher = sails.hooks.publisher;
+
+		//publish send confirmation email
+		var job = publisher.create ('evaluate', response.toJSON ()).save ();
+	},
 };

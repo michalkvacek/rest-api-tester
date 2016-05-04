@@ -35,7 +35,11 @@ module.exports = {
 			allowNull: true
 		},
 		lastRun: {
-			type: Sequelize.STRING,
+			type: Sequelize.DATE,
+			allowNull: true
+		},
+		lastRunStatus: {
+			type: Sequelize.ENUM ('waiting_for_response', 'evaluating', 'failed', 'success'),
 			allowNull: true
 		}
 	},

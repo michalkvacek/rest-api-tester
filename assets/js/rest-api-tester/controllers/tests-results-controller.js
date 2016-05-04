@@ -3,54 +3,58 @@ var app = angular.module ('restApiTester');
 app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', 'testsResultsService',
 	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, testsResultsService) {
 
-	var self = this;
+		var self = this;
 
-	self.test = {};
-	self.statistics = {};
-	$rootScope.testList = [];
+		self.test = {};
+		self.statistics = {};
+		$rootScope.testList = [];
 
-	$rootScope.loadTests = function (withTimeout) {
+		$rootScope.loadTests = function (withTimeout) {
 
-		if (typeof withTimeout == 'undefined')
-			withTimeout = true;
+			if (typeof withTimeout == 'undefined')
+				withTimeout = true;
 
-		testsResultsService.getOverview (1).then (function (response) {
-			$rootScope.testList = response.data;
+			testsResultsService.getOverview (1).then (function (response) {
+				$rootScope.testList = response.data;
 
-			if (withTimeout)
-				$timeout ($rootScope.loadTests, 30 * 1000);
-		});
-	};
+				for (i in $rootScope.testList) {
+					$rootScope.$broadcast ('testResultChanged', $rootScope.testList[i]);
+				}
 
-	$rootScope.loadTests ();
+				if (withTimeout)
+					$timeout ($rootScope.loadTests, 30 * 1000);
+			});
+		};
 
-	self.init = function () {
-		var resultId = $stateParams.testResultId;
+		$rootScope.loadTests ();
 
-		testsResultsService.getDetail (resultId).then (function (response) {
-			$rootScope.setEnvironment (response.data.environmentsId);
+		self.init = function () {
+			var resultId = $stateParams.testResultId;
 
-			$rootScope.breadcrumbs = [
-				{
-					label: 'Test: ' + response.data.testName,
-					href: $state.href ('test_detail', {testId: response.data.testsId})
-				},
-				{
-					label: 'Result from '+$filter ('date') (response.data.updatedAt, 'short'),
-					href: $state.href ('test_result', {testResultId: response.data.id})
-				}];
+			testsResultsService.getDetail (resultId).then (function (response) {
+				$rootScope.setEnvironment (response.data.environmentsId);
 
-			self.test = response.data;
-		});
-	};
+				$rootScope.breadcrumbs = [
+					{
+						label: 'Test: ' + response.data.testName,
+						href: $state.href ('test_detail', {testId: response.data.testsId})
+					},
+					{
+						label: 'Result from ' + $filter ('date') (response.data.updatedAt, 'short'),
+						href: $state.href ('test_result', {testResultId: response.data.id})
+					}];
 
-	self.initStatistics = function () {
-		var resultId = $stateParams.testResultId;
+				self.test = response.data;
+			});
+		};
 
-		testsResultsService.getStatistics (resultId).then (function (response) {
-			self.statistics = response.data;
-		})
-	};
+		self.initStatistics = function () {
+			var resultId = $stateParams.testResultId;
 
-	return self;
-}]);
+			testsResultsService.getStatistics (resultId).then (function (response) {
+				self.statistics = response.data;
+			})
+		};
+
+		return self;
+	}]);

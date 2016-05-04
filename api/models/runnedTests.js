@@ -38,7 +38,20 @@ module.exports = {
 		}
 	},
 	options: {
-		tableName: 'runnedTests'
+		tableName: 'runnedTests',
+		hooks: {
+			afterUpdate: function (runnedTest) {
+				tests.find ({where: {id: runnedTest.testsId}}).then (function (test) {
+
+					test.update ({
+						lastRunStatus: runnedTest.status,
+						lastRun: runnedTest.createdAt
+					}).then (function (update) {
+						// ok
+					})
+				})
+			}
+		}
 	},
 	// create relationships with other models
 	associations: function () {

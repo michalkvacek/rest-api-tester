@@ -192,6 +192,16 @@ li.separator {
 	/*background: #DDD;*/
 }
 
+.test-results {
+	max-height: 15em;
+	overflow: auto;
+}
+
+pre.response {
+	max-height: 40em;
+
+}
+
 .dropdown li.is-submenu-item:hover {
 	background: #EEE;
 	transition: background 0.4s;

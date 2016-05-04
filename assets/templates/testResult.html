@@ -13,11 +13,11 @@
 		<div class="column with-shadow">
 			<div class="row text-center">
 				<div class="column">
-					<h4>{{result.statistics.health}} %</h4>
+					<h4>{{result.statistics.health | number : 1}} %</h4>
 					<small>Assertions passed</small>
 				</div>
 				<div class="column">
-					<h4>{{result.statistics.avgResponseTime}} ms</h4>
+					<h4>{{result.statistics.avgResponseTime | number : 1}} ms</h4>
 					<small>Average response time</small>
 				</div>
 				<div class="column">
@@ -139,9 +139,9 @@
 											<div class="column">
 												<h5>Response body</h5>
 
-												<code class="response">
+												<pre class="response">
 													{{response.responseBodyRaw}}
-												</code>
+												</pre>
 											</div>
 										</div>
 									</div>
