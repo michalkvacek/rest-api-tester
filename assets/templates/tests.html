@@ -21,7 +21,7 @@
 				</div>
 			</div>
 
-			<div class="row controls align-right">
+			<div class="row controls align-right" ng-controller="EnvironmentsController as environments">
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(30); tests.statisticsButton = 30"
 					ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
@@ -38,7 +38,7 @@
 					ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
 					last 24 hours</a>
 				&nbsp;
-				<a href="javascript:void(0)" ng-click="tests.runAll(currentEnvironmentId)" class="button success tiny"><i
+				<a href="javascript:void(0)" ng-click="runEnvironmentTests(currentEnvironmentId)" class="button success tiny"><i
 						  class="fi-play"> Run all tests</i></a>
 			</div>
 		</div>
@@ -89,7 +89,7 @@
 			<script ng-if="$last && $index > 0">Foundation.reInit('equalizer');</script>
 		</div>
 	</div>
-	<div class="reveal large" id="schedule-test" data-reveal>
+	<modal show="tests.manageSchedule" class="large">
 
 		<h3>Schedule test run</h3>
 
@@ -133,21 +133,21 @@
 		<button class="close-button" data-close aria-label="Close modal" type="button">
 			<span aria-hidden="true">&times;</span>
 		</button>
-	</div>
+	</modal>
 
 	<!--Button for creating new resource-->
 	<a data-open="new-test" id="add-test" class="button success material-add-button"><i
 			  class="fi-plus"></i></a>
 
-	<div class="reveal large" id="new-test" data-reveal="">
+	<modal show="tests.manageTest" class="large">
 		<h3>New test</h3>
 
 		<form ng-submit="tests.newTest()">
 
-			<label>
+			<label class="required">
 				Test name
 
-				<input type="text" ng-model="tests.formData.name" name="name" />
+				<input type="text" required ng-model="tests.formData.name" name="name" />
 			</label>
 
 			<label>
@@ -162,5 +162,5 @@
 				</div>
 			</div>
 		</form>
-	</div>
+	</modal>
 </div>

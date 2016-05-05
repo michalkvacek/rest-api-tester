@@ -1,7 +1,7 @@
 <div class="row content align-center dashboard" ng-controller="EnvironmentsController as environments"
 	  ng-init="environments.initOverview(); " data-equalizer>
-	<div class="column no-padding " ng-repeat="environment in environments.overview">
-		<div class="environment with-shadow has-controls">
+	<div class="environment column no-padding " ng-repeat="environment in environments.overview">
+		<div class="with-shadow has-controls">
 
 			<div class="content-holder" data-equalizer-watch>
 				<h4 class="text-center">{{environment.name}}</h4>

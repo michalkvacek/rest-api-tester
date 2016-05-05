@@ -1,4 +1,4 @@
-var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar']);
+var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', "ngAnimate"]);
 
 app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 	function ($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -114,12 +114,12 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 	};
 
 	$rootScope.reinitDateTimePicker = function () {
-		$('input[type=datetime]').fdatepicker({
+		$ ('input[type=datetime]').fdatepicker ({
 			pickTime: true,
 			format: 'mm-dd-yyyy hh:ii'
 		});
 	};
-	
+
 	$rootScope.openTab = function (tabsContainer, tab) {
 		var tabButtons = tabsContainer + ' .tabs-title';
 		var pressedButton = tab + "-title";
@@ -146,8 +146,11 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 
 	$rootScope.$on ('$viewContentLoaded', function () {
 		$ ('#loaded-view').foundation ();
-		
-		
+
+		$ ('input[type=datetime]').fdatepicker ({
+			pickTime: true,
+			format: 'mm-dd-yyyy hh:ii',
+		});
 	});
 }).directive ('modal', function () {
 	return {

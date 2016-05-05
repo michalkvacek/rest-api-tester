@@ -15,11 +15,14 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 		self.headers = {};
 		self.assignedRequestIds = {};
 		self.currentTestId = null;
+		self.detailInitialized = false;
 
 		// update test detail when test has changed its status (loaded from sidebar)
 		$rootScope.$on ('testResultChanged', function (event, testId) {
 			if (testId == self.currentTestId) {
+				if (self.detailInitialized)
 				self.initDetail (false);
+
 				self.initStatistics (self.statisticsButton);
 			}
 		});
@@ -40,6 +43,10 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 
 			var environmentId = $stateParams.environmentId || $scope.environmentId;
 			var testId = $stateParams.testId || $scope.testId;
+
+			if (testId) {
+				self.currentTestId = testId;
+			}
 
 			$rootScope.setEnvironment (environmentId);
 
@@ -80,6 +87,8 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 
 			// currentTestId is used for reloading test detail when test is changed
 			self.currentTestId = testId;
+
+			self.detailInitialized = true;
 
 			// sometimes we need to load test detail, but keep breadcrumbs info
 			if (typeof refreshBreadcrumbs == 'undefined')
@@ -138,6 +147,8 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 		 * @param test
 		 */
 		self.setupSchedule = function (test) {
+			self.manageSchedule = true;
+
 			self.scheduleData.testsId = test.id;
 			self.scheduleData.nextRun = $filter ('date') (test.nextRun, "yyyy-MM-dd HH:mm");
 			self.scheduleData.runInterval = "" + test.runInterval; // cast to string, because of selecting default value
@@ -154,9 +165,12 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 				delete self.scheduleData.runInterval;
 
 			testsService.schedule (self.scheduleData.testsId, self.scheduleData).then (function (response) {
+				if (response.status != 200)
+					return;
+
 				self.initTestOverview ();
 
-				self.scheduleWindow = false;
+				self.manageSchedule = false;
 			});
 		};
 
@@ -179,6 +193,9 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 			delete self.formData.runnedTests;
 
 			testsService.edit (self.formData.id, self.formData).then (function (response) {
+				if (response.status != 200)
+					return;
+
 				self.initDetail ();
 
 				if (closeWindow)

@@ -37,7 +37,7 @@
 	</header>
 </div>
 
-<div class="row" id="content" ng-controller="LoggedUserController as loggedUser">
+<div class="row ui-view-container" id="content" ng-controller="LoggedUserController as loggedUser">
 
 	<aside class="column no-padding large-2" id="side-menu" ng-show="identity.email">
 		<div class="user-profile align-center">
@@ -105,8 +105,10 @@
 <!--SCRIPTS-->
 <script src="/js/dependencies/jquery.min.js"></script>
 <script src="/js/dependencies/angular/angular.min.js"></script>
+<script src="/js/dependencies/angular-animate.min.js"></script>
 <script src="/js/dependencies/angular-gravatar/angular-gravatar.min.js"></script>
 <script src="/js/dependencies/angular-ui-router/angular-ui-router.min.js"></script>
+<script src="/js/dependencies/angular/angular-animate.min.js"></script>
 <script src="/js/dependencies/foundation-datepicker.min.js"></script>
 <script src="/js/dependencies/foundation/foundation.js"></script>
 <script src="/js/dependencies/foundation/vendor/what-input.min.js"></script>

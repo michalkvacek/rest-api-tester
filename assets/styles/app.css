@@ -25,32 +25,32 @@
 }
 
 /*nav .quick-search {*/
-	/*float: right;*/
+/*float: right;*/
 /*}*/
 
 /*.quick-search {*/
-	/*background: transparent url(img/search-icon.png) no-repeat 100% center;*/
-	/*border: none;*/
-	/*outline: none;*/
-	/*box-shadow: none;*/
-	/*color: white;*/
-	/*width: 24px;*/
-	/*cursor: pointer;*/
-	/*-webkit-transition: width .5s;*/
-	/*-moz-transition: width .5s;*/
-	/*transition: width .5s;*/
+/*background: transparent url(img/search-icon.png) no-repeat 100% center;*/
+/*border: none;*/
+/*outline: none;*/
+/*box-shadow: none;*/
+/*color: white;*/
+/*width: 24px;*/
+/*cursor: pointer;*/
+/*-webkit-transition: width .5s;*/
+/*-moz-transition: width .5s;*/
+/*transition: width .5s;*/
 /*}*/
 
 /*.quick-search:focus, .quick-search:hover {*/
-	/*width: 100%;*/
-	/*border: none;*/
-	/*box-shadow: none;*/
-	/*outline: none;*/
-	/*border-bottom: solid 1px;*/
-	/*background-color: transparent;*/
-	/*-webkit-transition: width .5s;*/
-	/*-moz-transition: width .5s;*/
-	/*transition: width .5s;*/
+/*width: 100%;*/
+/*border: none;*/
+/*box-shadow: none;*/
+/*outline: none;*/
+/*border-bottom: solid 1px;*/
+/*background-color: transparent;*/
+/*-webkit-transition: width .5s;*/
+/*-moz-transition: width .5s;*/
+/*transition: width .5s;*/
 /*}*/
 
 .tabs-title {
@@ -63,23 +63,14 @@
 	font-weight: normal;
 }
 
-.project .environment {
+.dashboard .environment {
 	min-width: 20em;
+	max-width: 35em;
 }
 
 .project .environments .label {
 	font-size: 70% !important;
 }
-
-/*.users .deactivated {*/
-	/*opacity: .4;*/
-	/*transition: opacity 0.5s;*/
-/*}*/
-
-/*.users .deactivated:hover {*/
-	/*opacity: 1;*/
-	/*transition: opacity 0.5s;*/
-/*}*/
 
 table .button {
 	margin: 0;
@@ -88,10 +79,6 @@ table .button {
 .label a {
 	color: white;
 }
-
-/*.result.progress {*/
-	/*background-color: red;*/
-/*}*/
 
 .has-controls .controls {
 	margin-top: 1em;
@@ -231,6 +218,7 @@ code {
 footer {
 	background: #3C3C3C;
 }
+
 .required {
 	font-weight: bold;
 }
@@ -274,4 +262,14 @@ footer {
 .ng-modal.large .reveal-modal {
 	width: 75%;
 	left: 12.5%;
+}
+
+.ng-enter {
+	/*transition: .5s;*/
+	opacity: 0;
+}
+
+.ng-enter-active {
+	transition: .5s;
+	opacity: 1;
 }
