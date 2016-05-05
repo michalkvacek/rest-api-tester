@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
-app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$timeout', 'testsResultsService', 'environmentsService', '$stateParams',
-	function ($scope, $rootScope, $state, $timeout, testsResultsService, environmentsService, $stateParams) {
+app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$timeout', 'testsResultsService', 'environmentsService', 'testsService', '$stateParams',
+	function ($scope, $rootScope, $state, $timeout, testsResultsService, environmentsService, testsService, $stateParams) {
 		var self = this;
 
 		self.formData = {};
@@ -51,6 +51,22 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 		};
 
 		$rootScope.loadDashboardTests ();
+
+		/**
+		 * Add tests from given environment into queue for testing
+		 *
+		 * @param environmentId
+		 */
+		$rootScope.runEnvironmentTests = function (environmentId) {
+			$rootScope.testAddedOrInProgress = true;
+
+			testsService.runAll (environmentId).then (function (response) {
+				// becase of some time needed for preparing test we will display some "waiting" image before loading test list again
+				$timeout (function () {
+					$rootScope.loadTests (false);
+				}, 3 * 1000);
+			});
+		};
 
 		/**
 		 * List of all environments

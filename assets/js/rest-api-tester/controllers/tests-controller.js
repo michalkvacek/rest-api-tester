@@ -206,22 +206,6 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 		};
 
 		/**
-		 * Add tests from given environment into queue for testing
-		 *
-		 * @param environmentId
-		 */
-		self.runAll = function (environmentId) {
-			$rootScope.testAddedOrInProgress = true;
-
-			testsService.runAll (environmentId).then (function (response) {
-				// becase of some time needed for preparing test we will display some "waiting" image before loading test list again
-				$timeout (function () {
-					$rootScope.loadTests (false);
-				}, 3 * 1000);
-			});
-		};
-
-		/**
 		 * Add request into test
 		 *
 		 * @param requestId
