@@ -12,27 +12,11 @@ module.exports = {
 	 */
 	evaluate: function (assert, request, response, body, responseTime) {
 		var recievedValue = {}, status,
-			expectedValue = assert.requestValidatedByAssertions.expectedValue,
-			property = assert.requestValidatedByAssertions.property,
-			comparator = assert.requestValidatedByAssertions.comparator;
+			expectedValue = assert.expectedValue,
+			property = assert.property,
+			comparator = assert.comparator;
 
-		recievedValue = evaluator.getRecievedValue (assert.requestValidatedByAssertions, request, response, body, responseTime);
-
-		// switch (assert.type) {
-		// 	case 'status_code':
-		// 		recievedValue = response.statusCode;
-		// 		status = evaluator.compare (expectedValue, '==', response.statusCode);
-		// 		break;
-		// 	case 'response_time':
-		// 		recievedValue = responseTime;
-		// 		status = evaluator.compare (expectedValue, '>=', responseTime);
-		// 		break;
-		// }
-		//
-		// if (assert.type == 'property_exists') {
-		// 	comparator = '=';
-		// 	expectedValue = true;
-		// }
+		recievedValue = evaluator.getRecievedValue (assert, request, response, body, responseTime);
 
 		// compare data
 		status = evaluator.compare (expectedValue, comparator, recievedValue);
@@ -40,9 +24,9 @@ module.exports = {
 		// create new entry in database
 		evaluatedAssertions.create ({
 			responsesId: request.id,
-			assertionType: assert.type,
-			assertionName: assert.name,
-			assertionProperty: assert.requestValidatedByAssertions.property,
+			assertionType: assert.assertionType,
+			assertionName: assert.assertion.name,
+			assertionProperty: assert.property,
 			assertionExpectedValue: expectedValue,
 			assertionComparator: comparator,
 			recievedValue: recievedValue,
@@ -62,6 +46,12 @@ module.exports = {
 			case 'response_time':
 				return responseTime;
 				break;
+			case 'count':
+
+				var property = evaluator.getProperty (body, requestAssertion.property);
+
+				return Object.keys (property).length;
+				break;
 
 			case 'property_exists':
 				return evaluator.getProperty (body, requestAssertion.property) != false;
@@ -70,28 +60,93 @@ module.exports = {
 				return evaluator.getProperty (body, requestAssertion.property);
 				break;
 
-			case 'body':
-				return body;
+			case 'json':
+				var content = evaluator.getProperty (body, requestAssertion.property);
+				return JSON.stringify (content);
 				break;
 
 		}
 	},
 
-	getProperty: function (body, property) {
-		var elements = property.split ('.');
+	/**
+	 *
+	 * @param originalRequest
+	 * @param request
+	 * @param preparedResponse
+	 * @param error
+	 * @param response
+	 * @param body
+	 * @param responseTime
+	 * @param done
+	 */
+	parseRequestResponse: function (originalRequest, request, preparedResponse, error, response, body, responseTime, done) {
 
-		try {
-			var element = JSON.parse (body);
+		// body is empty on error
+		var passing = body.length > 0;
 
-			for (i in elements) {
-				if (!element.hasOwnProperty (elements[i])) return false;
-				element = element[i];
+		// assign assertsions
+		requestValidatedByAssertions.findAll ({
+			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator'],
+			where: {requestsId: originalRequest.id},
+			include: [{model: assertions}]
+		}).then (function (assertions) {
+
+			// evaluate all assertions
+			for (i in assertions) {
+				if (!evaluator.evaluate (assertions[i], request, response, body, responseTime))
+					passing = false;
 			}
 
-			return element;
+			// and save the result into database
+			preparedResponse.update ({
+				responseHeaders: response.headers,
+				responseCode: response.statusCode,
+				responseSize: body.length,
+				responseTime: responseTime,
+				responseBodyRaw: body,
+				passedAssertions: passing,
+				status: passing ? 'success' : 'failed'
+			}).then (function (evaluated) {
+				originalRequest.update ({lastRunStatus: evaluated.status}).then (function (original) {
+					done (null, {request: evaluated.toJSON ()});
+				});
+			});
+
+		});
+	},
+
+	getProperty: function (body, property) {
+
+		// because of some kind of weird optimalization reasons
+
+		var route, element, i;
+		if (property != null)
+			route = property.split ('.').reverse ();
+
+		try {
+			element = JSON.parse (body);
+
+			// user wants root element
+			if (property == null)
+				return element;
+
+			i = route.length;
+
+			while (i--) {
+				if (element[route[i]] !== undefined) {
+					if (i == 0) {
+						return element[route[i]];
+					}
+					element = element[route[i]];
+				} else {
+					return false;
+				}
+			}
 		} catch (e) {
 			// invalid json
-			return false;
+			console.log (e);
+
+			return null;
 		}
 	},
 
@@ -99,7 +154,7 @@ module.exports = {
 
 		switch (operator) {
 			case 'eq':
-				return ""+expectedValue == ""+recievedValue;
+				return "" + expectedValue == "" + recievedValue;
 				break;
 			case 'ge':
 				return expectedValue <= recievedValue;
@@ -117,10 +172,10 @@ module.exports = {
 				return expectedValue > recievedValue;
 				break;
 			case 'in':
-				return recievedValue.indexOf(expectedValue) >= 0;
+				return recievedValue.indexOf (expectedValue) >= 0;
 				break;
 			case 'not_in':
-				return recievedValue.indexOf(expectedValue) < 0;
+				return recievedValue.indexOf (expectedValue) < 0;
 				break;
 
 		}

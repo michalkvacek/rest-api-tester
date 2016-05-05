@@ -118,15 +118,6 @@ module.exports = {
 			}
 		});
 
-		requests.belongsToMany (assertions, {
-			through: requestValidatedByAssertions,
-			as: 'assertions',
-			foreignKey: {
-				name: 'requestsId',
-				allowNull: false
-			}
-		});
-
 		/**
 		 * Users, who manages this environment
 		 */

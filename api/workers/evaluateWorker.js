@@ -12,7 +12,7 @@ module.exports = {
 
 		requests.find ({
 			where: {id: request.requestsId},
-			include: [{model: assertions, as: 'assertions'}, {model: authentications}]
+			include: [{model: authentications}]
 		}).then (function (originalRequest) {
 
 			// mark test as running
@@ -42,38 +42,14 @@ module.exports = {
 				}, function (error, response, body) {
 					var responseTime = Date.now () - runStart;
 
+					// ignore errors
 					if (error) {
-						// ignore errors
-						passing = false;
 						response = {};
 						body = '';
-
-					} else {
-						var passing = true;
-
-						for (i in originalRequest.assertions) {
-							var assert = originalRequest.assertions[i];
-
-							if (!evaluator.evaluate (assert, request, response, body, responseTime))
-								passing = false;
-						}
 					}
 
-					preparedResponse.update ({
-						responseHeaders: response.headers,
-						responseCode: response.statusCode,
-						responseSize: body.length,
-						responseTime: responseTime,
-						responseBodyRaw: body,
-						passedAssertions: passing,
-						status: passing ? 'success' : 'failed'
-					}).then (function (evaluated) {
-						originalRequest.update ({lastRunStatus: evaluated.status}).then (function (original) {
-							done (null, {request: evaluated.toJSON ()});
-						});
-					});
+					evaluator.parseRequestResponse (originalRequest, request, preparedResponse, error, response, body, responseTime, done);
 				});
-
 			});
 		});
 	}

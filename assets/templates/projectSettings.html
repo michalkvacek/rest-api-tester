@@ -107,10 +107,12 @@
 				</modal>
 		</div>
 
-		<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers">
+		<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers" ng-if="project.detail.id" ng-init="headers.initOverview({projectId: project.detail.id})">
+
+			<div class="callout warning" ng-show="emptyObject(headers.overview)">Prazdne</div>
 
 			<div class="content-holder">
-				<table ng-if="project.detail.id" ng-init="headers.initOverview({projectId: project.detail.id})">
+				<table ng-show="!emptyObject(headers.overview)">
 					<tr ng-repeat="header in headers.overview">
 						<td>{{header.name}}</td>
 						<td>{{header.value}}</td>
@@ -128,7 +130,7 @@
 				</table>
 			</div>
 			<div class="row controls align-right">
-				<a href="javascript:void(0)" ng-click="headers.formData = {projectsId: project.detail.id}"
+				<a href="javascript:void(0)" ng-click="headers.manageHeaders = true; headers.formData = {projectsId: project.detail.id}"
 					data-open="new-header" class="success tiny button">
 					<i class="fi-plus"></i>
 					<span class="show-for-medium"> Add header</span></a>

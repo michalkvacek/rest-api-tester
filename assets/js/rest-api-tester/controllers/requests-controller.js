@@ -136,82 +136,22 @@ app.controller ('RequestsController', [
 			});
 		};
 
-		self.headers.openEditWindow = function (headerId) {
-			self.headerId = headerId;
-
-			headersService.detail (headerId).then (function (response) {
-				self.headersData = response.data;
-
-				$ ('#edit-header').foundation ('open');
-			});
-		};
-
-		self.headers.edit = function () {
-			headersService.edit (self.headerId, self.headersData).then (function (response) {
-				self.initDetailForEdit ();
-
-				$ ('#edit-header').foundation ('close');
-			});
-		};
-
-		self.headers.newHeaderWindow = function () {
-			self.headersData.requestsId = $stateParams.requestId;
-
-			$ ('#new-header').foundation ('open');
-		};
-		self.headers.delete = function (id) {
-			var confirmation = confirm ('Opravdu?');
-
-			if (confirmation) {
-				headersService.delete (id).then (function (response) {
-					// update test detail
-					self.initDetailForEdit ();
-				});
-			}
-		};
-
-		self.headers.create = function () {
-			headersService.create (self.headersData).then (function (response) {
-				self.initDetailForEdit ();
-				$ ('#new-header').foundation ('close');
-			})
-		};
-
 		//-----------------------------------
-
-		self.httpParameters.openEditWindow = function (httpParameterId) {
-			self.httpParameterId = httpParameterId;
-			var requestId = $stateParams.requestId;
-
-			httpParametersService.detail (requestId, httpParameterId).then (function (response) {
-				self.httpParametersData = response.data;
-
-				$ ('#edit-httpParameter').foundation ('open');
-			});
-		};
 
 		self.httpParameters.edit = function () {
 			var requestId = $stateParams.requestId;
 
-			httpParametersService.edit (requestId, self.httpParameterId, self.httpParametersData).then (function (response) {
+			httpParametersService.edit (self.httpParametersData.requestsId, self.httpParametersData.id, self.httpParametersData).then (function (response) {
 				self.initDetailForEdit ();
 
-				$ ('#edit-httpParameter').foundation ('close');
+				self.manageHttpParameters = false;
 			});
 		};
 
-		self.httpParameters.newHttpParameterWindow = function () {
-			self.httpParametersData.requestsId = $stateParams.requestId;
-			var requestId = $stateParams.requestId;
-
-			$ ('#new-httpParameter').foundation ('open');
-		};
-
 		self.httpParameters.delete = function (id) {
-			var confirmation = confirm ('Opravdu?');
 			var requestId = $stateParams.requestId;
 
-			if (confirmation) {
+			if (confirm ('Opravdu?')) {
 				httpParametersService.delete (requestId, id).then (function (response) {
 					// update test detail
 					self.initDetailForEdit ();
@@ -224,7 +164,8 @@ app.controller ('RequestsController', [
 
 			httpParametersService.create (requestId, self.httpParametersData).then (function (response) {
 				self.initDetailForEdit ();
-				$ ('#new-httpParameter').foundation ('close');
+				
+				self.manageHttpParameters = false;
 			})
 		};
 

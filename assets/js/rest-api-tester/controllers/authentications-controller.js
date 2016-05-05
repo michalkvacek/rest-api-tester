@@ -24,29 +24,18 @@ app.controller ('AuthenticationsController', ['$scope', 'authenticationsService'
 	};
 
 	self.create = function () {
-		authenticationsService.create (self.environmentId, self.formData).then (function (response) {
-			self.init (self.environmentId);
+		authenticationsService.create (self.formData.environmentsId, self.formData).then (function (response) {
+			self.init (self.formData.environmentId);
 
-			$ ('#new-authentication').foundation ('close');
-		});
-	};
-
-	self.openEditWindow = function (authenticationId, environmentId) {
-		self.environmentId = environmentId;
-		self.authenticationId = authenticationId;
-
-		authenticationsService.detail (environmentId, authenticationId).then (function (response) {
-			self.formData = response.data;
-
-			$ ('#edit-authentication').foundation ('open');
+			self.manageAuth = false;
 		});
 	};
 
 	self.edit = function () {
-		authenticationsService.edit (self.environmentId, self.authenticationId, self.formData).then (function (response) {
-			self.init (self.environmentId);
+		authenticationsService.edit (self.formData.environmentsId, self.formData.id, self.formData).then (function (response) {
+			self.init (self.formData.environmentsId);
 
-			$ ('#edit-authentication').foundation ('close');
+			self.manageAuth = false;
 		});
 	};
 

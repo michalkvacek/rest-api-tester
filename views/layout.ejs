@@ -33,6 +33,18 @@
 					</li>
 				</ul>
 			</div>
+			<div class="column notifications cursor-pointer">
+				<div ng-repeat="notification in globalNotifications" class="notification text-right" ng-class="notification.type" ng-click="hideAllNotifications()">
+
+					<small>
+					{{notification.time | date : format : 'short' }}
+					</small>
+
+					<p class="text-left">
+						{{notification.content}}
+					</p>
+				</div>
+			</div>
 		</nav>
 	</header>
 </div>
@@ -119,6 +131,7 @@
 <script src="/js/rest-api-tester/services/headers-service.js"></script>
 <script src="/js/rest-api-tester/services/http-parameters-service.js"></script>
 <script src="/js/rest-api-tester/services/login-service.js"></script>
+<script src="/js/rest-api-tester/services/notifications-service.js"></script>
 <script src="/js/rest-api-tester/services/projects-service.js"></script>
 <script src="/js/rest-api-tester/services/registration-service.js"></script>
 <script src="/js/rest-api-tester/services/requests-service.js"></script>

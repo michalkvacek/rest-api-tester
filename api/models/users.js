@@ -23,11 +23,6 @@ module.exports = {
 			type: Sequelize.STRING,
 			allowNull: false
 		},
-		notifications: {
-			type: Sequelize.BOOLEAN,
-			allowNull: false,
-			defaultValue: true
-		}
 	},
 	options: {
 		tableName: 'users',

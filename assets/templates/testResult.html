@@ -14,7 +14,7 @@
 			<div class="row text-center">
 				<div class="column">
 					<h4>{{testResult.statistics.health | number : 1}} %</h4>
-					<small>Assertions passed</small>
+					<small>Requests passed</small>
 				</div>
 				<div class="column">
 					<h4>{{testResult.statistics.avgResponseTime | number : 1}} ms</h4>
@@ -60,7 +60,9 @@
 								</ul>
 								<div class="tabs-content">
 									<div class="tabs-panel" ng-attr-id="{{'request-'+response.id}}">
-										<h4>{{response.requestName}}</h4>
+										<h4>
+											<a ui-sref="request({requestId: response.requestsId})">{{response.requestName}}</a>
+										</h4>
 
 										<div class="row">
 											<div class="column">
@@ -77,7 +79,7 @@
 												</ul>
 											</div>
 
-											<div class="column">
+											<div class="column" ng-show="!emptyObject(response.requestHttpParameters)">
 												<h5>{{response.requestMethod}} parameters</h5>
 
 												<ul>
@@ -107,7 +109,9 @@
 															 class="badge"></span></td>
 												<td>{{assert.assertionName}}</td>
 												<td>{{assert.assertionProperty}}</td>
-												<td>{{assert.recievedValue}}</td>
+												<td>{{assert.recievedValue | limitTo:70}}{{assert.recievedValue.length > 70 ? '...'
+													 : ''}}
+												</td>
 
 												<td ng-switch="assert.assertionComparator">
 													<span ng-switch-when="eq">Equal to</span>
@@ -161,9 +165,11 @@
 								</div>
 							</div>
 
-							<script ng-if="$last && $index > 0">$ (function () {
-								Foundation.reInit ('accordion');
-							});</script>
+							<script ng-if="$last">
+								$ (function () {
+									Foundation.reInit ('accordion');
+								});
+							</script>
 
 						</li>
 					</ul>

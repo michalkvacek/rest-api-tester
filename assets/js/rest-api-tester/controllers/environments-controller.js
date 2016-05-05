@@ -172,7 +172,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 			environmentsService.addUser (environmentId, self.addUser).then (function (response) {
 				self.loadDetail ();
 
-				$ ('#new-user').foundation ('close');
+				self.manageUser = false;
 			});
 		};
 

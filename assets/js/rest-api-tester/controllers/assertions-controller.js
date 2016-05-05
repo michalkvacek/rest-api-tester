@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsService', function ($scope, $stateParams, assertionsService) {
+app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsService', 'notificationsService', function ($scope, $stateParams, assertionsService, notificationsService) {
 	var self = this;
 
 	self.formData = {};
@@ -23,6 +23,11 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsSe
 			requestId = $stateParams.requestId;
 
 		assertionsService.getAssertions (requestId).then (function (response) {
+			if (response.status != 200) {
+				notificationsService.push('alert', 'something went wrong, sorry');
+				return;
+			}
+
 			self.assertions[requestId] = response.data;
 		})
 	};

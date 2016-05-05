@@ -13,13 +13,6 @@ module.exports = {
 			include: []
 		};
 
-		if (req.param ('withAssertions', false)) {
-			findCriterium.include.push ({
-				model: assertions,
-				as: 'assertions'
-			});
-		}
-
 		if (req.param ('withEnvironment', false)) {
 			findCriterium.include.push ({
 				model: environments,
@@ -46,7 +39,6 @@ module.exports = {
 			findCriterium.include.push ({model: httpParameters});
 		}
 
-
 		requests.findAll (findCriterium).then (function (data) {
 			return res.ok (data);
 		}, function (err) {
@@ -57,9 +49,11 @@ module.exports = {
 
 	assertions: function (req, res) {
 		requestValidatedByAssertions.findAll ({
+			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator'],
 			where: {requestsId: req.requestId},
 			include: {
-				model: assertions
+				model: assertions,
+				attributes: ['name', 'description']
 			}
 		}).then (function (assertions) {
 			return res.ok (assertions);
@@ -69,7 +63,6 @@ module.exports = {
 	},
 
 	create: function (req, res) {
-
 		var testsId = req.param ('testsId', false);
 
 		var parameters = {

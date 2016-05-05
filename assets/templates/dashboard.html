@@ -61,24 +61,24 @@
 	</div>
 
 
-	<a data-open="new-environment" id="add-project" class="button success material-add-button"><i
+	<a data-open="new-environment" id="add-project" ng-model="environments.manageEnvironments = true" class="button success material-add-button"><i
 			  class="fi-plus"></i></a>
 
-	<div class="reveal" id="new-environment" data-reveal>
+	<modal show="environments.manageEnvironments">
 
 		<h3>Add environment</h3>
 
 		<form ng-submit="environments.create()">
-			<label>
+			<label class="required">
 				Name
 
-				<input type="text" placeholder="Environment name" ng-model="environments.formData.name" />
+				<input type="text" required placeholder="Environment name" ng-model="environments.formData.name" />
 			</label>
 
-			<label>
+			<label class="required">
 				API endpoint
 
-				<input type="text" placeholder="https://api.example.com/api/v1"
+				<input required type="url" placeholder="https://api.example.com/api/v1"
 						 ng-model="environments.formData.apiEndpoint" />
 			</label>
 

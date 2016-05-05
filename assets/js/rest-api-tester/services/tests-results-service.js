@@ -29,8 +29,6 @@ app.service ('testsResultsService', ['$http', '$q', function ($http, $q) {
 		getDetail: function (testResultId) {
 			var d = $q.defer ();
 
-			console.log(testResultId);
-
 			$http.get ('/api/v1/testResults/' + testResultId).then (d.resolve, d.reject);
 
 			return d.promise;

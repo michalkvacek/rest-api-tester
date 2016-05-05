@@ -136,7 +136,7 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 			testsService.create (environmentId, self.formData).then (function (response) {
 				self.initTestOverview ();
 
-				self.newTestWindow = false;
+				self.manageTest = false;
 			});
 		};
 

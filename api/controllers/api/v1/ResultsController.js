@@ -30,9 +30,16 @@ module.exports = {
 
 	overview: function (req, res) {
 
+		var managedEnvironmentIds = Object.keys (req.managedEnvironments);
+
+		// no environments found, no results sent
+		if (managedEnvironmentIds.length == 0)
+			return res.ok ();
+
 		var age = req.param ('age', false),
 			findCriterium = {
-				where: [],
+				attributes: ['id', 'testsId', 'status', 'updatedAt', 'testName'],
+				where: [{environmentsId: {$in: managedEnvironmentIds}}],
 				order: [
 					['updatedAt', 'DESC']
 				]
@@ -42,17 +49,6 @@ module.exports = {
 			var date = new Date ();
 			findCriterium.where.push ({updatedAt: {$gt: new Date (date.getTime () - age * 3600 * 1000)}});
 		}
-
-		var environmentsWhere = [];
-
-		if (req.param ('projectId', false)) {
-			environmentsWhere.push ({projectsId: req.param ('projectId')});
-		}
-
-		findCriterium.include = [{
-			model: tests,
-			include: [{model: environments, where: environmentsWhere}]
-		}];
 
 		runnedTests.findAll (findCriterium).then (function (results) {
 			return res.ok (results);

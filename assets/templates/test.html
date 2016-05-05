@@ -9,12 +9,12 @@
 				</div>
 				<div class="column shrink" ng-switch="tests.detail.lastRunStatus">
 					<p>
-					<span ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
+					<!--<span ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">-->
 						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
 							class="button success small fi-play"> Run now</a>
 						<a href="javascript:void(0)" ng-click="tests.manageTest = true; tests.formData = tests.detail"
 							class="button primary small fi-pencil"> Edit</a>
-					</span>
+					<!--</span>-->
 
 					<span ng-show="tests.detail.lastRunStatus == 'waiting_for_response' || tests.detail.lastRunStatus == 'evaluating'">
 						<button class="button small warning disabled"><i class="fi-play-circle"></i> Running</button>
@@ -169,6 +169,7 @@
 											<tr>
 												<th>Assertion name</th>
 												<th>Property name</th>
+												<th></th>
 												<th>Expected value</th>
 												<th></th>
 											</tr>
@@ -177,6 +178,16 @@
 											<tr ng-repeat="assertion in asserts.assertions[request.id]">
 												<td>{{assertion.assertion.name}}</td>
 												<td>{{assertion.property}}</td>
+												<td ng-switch="assertion.comparator">
+													<span ng-switch-when="eq">Equal to</span>
+													<span ng-switch-when="lt">Less then</span>
+													<span ng-switch-when="gt">Greater then</span>
+													<span ng-switch-when="le">Less or equal then</span>
+													<span ng-switch-when="ge">Greater or equal then</span>
+													<span ng-switch-when="ne">Not equal to</span>
+													<span ng-switch-when="in">Contains</span>
+													<span ng-switch-when="not_in">Not contains</span>
+												</td>
 												<td>{{assertion.expectedValue}}</td>
 												<td>
 													<a href="javascript:void(0)"
@@ -200,11 +211,11 @@
 								</div>
 							</div>
 
-							<script ng-if="$index > 0 && $last">
+							<script ng-if="$last">
 								$ (function () {
 									setTimeout (function () {
 										Foundation.reInit ('accordion');
-									}, 300);
+									}, 500);
 								});
 							</script>
 						</li>
@@ -215,22 +226,37 @@
 						<h3 ng-show="!asserts.formData.id">Add new assertion</h3>
 
 						<form ng-submit="asserts.formData.id ? asserts.edit() : asserts.create()">
-							<label ng-if="asserts.openModal" ng-init="asserts.initTypes()">
+							<label class="required" ng-if="asserts.openModal" ng-init="asserts.initTypes()">
 								Assertion type
 
-								<select name="input-type" ng-model="asserts.formData.assertionType">
+								<select required name="input-type" ng-model="asserts.formData.assertionType">
 									<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
 								</select>
 							</label>
 
-							<label>
+							<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
 								Property
 
 								<input type="text" name="property" placeholder="Property name"
 										 ng-model="asserts.formData.property" />
 							</label>
 
-							<label>
+							<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
+								Compare
+
+								<select required ng-model="asserts.formData.comparator">
+									<option value="eq">Equal to</option>
+									<option value="lt">Less then</option>
+									<option value="gt">Greater then</option>
+									<option value="le">Less or equal then</option>
+									<option value="ge">Greater or equal then</option>
+									<option value="ne">Not equal to</option>
+									<option value="in">Contains</option>
+									<option value="not_in">Not contains</option>
+								</select>
+							</label>
+
+							<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
 								Value
 
 								<input type="text" name="value" placeholder="Property value"
@@ -307,9 +333,9 @@
 		<form ng-submit="tests.formData.headers.id ? tests.headers.edit() : tests.headers.create(tests.detail.id)">
 			<div class="row">
 				<div class="column">
-					<label>
+					<label class="required">
 						Name
-						<input type="text" ng-model="tests.formData.headers.name">
+						<input type="text" required ng-model="tests.formData.headers.name">
 					</label>
 				</div>
 				<div class="column">

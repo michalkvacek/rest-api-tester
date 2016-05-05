@@ -1,7 +1,7 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', 'testsResultsService',
-	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, testsResultsService) {
+app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', 'notificationsService', 'testsResultsService',
+	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, notificationsService, testsResultsService) {
 
 		var self = this,
 			testResultsFirstRun = true;
@@ -27,6 +27,9 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 				withTimeout = true;
 
 			testsResultsService.getOverview (self.lastTestsAge).then (function (response) {
+
+				// iterate over returned tests and try to update only changed tests
+
 				$rootScope.testList = response.data;
 
 				if (!testResultsFirstRun) {

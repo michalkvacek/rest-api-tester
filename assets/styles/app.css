@@ -6,6 +6,35 @@
 	margin: auto;
 }
 
+.accordion-title {
+	padding: .5rem;
+}
+
+.notifications {
+	position: fixed;
+	top: 1em;
+	right: 1em;
+	width: 25%;
+	font-size: 85%;
+}
+
+.notifications .notification {
+	width: 100%;
+	padding: .25rem 1rem;
+	border-radius: 3px;
+	font-weight: bold;
+	color: white;
+	margin-top: .25rem;
+}
+
+.notifications .notification.alert {
+	background: #ec5840;
+}
+
+.notifications .notification.success {
+	background: #3adb76;
+}
+
 .accordion-content, .accordion, .tabs, .tabs-content {
 	padding: 1rem 0 0;
 	border: none;
@@ -265,7 +294,7 @@ footer {
 }
 
 .ng-enter {
-	/*transition: .5s;*/
+	transition: .5s;
 	opacity: 0;
 }
 

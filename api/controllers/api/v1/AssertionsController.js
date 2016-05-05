@@ -18,7 +18,10 @@ module.exports = {
 	detail: function (req, res) {
 		var assertionId = req.param ('assertionId');
 
-		requestValidatedByAssertions.find ({where: {id: assertionId}}).then (function (assertion) {
+		requestValidatedByAssertions.find ({
+			where: {id: assertionId},
+			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator'],
+		}).then (function (assertion) {
 			return res.ok (assertion);
 		}, function (err) {
 			return res.serverError (err);
@@ -57,9 +60,8 @@ module.exports = {
 
 	delete: function (req, res) {
 		requestValidatedByAssertions.find ({
-			where: {
-				id: req.param ('assertionId')
-			}
+			where: {id: req.param ('assertionId')},
+			attributes: ['id']
 		}).then (function (validation) {
 			validation.destroy ();
 

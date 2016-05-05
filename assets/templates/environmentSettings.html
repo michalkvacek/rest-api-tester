@@ -72,21 +72,22 @@
 					</table>
 				</div>
 				<div class="row controls align-right">
-					<a href="javascript:void(0)" ng-click="headers.formData = {environmentsId: environment.detail.id}"
+					<a href="javascript:void(0)" ng-click="headers.manageHeaders = true; headers.formData = {environmentsId: environment.detail.id}"
 						data-open="new-header" class="success tiny button">
 						<i class="fi-plus"></i>
 						<span class="show-for-medium"> Add header</span></a>
 				</div>
 
-				<div class="reveal" id="edit-header" data-reveal>
-					<h3>Edit header</h3>
+				<modal show="headers.manageHeaders">
+					<h3 ng-show="headers.formData.id">Edit header</h3>
+					<h3 ng-show="!headers.formData.id">Create new header</h3>
 
-					<form ng-submit="headers.edit()">
+					<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
 						<div class="row">
 							<div class="column">
-								<label>
+								<label class="required">
 									Name
-									<input type="text" ng-model="headers.formData.name">
+									<input type="text" required ng-model="headers.formData.name">
 								</label>
 							</div>
 							<div class="column">
@@ -98,40 +99,7 @@
 						</div>
 						<button type="submit" class="button success">Save</button>
 					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-
-				<div class="reveal" id="new-header" data-reveal>
-					<h3>New header</h3>
-
-					<form ng-submit="headers.create()">
-						<div class="row">
-							<div class="column">
-								<label>
-									Name
-									<input type="text" ng-model="headers.formData.name">
-								</label>
-							</div>
-							<div class="column">
-								<label>
-									Value
-									<input type="text" ng-model="headers.formData.value">
-								</label>
-							</div>
-						</div>
-						<button type="submit" class="button success">Save</button>
-					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
+				</modal>
 			</div>
 
 			<div class="tabs-panel" id="users">
@@ -162,12 +130,12 @@
 
 				<div class="text-right">
 					<a href="javascript:void(0)"
-						data-open="new-user" class="success  button">
+						ng-click="environment.manageUser=true" class="success  button">
 						<i class="fi-plus"></i>
 						<span class="show-for-medium"> Add user</span></a>
 				</div>
 
-				<div class="reveal" data-reveal id="new-user">
+				<modal show="environments.manageUser">
 					<h4>Add user</h4>
 					<form ng-submit="environment.assignUser()">
 						<label>Role
@@ -186,15 +154,7 @@
 						<button type="submit" class="float-right button primary">Add user</button>
 
 					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-
-				</div>
-
-
+				</modal>
 			</div>
 		</div>
 

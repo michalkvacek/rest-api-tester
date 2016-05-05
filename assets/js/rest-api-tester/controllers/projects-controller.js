@@ -31,9 +31,7 @@ app.controller ('ProjectsController', ['$rootScope', '$state', '$stateParams', '
 	 */
 	self.initOverview = function () {
 		projectsService.getOverview ().then (function (response) {
-
 			if (response.status != 200) {
-
 				return;
 			}
 

@@ -18,21 +18,40 @@ module.exports = function (req, res, next) {
 				token = credentials;
 			}
 		} else {
-			return res.forbidden({err: 'Format is Authorization: Bearer [token]'});
+			return res.forbidden ({err: 'Format is Authorization: Bearer [token]'});
 		}
 	} else if (req.param ('token')) {
 		token = req.param ('token');
 		// We delete the token from param to not mess with blueprints
 		delete req.query.token;
 	} else {
-		return res.forbidden({err: 'No Authorization header was found'});
+		return res.forbidden ({err: 'No Authorization header was found'});
 	}
 
 	jwToken.verify (token, function (err, token) {
 		if (err)
 			return res.forbidden ({error: 'Invalid Token!'});
 
-		req.token = token; // This is the decrypted token or the payload you provided
-		next ();
+		// try to find user
+		users.find ({
+			where: {id: token.id},
+			include: [{
+				model: environments,
+				as: 'team',
+			}]
+		}).then (function (user) {
+			if (user == null)
+				return res.forbidden ({err: 'Invalid user!'});
+
+			req.managedEnvironments = {};
+			for (i in user.team) {
+				req.managedEnvironments[user.team[i].id] = user.team[i].userBelongsToEnvironment.userRole;
+			}
+
+			req.user = user;
+
+			req.token = token; // This is the decrypted token or the payload you provided
+			next ();
+		});
 	});
 };

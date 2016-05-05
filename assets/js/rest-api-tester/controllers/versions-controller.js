@@ -23,29 +23,18 @@ app.controller ('VersionsController', ['$scope', 'versionsService', function ($s
 	};
 
 	self.create = function () {
-		versionsService.create (self.projectId, self.formData).then (function (response) {
-			self.init (self.projectId);
+		versionsService.create (self.formData.projectsId, self.formData).then (function (response) {
+			self.init (self.formData.projectsId);
 
-			$ ('#new-version').foundation ('close');
-		});
-	};
-
-	self.openEditWindow = function (versionId, projectId) {
-		self.projectId = projectId;
-		self.versionId = versionId;
-		
-		versionsService.detail (projectId, versionId).then (function (response) {
-			self.formData = response.data;
-
-			$ ('#edit-version').foundation ('open');
+			self.manageVersion = false;
 		});
 	};
 
 	self.edit = function () {
-		versionsService.edit (self.projectId, self.versionId, self.formData).then (function (response) {
-			self.init (self.projectId);
+		versionsService.edit (self.formData.projectsId, self.formData.id, self.formData).then (function (response) {
+			self.init (self.formData.projectId);
 
-			$ ('#edit-version').foundation ('close');
+			self.manageVersion = false;
 		});
 	};
 
