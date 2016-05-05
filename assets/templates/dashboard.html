@@ -1,4 +1,5 @@
-<div class="row content align-center dashboard" ng-controller="EnvironmentsController as environments" ng-init="environments.initOverview(); " data-equalizer>
+<div class="row content align-center dashboard" ng-controller="EnvironmentsController as environments"
+	  ng-init="environments.initOverview(); " data-equalizer>
 	<div class="column no-padding " ng-repeat="environment in environments.overview">
 		<div class="environment with-shadow has-controls">
 
@@ -29,11 +30,14 @@
 				<div ng-show="failedDasboardTests[environment.id].length>0">
 					<h5>Last failed tests</h5>
 					<div class="failed-tests">
-						<div class="row" ng-repeat="result in failedDasboardTests[environment.id]">
-							<p>
-								<a ui-sref="test_result({testResultId: result.id})"><i class="fi-x badge alert"></i> {{result.testName}}</a>
+						<div class="row align-center">
+
+							<div class="column text-center test" ng-repeat="result in failedDasboardTests[environment.id]">
+								<a ui-sref="test_result({testResultId: result.id})"><i class="fi-x badge alert"></i><br />
+									{{result.testName}}</a>
+								<br />
 								<small>{{result.updatedAt | date : 'short'}}</small>
-							</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -46,13 +50,14 @@
 
 				&nbsp;
 
-				<a ui-sref="environment_settings({environmentId: environment.id})"  data-tooltip aria-haspopup="true" class="warning button has-tip tiny"
+				<a ui-sref="environment_settings({environmentId: environment.id})" data-tooltip aria-haspopup="true"
+					class="warning button has-tip tiny"
 					data-disable-hover="false"
 					title="Environment settings"><i class="fi-wrench"></i> Environment settings</a>
 			</div>
 		</div>
 
-		<script ng-if="$last && $index > 0">Foundation.reInit('equalizer')</script>
+		<script ng-if="$last && $index > 0">Foundation.reInit ('equalizer')</script>
 	</div>
 
 

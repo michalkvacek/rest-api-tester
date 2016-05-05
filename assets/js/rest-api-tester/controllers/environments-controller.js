@@ -68,7 +68,10 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 				projectId = $stateParams.projectId;
 
 			// turn ajax polling for loading tests on dasboard?
-			$rootScope.enableLoadingDashboardTests = loadDasboardTests;
+			if (loadDasboardTests) {
+				$rootScope.enableLoadingDashboardTests = loadDasboardTests;
+				$rootScope.loadDashboardTests ();
+			}
 
 			// get all environments in given project
 			environmentsService.getOverview (projectId).then (function (response) {
@@ -97,9 +100,9 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 
 			// get detail
 			environmentsService.detail (environmentId).then (function (response) {
-				if (response.status != 200) 
+				if (response.status != 200)
 					return
-				
+
 				self.detail = response.data;
 
 				// update breadcrumbs
@@ -119,7 +122,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 
 			environmentsService.create (projectId, self.formData).then (function (response) {
 				if (response.status != 201) {
-					alert('error');
+					alert ('error');
 					return;
 				}
 

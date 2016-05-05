@@ -343,10 +343,10 @@
 					<form ng-submit="request.create()">
 						<div class="row">
 							<div class="column">
-								<label>
+								<label class="required">
 									Request name
 
-									<input type="text" name="name" ng-model="request.formData.name" />
+									<input type="text" required name="name" ng-model="request.formData.name" />
 
 								</label>
 							</div>
@@ -354,10 +354,10 @@
 
 						<div class="row">
 							<div class="column large-3">
-								<label>
+								<label class="required">
 									Method
 
-									<select name="httpMethod" ng-model="request.formData.httpMethod">
+									<select name="httpMethod" required ng-model="request.formData.httpMethod">
 										<option value="GET">GET</option>
 										<option value="POST">POST</option>
 										<option value="PUT">PUT</option>
@@ -369,10 +369,10 @@
 							</div>
 
 							<div class="column large-9">
-								<label>
+								<label class="required">
 									URL
 
-									<input type="text" name="url" ng-model="request.formData.url"
+									<input type="url" required name="url" ng-model="request.formData.url"
 											 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
 								</label>
 							</div>

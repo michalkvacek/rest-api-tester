@@ -74,7 +74,7 @@
 			</ul>
 		</div>
 
-		<ul class="test-results menu vertical" ng-if="currentEnvironment.id" ng-controller="TestsResultsController as tests">
+		<ul class="test-results menu vertical" ng-controller="TestsResultsController as tests">
 			<!--loading img from http://www.ajaxload.info/-->
 			<li ng-show="testAddedOrInProgress" class="text-center"><img src="images/loading.gif" alt="loading..." /></li>
 			<li ng-show="emptyObject(testList)">No tests in last {{tests.lastTestsAge}} hours</li>

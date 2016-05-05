@@ -125,6 +125,12 @@ table .button {
 
 .dashboard .failed-tests {
 	font-size: 75%;
+	max-height: 10em;
+	overflow: auto;
+}
+
+.dashboard .failed-tests .test {
+	min-width: 8em;
 }
 
 .material-add-button {
