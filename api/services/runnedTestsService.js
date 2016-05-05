@@ -18,11 +18,8 @@ module.exports = {
 				for (r in test.responses) {
 					response = test.responses[r];
 
-					console.log (response.status);
-
 					if (response.status != 'success' && response.status != 'failed') {
 						stillRunning = true;
-						console.log (response.id + " stale bezi");
 						break;
 					}
 
@@ -33,14 +30,10 @@ module.exports = {
 					}
 				}
 
-				console.log (stillRunning);
-				console.log (passed);
-
 				if (!stillRunning)
 					test.update ({status: passed ? 'success' : 'failed'}).then (function () {
 					});
 			}
-
 		});
 	}
 };
