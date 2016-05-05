@@ -17,7 +17,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 					return config;
 				},
 				responseError: function (config) {
-					console.log(config);
+					console.log (config);
 
 					return config;
 				}
@@ -102,15 +102,25 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 
 	}]).run (function ($rootScope) {
 
-	$rootScope.Object = Object;	
-	
-	$rootScope.emptyObject = function(object) {
-		return Object.keys(object).length == 0;
+	$rootScope.Object = Object;
+
+	$rootScope.emptyObject = function (object) {
+
+		// undefined object is probably also without data and therefore empty
+		if (typeof object == 'undefined')
+			return true;
+
+		return Object.keys (object).length == 0;
+	};
+
+	$rootScope.reinitDateTimePicker = function () {
+		$('input[type=datetime]').fdatepicker({
+			pickTime: true,
+			format: 'mm-dd-yyyy hh:ii'
+		});
 	};
 	
-
 	$rootScope.openTab = function (tabsContainer, tab) {
-
 		var tabButtons = tabsContainer + ' .tabs-title';
 		var pressedButton = tab + "-title";
 
@@ -136,5 +146,26 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 
 	$rootScope.$on ('$viewContentLoaded', function () {
 		$ ('#loaded-view').foundation ();
+		
+		
 	});
+}).directive ('modal', function () {
+	return {
+		restrict: 'E',
+		scope: {show: '=show'},
+		replace: true,
+		transclude: true,
+		link: function (scope, element, attrs) {
+			scope.hideModal = function () {
+				scope.show = false;
+			};
+		},
+		template: "<div class='ng-modal' ng-show='show'>" +
+		"<div class='reveal-modal-overlay' ng-click='hideModal()'></div>" +
+		"<div class='reveal-modal'>" +
+		"<div ng-transclude></div>" +
+		'<button class="close-button" ng-click="hideModal()" type="button">&times;</button>' +
+		"</div>" +
+		"</div>"
+	};
 });

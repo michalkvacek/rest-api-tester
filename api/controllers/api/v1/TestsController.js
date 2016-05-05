@@ -7,6 +7,48 @@
 
 module.exports = {
 	/**
+	 * Create new test in given environment
+	 *
+	 * @param req
+	 * @param res
+	 */
+	create: function (req, res) {
+		var parameters = {
+			usersId: req.token.id,
+			environmentsId: req.environmentId,
+			name: req.param ('name'),
+			description: req.param ('description')
+		};
+
+		// create new test
+		tests.create (parameters).then (function (test) {
+			return res.created (test);
+		}, function (error) {
+			return res.serverError (error);
+		});
+	}
+	,
+
+	update: function (req, res) {
+		tests.find ({where: {id: req.testId}}).then (function (test) {
+
+			var nextRun = req.param ('nextRun', false);
+
+			test.update ({
+				name: req.param ('name'),
+				description: req.param ('description'),
+				runInterval: req.param ('runInterval'),
+				nextRun: nextRun ? new Date (nextRun) : null
+			}).then (function (edited) {
+				return res.ok (edited);
+			});
+
+		}, function (error) {
+			return res.serverError (error);
+		})
+	},
+
+	/**
 	 * List of all tests in given environment
 	 *
 	 * Environment is passed as route parameter :environmentId
@@ -17,6 +59,59 @@ module.exports = {
 	index: function (req, res) {
 		tests.findAll ({where: {environmentsId: req.environmentId}}).then (function (data) {
 			return res.ok (data);
+		});
+	},
+
+	/**
+	 * Get details about given test. Test is specified as route parameter
+	 *
+	 * Test may be loaded with requests, results and/or headers.
+	 *
+	 * @param req
+	 * @param res
+	 */
+	detail: function (req, res) {
+		var findCriterium = {where: {id: req.testId}, include: []};
+
+		// should requests be also part of response?
+		if (req.param ('withRequests', false)) {
+			findCriterium.include.push ({
+				model: requests,
+				as: 'requests'
+			});
+		}
+
+		// append also test results?
+		if (req.param ('withResults', false)) {
+			findCriterium.include.push ({model: runnedTests})
+		}
+
+		tests.find (findCriterium).then (function (test) {
+			// because headers may be assigned to project, environment or test itself, we need to select all these three possibilities
+			if (req.param ('withHeaders', false)) {
+				headers.findAll ({
+					where: {
+						$or: [
+							{testsId: req.testId},
+							{projectsId: req.projectId},
+							{environmentsId: req.environmentId}
+						]
+					}
+				}).then (function (allHeaders) {
+
+					test = test.toJSON ();
+					test.headers = allHeaders;
+
+					return res.ok (test);
+				});
+			} else {
+				// no headers required, return current result
+
+				return res.ok (test);
+			}
+
+		}, function (error) {
+			return res.serverError (error);
 		});
 	},
 
@@ -50,16 +145,14 @@ module.exports = {
 		if (!req.param ('testResultId', false)) {
 
 			// common statistics
+			findCriterium.where = {createdAt: {$gt: new Date (new Date () - age)}};
 
-			findCriterium.where = {
-				createdAt: {
-					$gt: new Date (new Date () - age)
-				}
-			};
+			// filter stats by environment?
 			if (req.param ('environmentId', false)) {
 				findCriterium.where.environmentsId = req.param ('environmentId')
 			}
 
+			// filter stats by test?
 			if (req.param ('testId', false)) {
 				findCriterium.where.testsId = req.param ('testId')
 			}
@@ -100,59 +193,23 @@ module.exports = {
 		});
 	},
 
-	detail: function (req, res) {
-
-		var findCriterium = {where: {id: req.testId}, include: []};
-
-		if (req.param ('withRequests', false)) {
-			findCriterium.include.push ({
-				model: requests,
-				as: 'requests'
-			});
-		}
-
-		if (req.param ('withResults', false)) {
-			findCriterium.include.push ({
-				model: runnedTests,
-			})
-		}
-
-		tests.find (findCriterium).then (function (test) {
-
-			test = test.toJSON ();
-
-			if (req.param ('withHeaders', false)) {
-				headers.findAll ({
-					where: {
-						$or: [
-							{testsId: req.testId},
-							{projectsId: req.projectId},
-							{environmentsId: req.environmentId}
-						]
-					}
-				}).then (function (allHeaders) {
-					test.headers = allHeaders;
-
-					return res.json (test);
-				});
-			} else {
-				return res.json (test);
-
-			}
-
-		}, function (error) {
-			return res.serverError (error);
-		});
-	}
-	,
-
+	/**
+	 * Assign request to test
+	 *
+	 * @param req
+	 * @param res
+	 */
 	addRequest: function (req, res) {
+
+		// first, we need to find position for new request (may be used for some kind of sorting in the future)
 		requestsInTest.max ('position', {
 			where: {testsId: req.testId}
 		}).then (function (position) {
+			// undefined when adding new request
 			if (!position)
 				position = 0;
 
+			// assign to test - built-in method was throwing some weird errors
 			requestsInTest.create ({
 				testsId: req.testId,
 				requestsId: req.requestId,
@@ -165,59 +222,46 @@ module.exports = {
 		});
 	},
 
+	/**
+	 * Removes request from test
+	 *
+	 * @param req
+	 * @param res
+	 */
 	removeRequest: function (req, res) {
-		requestsInTest.destroy ({where: {testsId: req.testId, requestsId: req.requestId}}).then (function () {
+		requestsInTest.destroy ({
+			where: {
+				testsId: req.testId,
+				requestsId: req.requestId
+			}
+		}).then (function () {
 			return res.ok ('deleted');
 		});
 	},
 
 	/**
-	 * Create new test in given environment
+	 * Add test into running queue
+	 *
+	 * @param req
+	 * @param res
+	 * @returns {*}
+	 */
+	run: function (req, res) {
+		testRunner.addToQueue ({id: req.testId}, console.error);
+
+		// do not wait until data are stored in database, suppose that everything went fine
+
+		return res.ok ();
+	},
+
+	/**
+	 * Schedule test for running in the future.
+	 *
+	 * This method may be replaced with edit()
 	 *
 	 * @param req
 	 * @param res
 	 */
-	create: function (req, res) {
-		var parameters = {
-			usersId: req.token.id,
-			environmentsId: req.environmentId,
-			name: req.param ('name'),
-			description: req.param ('description')
-		};
-
-		// create new test
-		tests.create (parameters).then (function (test) {
-			return res.created (test);
-		}, function (error) {
-			return res.serverError (error);
-		});
-	}
-	,
-
-	update: function (req, res) {
-		tests.find ({where: {id: req.testId}}).then (function (test) {
-
-			test.update ({
-				name: req.param ('name'),
-				description: req.param ('description'),
-			}).then (function (edited) {
-				return res.ok (edited);
-			});
-
-		}, function (error) {
-			return res.serverError (error);
-		})
-	},
-
-	run: function (req, res) {
-		testRunner.addToQueue({id: req.testId}, function (err) {
-			console.log(err);
-		});
-
-		return res.ok ();
-
-	},
-
 	scheduleRun: function (req, res) {
 		tests.find ({where: {id: req.testId}}).then (function (test) {
 

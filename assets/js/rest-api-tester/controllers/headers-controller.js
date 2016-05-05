@@ -9,12 +9,21 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 
 	var lastFilter = {};
 
+	/**
+	 * List of all headers matching given filter
+	 * 
+	 * @param filter
+	 */
 	self.initOverview = function (filter) {
-
 		if (typeof filter == 'undefined')
 			filter = lastFilter;
 
 		headersService.overview (filter).then (function (response) {
+			
+			if (response.status != 200) {
+				return;
+			}
+			
 			self.overview = response.data;
 
 			// save filter for further usage
@@ -22,36 +31,52 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 		});
 	};
 
-	self.create = function (data) {
+	/**
+	 * Create new header
+	 */
+	self.create = function () {
 		headersService.create (self.formData).then (function (response) {
+			if (response.status != 201) {
+				return;
+			}
+			
 			self.initOverview ();
 
-			$ ('#new-header').foundation ('close');
+			self.manageHeaders = false;
 		})
 	};
 
+	/**
+	 * Edit existing header
+	 */
 	self.edit = function () {
 		headersService.edit (self.formData.id, self.formData).then (function (response) {
+			if (response.status != 200) {
+				return;
+			}
+			
 			self.initOverview ();
 
-			$ ('#edit-header').foundation ('close');
+			self.manageHeaders = false;
 		});
 	};
+
+	/**
+	 * Delete given header
+	 * @param id
+	 */
 	self.delete = function (id) {
 		var confirmation = confirm ('Opravdu?');
 
 		if (confirmation) {
 			headersService.delete (id).then (function (response) {
+				if (response.status != 200) {
+					return;
+				}
+				
 				self.initOverview ();
 			});
 		}
-	};
-
-	self.create = function () {
-		headersService.create (self.formData).then (function (response) {
-			self.initOverview ();
-			$ ('#new-header').foundation ('close');
-		})
 	};
 
 	return self;

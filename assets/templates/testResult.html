@@ -1,27 +1,27 @@
-<div ng-controller="TestsResultsController as result">
-	<div class="row content" ng-init="result.init()">
+<div ng-controller="TestsResultsController as testResult">
+	<div class="row content" ng-init="testResult.init()">
 		<div class="column with-shadow">
-			<h3>{{result.test.testName}}
-				<small>(results from {{result.test.createdAt | date : 'medium'}})</small>
+			<h3>{{testResult.test.testName}}
+				<small>(results from {{testResult.test.createdAt | date : 'medium'}})</small>
 			</h3>
 
-			{{result.test.testDescription}}
+			{{testResult.test.testDescription}}
 		</div>
 	</div>
 
-	<div class="row" ng-init="result.initStatistics()">
+	<div class="row" ng-init="testResult.initStatistics()">
 		<div class="column with-shadow">
 			<div class="row text-center">
 				<div class="column">
-					<h4>{{result.statistics.health | number : 1}} %</h4>
+					<h4>{{testResult.statistics.health | number : 1}} %</h4>
 					<small>Assertions passed</small>
 				</div>
 				<div class="column">
-					<h4>{{result.statistics.avgResponseTime | number : 1}} ms</h4>
+					<h4>{{testResult.statistics.avgResponseTime | number : 1}} ms</h4>
 					<small>Average response time</small>
 				</div>
 				<div class="column">
-					<h4>{{result.statistics.maxResponseTime}} ms</h4>
+					<h4>{{testResult.statistics.maxResponseTime}} ms</h4>
 					<small>Longest response time</small>
 				</div>
 
@@ -36,7 +36,7 @@
 			<div class="row">
 				<div class="column no-padding">
 					<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
-						<li class="accordion-item" data-accordion-item ng-repeat="response in result.test.responses">
+						<li class="accordion-item" data-accordion-item ng-repeat="response in testResult.test.responses">
 							<a href="javascript:void(0)" class="accordion-title">
 								<h5><span ng-class="response.status == 'success' ? 'fi-check success' : 'fi-x alert'"
 											 class="label"> {{response.requestName}}</span>
@@ -139,17 +139,17 @@
 											<div class="column">
 												<h5>Response body</h5>
 
-												<pre class="response">
+												<code class="response">
 													{{response.responseBodyRaw}}
-												</pre>
+												</code>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 
-							<script ng-if="$last">$ (function () {
-								Foundation.reInit ('accordion', 'tabs');
+							<script ng-if="$last && $index > 0">$ (function () {
+								Foundation.reInit ('accordion');
 							});</script>
 
 						</li>

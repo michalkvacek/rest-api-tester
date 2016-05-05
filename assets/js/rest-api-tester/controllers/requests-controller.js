@@ -7,7 +7,10 @@ app.controller ('RequestsController', [
 		var self = this;
 
 		$scope.requestId = null;
-		self.lastResponse = self.current = self.formData = self.detail = {};
+		self.lastResponse = {};
+		self.current = {};
+		self.formData = {};
+		self.detail = {};
 		self.httpParametersData = {};
 		self.headersData = {};
 		self.headers = {};
@@ -23,7 +26,6 @@ app.controller ('RequestsController', [
 		};
 
 		self.initDetail = function (id, testId, updateBreadcrumbs) {
-
 			if (typeof id == 'undefined')
 				id = $stateParams.requestId;
 

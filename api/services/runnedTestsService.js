@@ -1,8 +1,9 @@
 module.exports = {
 	markLastRunStatus: function () {
-		console.log ('snazim se');
-
-		var test = {}, response = {}, stillRunning = false, passed = true;
+		var test = {},
+			response = {},
+			stillRunning = false,
+			passed = true;
 
 		runnedTests.findAll ({
 			where: {status: 'evaluating'},
@@ -21,7 +22,7 @@ module.exports = {
 
 					if (response.status != 'success' && response.status != 'failed') {
 						stillRunning = true;
-						console.log(response.id+" stale bezi");
+						console.log (response.id + " stale bezi");
 						break;
 					}
 
@@ -32,8 +33,8 @@ module.exports = {
 					}
 				}
 
-				console.log(stillRunning);
-				console.log(passed);
+				console.log (stillRunning);
+				console.log (passed);
 
 				if (!stillRunning)
 					test.update ({status: passed ? 'success' : 'failed'}).then (function () {

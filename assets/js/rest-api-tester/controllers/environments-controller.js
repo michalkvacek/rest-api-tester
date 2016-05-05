@@ -7,10 +7,17 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 		self.overview = {};
 		self.addUser = {};
 
-		$rootScope.enableLoadingDashboardTests = true;
+		$rootScope.enableLoadingDashboardTests = false;
 		$rootScope.dashboardTests = [];
 		$rootScope.failedDasboardTests = {};
 
+		/**
+		 * Load list of dasboard tests.
+		 *
+		 * Currently using AJAX polling... :(
+		 *
+		 * @param withTimeout
+		 */
 		$rootScope.loadDashboardTests = function (withTimeout) {
 			var projectId = $stateParams.projectId, test = {};
 
@@ -45,39 +52,80 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 
 		$rootScope.loadDashboardTests ();
 
-		self.initOverview = function (projectId, selectedEnvironmentId) {
+		/**
+		 * List of all environments
+		 *
+		 * @param projectId
+		 * @param selectedEnvironmentId
+		 * @param loadDasboardTests
+		 */
+		self.initOverview = function (projectId, selectedEnvironmentId, loadDasboardTests) {
+
+			if (typeof loadDasboardTests == 'undefined')
+				loadDasboardTests = true;
+
 			if (typeof projectId == 'undefined')
 				projectId = $stateParams.projectId;
 
+			// turn ajax polling for loading tests on dasboard?
+			$rootScope.enableLoadingDashboardTests = loadDasboardTests;
+
+			// get all environments in given project
 			environmentsService.getOverview (projectId).then (function (response) {
+
+				if (response.status != 200)
+					return;
+
 				self.overview = response.data;
 
 				$rootScope.setEnvironment (selectedEnvironmentId, projectId);
 			});
 		};
 
-		self.loadDetail = function () {
+		/**
+		 * Load detail about curren environment.
+		 *
+		 * In response are included team members
+		 */
+		self.loadDetail = function (updateBreadcrumbs) {
+
+			if (typeof updateBreadcrumbs == 'undefined')
+				updateBreadcrumbs = true;
+
 			var environmentId = $stateParams.environmentId;
 			$rootScope.setEnvironment (environmentId);
 
+			// get detail
 			environmentsService.detail (environmentId).then (function (response) {
+				if (response.status != 200) 
+					return
+				
 				self.detail = response.data;
 
-				$rootScope.breadcrumbs = [
-					{
+				// update breadcrumbs
+				if (updateBreadcrumbs)
+					$rootScope.breadcrumbs = [{
 						label: 'Settings',
 						href: $state.href ('environment_settings', {environmentId: response.data.id})
-					}
-				];
+					}];
 			});
 		};
 
+		/**
+		 * Create new environment in current project
+		 */
 		self.create = function () {
 			var projectId = $stateParams.projectId;
 
-			environmentsService.create (projectId, self.formData).then (function (data) {
+			environmentsService.create (projectId, self.formData).then (function (response) {
+				if (response.status != 201) {
+					alert('error');
+					return;
+				}
+
 				self.initOverview ();
-				$ ('#new-environment').foundation ('close');
+
+				self.manageEnvironments = false;
 			});
 		};
 
@@ -105,10 +153,10 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 			environmentsService.addUser (environmentId, self.addUser).then (function (response) {
 				self.loadDetail ();
 
-				$('#new-user').foundation('close');
+				$ ('#new-user').foundation ('close');
 			});
 		};
-		
+
 		self.removeUser = function (userId) {
 			var environmentId = $stateParams.environmentId;
 

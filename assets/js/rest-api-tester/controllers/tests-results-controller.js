@@ -3,23 +3,45 @@ var app = angular.module ('restApiTester');
 app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', 'testsResultsService',
 	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, testsResultsService) {
 
-		var self = this;
+		var self = this,
+			testResultsFirstRun = true;
 
 		self.test = {};
 		self.statistics = {};
-		$rootScope.testList = [];
+		self.lastTestsAge = 2;
 
+		// list of tests from last self.lastTestsAge hours
+		$rootScope.testList = [];
+		$rootScope.testAddedOrInProgress = true;
+
+		/**
+		 * Load last tests into sidebar
+		 *
+		 * Currently using AJAX polling... :(
+		 *
+		 * @param withTimeout
+		 */
 		$rootScope.loadTests = function (withTimeout) {
 
 			if (typeof withTimeout == 'undefined')
 				withTimeout = true;
 
-			testsResultsService.getOverview (1).then (function (response) {
+			testsResultsService.getOverview (self.lastTestsAge).then (function (response) {
 				$rootScope.testList = response.data;
 
-				for (i in $rootScope.testList) {
-					$rootScope.$broadcast ('testResultChanged', $rootScope.testList[i]);
+				if (!testResultsFirstRun) {
+					var sentEvents = {};
+					for (i in $rootScope.testList) {
+						if (sentEvents[$rootScope.testList[i].testsId] == undefined) {
+							$rootScope.$broadcast ('testResultChanged', $rootScope.testList[i].testsId);
+							sentEvents[$rootScope.testList[i].testsId] = true;
+						}
+					}
 				}
+
+				$rootScope.testAddedOrInProgress = false;
+
+				testResultsFirstRun = false;
 
 				if (withTimeout)
 					$timeout ($rootScope.loadTests, 30 * 1000);

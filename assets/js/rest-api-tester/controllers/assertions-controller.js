@@ -27,53 +27,27 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', 'assertionsSe
 		})
 	};
 
-	self.newAssertionWindow = function (requestId) {
-		if (typeof requestId == 'undefined')
-			requestId = $stateParams.requestId;
-		
-		self.requestId = requestId;
-		self.initTypes ();
+	self.create = function () {
+		assertionsService.create (self.formData.requestsId, self.formData).then (function (response) {
+			self.initRequestAssertions (self.formData.requestsId);
 
-		$ ('#new-assertion').foundation ('open');
-	};
-
-	self.newAssertion = function () {
-
-		assertionsService.create (self.requestId, self.formData).then (function (response) {
-			self.initRequestAssertions (self.requestId);
-
-			$ ('#new-assertion').foundation ('close');
+			self.openModal = false;
 		})
 	};
 
-	self.editAssertionWindow = function (id) {
-		self.assertionId = id;
-		self.initTypes ();
-
-		assertionsService.getDetail (id).then (function (response) {
-			self.formData = response.data;
-
-			$ ('#edit-assertion').foundation ('open');
-		});
-
-	};
-
-	self.editAssertion = function () {
-
-		assertionsService.edit (self.assertionId, self.formData).then (function (response) {
+	self.edit = function () {
+		assertionsService.edit (self.formData.id, self.formData).then (function (response) {
 
 			// update assertions list
 			self.initRequestAssertions (response.data.requestsId);
 
-			$ ('#edit-assertion').foundation ('close');
+			self.openModal = false;
 		});
 
 	};
 
-	self.deleteAssertion = function (id, requestId) {
-		var confirmation = confirm ('Opravdu?');
-
-		if (confirmation) {
+	self.delete = function (id, requestId) {
+		if (confirm ('Opravdu?')) {
 			assertionsService.delete (id).then (function (response) {
 				// update assertions list
 				self.initRequestAssertions (requestId);

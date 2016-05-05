@@ -1,5 +1,6 @@
 <div class="row content">
-	<div class="column with-shadow" ng-controller="ProjectsController as project" id="project-edit" ng-init="project.loadDetail()">
+	<div class="column with-shadow" ng-controller="ProjectsController as project" id="project-edit"
+		  ng-init="project.loadDetail()">
 
 		<h3>Project settings</h3>
 
@@ -28,10 +29,10 @@
 		<div class="tabs-content">
 			<div class="tabs-panel is-active" id="basic-info">
 				<form ng-submit="project.edit()" ng-if="project.detail.id" ng-init="project.formData = project.detail">
-					<label>
+					<label class="required">
 						Project name
 
-						<input type="text" ng-blur="project.edit()" ng-model="project.formData.name" />
+						<input type="text" ng-blur="project.edit()" required ng-model="project.formData.name" />
 					</label>
 
 					<label>
@@ -41,8 +42,9 @@
 					</label>
 				</form>
 			</div>
+
 			<div class="tabs-panel" id="environments" ng-controller="EnvironmentsController as environments"
-				  ng-init="environments.initOverview();">
+					 ng-init="environments.initOverview();">
 				<table>
 					<thead>
 					<tr>
@@ -72,25 +74,23 @@
 					</tbody>
 				</table>
 
-
-				<a href="javascript:void(0)" class="button success" data-open="new-environment">
+				<a href="javascript:void(0)" class="button success" ng-click="environments.manageEnvironments = true">
 					<i class="fi-plus"></i> New environment</a>
 
-				<div class="reveal" id="new-environment" data-reveal>
-
+				<modal show="environments.manageEnvironments" ng-if="true">
 					<h3>Add environment</h3>
 
 					<form ng-submit="environments.create()">
-						<label>
+						<label class="required">
 							Name
 
-							<input type="text" placeholder="Environment name" ng-model="environments.formData.name" />
+							<input type="text" required placeholder="Environment name" ng-model="environments.formData.name" />
 						</label>
 
-						<label>
+						<label class="required">
 							API endpoint
 
-							<input type="text" placeholder="https://api.example.com/api/v1"
+							<input type="url" required placeholder="https://api.example.com/api/v1"
 									 ng-model="environments.formData.apiEndpoint" />
 						</label>
 
@@ -104,101 +104,59 @@
 
 						<button type="submit" class="button success float-right">Create new</button>
 					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-
-			</div>
-			<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers">
-
-				<div class="content-holder">
-					<table ng-if="project.detail.id" ng-init="headers.initOverview({projectId: project.detail.id})">
-						<tr ng-repeat="header in headers.overview">
-							<td>{{header.name}}</td>
-							<td>{{header.value}}</td>
-							<td class="text-right">
-								<a href="javascript:void(0)"
-									data-open="edit-header"
-									ng-click="headers.formData = header">
-									<i class="fi-pencil"></i>
-								</a>
-								<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
-									<i class="fi-x"></i>
-								</a>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="row controls align-right">
-					<a href="javascript:void(0)" ng-click="headers.formData = {projectsId: project.detail.id}"
-						data-open="new-header" class="success tiny button">
-						<i class="fi-plus"></i>
-						<span class="show-for-medium"> Add header</span></a>
-				</div>
-
-				<div class="reveal" id="edit-header" data-reveal>
-					<h3>Edit header</h3>
-
-					<form ng-submit="headers.edit()">
-						<div class="row">
-							<div class="column">
-								<label>
-									Name
-									<input type="text" ng-model="headers.formData.name">
-								</label>
-							</div>
-							<div class="column">
-								<label>
-									Value
-									<input type="text" ng-model="headers.formData.value">
-								</label>
-							</div>
-						</div>
-						<button type="submit" class="button success">Save</button>
-					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-
-				<div class="reveal" id="new-header" data-reveal>
-					<h3>New header</h3>
-
-					<form ng-submit="headers.create()">
-						<div class="row">
-							<div class="column">
-								<label>
-									Name
-									<input type="text" ng-model="headers.formData.name">
-								</label>
-							</div>
-							<div class="column">
-								<label>
-									Value
-									<input type="text" ng-model="headers.formData.value">
-								</label>
-							</div>
-						</div>
-						<button type="submit" class="button success">Save</button>
-					</form>
-
-					<!-- Close button -->
-					<button class="close-button" data-close aria-label="Close modal" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-
-			</div>
-
+				</modal>
 		</div>
 
+		<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers">
+
+			<div class="content-holder">
+				<table ng-if="project.detail.id" ng-init="headers.initOverview({projectId: project.detail.id})">
+					<tr ng-repeat="header in headers.overview">
+						<td>{{header.name}}</td>
+						<td>{{header.value}}</td>
+						<td class="text-right">
+							<a href="javascript:void(0)"
+								data-open="edit-header"
+								ng-click="headers.manageHeaders = true; headers.formData = header">
+								<i class="fi-pencil"></i>
+							</a>
+							<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
+								<i class="fi-x"></i>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="row controls align-right">
+				<a href="javascript:void(0)" ng-click="headers.formData = {projectsId: project.detail.id}"
+					data-open="new-header" class="success tiny button">
+					<i class="fi-plus"></i>
+					<span class="show-for-medium"> Add header</span></a>
+			</div>
+
+			<modal show="headers.manageHeaders">
+				<h3 ng-show="headers.formData.id">Edit header</h3>
+				<h3 ng-show="!headers.formData.id">Create new header</h3>
+
+				<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
+					<div class="row">
+						<div class="column">
+							<label class="required">
+								Name
+								<input type="text" required ng-model="headers.formData.name">
+							</label>
+						</div>
+						<div class="column">
+							<label>
+								Value
+								<input type="text" ng-model="headers.formData.value">
+							</label>
+						</div>
+					</div>
+					<button type="submit" class="button success">Save</button>
+				</form>
+			</modal>
+		</div>
 	</div>
+</div>
 </div>

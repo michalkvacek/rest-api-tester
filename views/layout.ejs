@@ -49,7 +49,7 @@
 
 		<div class="row">
 			<ul class="menu dropdown vertical" data-dropdown-menu>
-				<li><a href="javascript:void(0)">{{currentProject.name || "Vyberte projekt"}}</a>
+				<li><a href="javascript:void(0)" class="button primary">{{currentProject.name || "Vyberte projekt"}}</a>
 					<ul class="menu">
 						<li ng-repeat="project in projects.overview"
 						    ng-class="currentProject.id == project.id ? 'active' : ''">
@@ -74,10 +74,13 @@
 			</ul>
 		</div>
 
-		<ul class="test-results menu vertical" ng-controller="TestsResultsController as tests">
-			<li ng-repeat="result in testList">
-				<a ui-sref="test_result({testResultId: result.id})" ng-switch="result.status">
+		<ul class="test-results menu vertical" ng-if="currentEnvironment.id" ng-controller="TestsResultsController as tests">
+			<!--loading img from http://www.ajaxload.info/-->
+			<li ng-show="testAddedOrInProgress" class="text-center"><img src="images/loading.gif" alt="loading..." /></li>
+			<li ng-show="emptyObject(testList)">No tests in last {{tests.lastTestsAge}} hours</li>
 
+			<li ng-show="!emptyObject(testList)" ng-repeat="result in testList">
+				<a ui-sref="test_result({testResultId: result.id})" ng-switch="result.status">
 					<span ng-switch-when="success" class="badge success fi-check"></span>
 					<span ng-switch-when="failed" class="badge alert fi-x"></span>
 					<span ng-switch-when="waiting_for_response" class="badge primary fi-clock"></span>
