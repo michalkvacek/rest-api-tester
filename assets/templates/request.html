@@ -189,11 +189,12 @@
 					Prazdne
 				</div>
 
-				<table ng-show="asserts.assertions[request.current.id].length > 0">
+				<table ng-show="asserts.assertions[request.current.id].length != 0">
 					<thead>
 					<tr>
 						<th>Assertion name</th>
 						<th>Property name</th>
+						<th></th>
 						<th>Expected value</th>
 						<th></th>
 					</tr>
@@ -202,14 +203,24 @@
 					<tr ng-repeat="assertion in asserts.assertions[request.current.id]">
 						<td>{{assertion.assertion.name}}</td>
 						<td>{{assertion.property}}</td>
+						<td ng-switch="assertion.comparator">
+							<span ng-switch-when="eq">Equal to</span>
+							<span ng-switch-when="lt">Less then</span>
+							<span ng-switch-when="gt">Greater then</span>
+							<span ng-switch-when="le">Less or equal then</span>
+							<span ng-switch-when="ge">Greater or equal then</span>
+							<span ng-switch-when="ne">Not equal to</span>
+							<span ng-switch-when="in">Contains</span>
+							<span ng-switch-when="not_in">Not contains</span>
+						</td>
 						<td>{{assertion.expectedValue}}</td>
 						<td>
 							<a href="javascript:void(0)"
-								ng-click="asserts.editAssertionWindow(assertion.id)">
+								ng-click="asserts.openModal = true; asserts.formData = assertion">
 								<i class="fi-pencil" data-open="edit-assertion"></i>
 							</a>
 							<a href="javascript:void(0)"
-								ng-click="asserts.deleteAssertion(assertion.id, request.current.id)">
+								ng-click="asserts.delete(assertion.id, request.current.id)">
 								<i class="fi-x"></i>
 							</a>
 						</td>
@@ -219,18 +230,19 @@
 			</div>
 
 			<div class="row controls align-right">
-				<a href="javascript:void(0)" ng-click="asserts.newAssertionWindow()"
-					class="has-tip success tiny button" data-tooltip aria-haspopup="true"
-					data-disable-hover="false"
-					title="Add new assertion for this request"><i class="fi-plus"></i> <span class="show-for-medium"> Add assertion</span></a>
+				<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id}"
+						  class="button tiny success float-right">
+					<i class="fi-plus"></i>
+					<span class="show-for-medium"> Add assertion</span></a>
 			</div>
 		</div>
 
-		<div class="reveal" id="edit-assertion" data-reveal>
-			<h3>Edit assertion</h3>
+		<modal show="asserts.openModal">
+			<h3 ng-show="asserts.formData.id">Edit assertion</h3>
+			<h3 ng-show="!asserts.formData.id">Add new assertion</h3>
 
-			<form ng-submit="asserts.editAssertion()">
-				<label>
+			<form ng-submit="asserts.formData.id ? asserts.edit() : asserts.create()">
+				<label ng-if="asserts.openModal" ng-init="asserts.initTypes()">
 					Assertion type
 
 					<select name="input-type" ng-model="asserts.formData.assertionType">
@@ -238,59 +250,38 @@
 					</select>
 				</label>
 
-				<label>
+				<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
 					Property
 
-					<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
+					<input type="text" name="property" placeholder="Property name"
+							 ng-model="asserts.formData.property" />
 				</label>
 
-				<label>
-					Value
+				<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
+					Compare
 
-					<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
-				</label>
-
-				<button type="submit" class="button success">Edit</button>
-			</form>
-
-			<!-- Close button -->
-			<button class="close-button" data-close aria-label="Close modal" type="button">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-
-		<div class="reveal" id="new-assertion" data-reveal>
-			<h3>Add new assertion</h3>
-
-			<form ng-submit="asserts.newAssertion()">
-				<label>
-					Assertion type
-
-					<select name="input-type" ng-model="asserts.formData.assertionType">
-						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
+					<select required ng-model="asserts.formData.comparator">
+						<option value="eq">Equal to</option>
+						<option value="lt">Less then</option>
+						<option value="gt">Greater then</option>
+						<option value="le">Less or equal then</option>
+						<option value="ge">Greater or equal then</option>
+						<option value="ne">Not equal to</option>
+						<option value="in">Contains</option>
+						<option value="not_in">Not contains</option>
 					</select>
 				</label>
 
-				<label>
-					Property
-
-					<input type="text" name="property" placeholder="Property name" ng-model="asserts.formData.property" />
-				</label>
-
-				<label>
+				<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
 					Value
 
-					<input type="text" name="value" placeholder="Property value" ng-model="asserts.formData.expectedValue" />
+					<input type="text" name="value" placeholder="Property value"
+							 ng-model="asserts.formData.expectedValue" />
 				</label>
 
-				<button type="submit" class="button success">Create new</button>
+				<button type="submit" class="button success">Save</button>
 			</form>
-
-			<!-- Close button -->
-			<button class="close-button" data-close aria-label="Close modal" type="button">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
+		</modal>
 
 
 	</div>

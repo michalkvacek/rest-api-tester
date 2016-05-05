@@ -55,11 +55,12 @@ module.exports = {
 		tableName: 'requests',
 		hooks: {
 			afterCreate: function (request, options) {
-				requestValidatedByAssertions.create({
+				requestValidatedByAssertions.create ({
 					requestsId: request.id,
 					assertionType: 'status_code',
-					expectedValue: 200
-				}).then(function (assertion) {
+					expectedValue: 200,
+					comparator: 'eq'
+				}).then (function (assertion) {
 					// ok
 				});
 			}

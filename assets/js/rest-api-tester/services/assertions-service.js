@@ -38,6 +38,11 @@ app.service ('assertionsService', ['$http', '$q', function ($http, $q) {
 	self.create = function (requestId, data) {
 		var d = $q.defer ();
 
+		if (data.assertionType == 'property_exists' || data.asseertionType == 'property_not_exist') {
+			data.comparator = 'eq';
+			data.expectedValue = "true"
+		}
+
 		$http.post ('/api/v1/request/'+requestId+'/assertions', data).then (d.resolve, d.reject);
 
 		return d.promise;

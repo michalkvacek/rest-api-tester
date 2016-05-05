@@ -28,6 +28,10 @@ module.exports = {
 			type: Sequelize.STRING,
 			allowNull: false
 		},
+		assertionComparator: {
+			type: Sequelize.ENUM ('eq', 'lt', 'gt', 'le', 'ge', 'ne', 'in', 'not_in'),
+			allowNull: false
+		},
 		assertionProperty: {
 			type: Sequelize.TEXT,
 			allowNull: true

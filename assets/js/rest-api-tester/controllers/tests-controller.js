@@ -23,6 +23,7 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 				if (self.detailInitialized)
 				self.initDetail (false);
 
+				// pridat nejakou podminku na aktualizaci statistik - takhle se to pri kazde udalosti aktualizuje
 				self.initStatistics (self.statisticsButton);
 			}
 		});

@@ -30,6 +30,7 @@ module.exports = {
 		requestValidatedByAssertions.create ({
 			requestsId: req.requestId,
 			assertionType: req.param ('assertionType'),
+			comparator: req.param ('comparator'),
 			property: req.param ('property', null),
 			expectedValue: req.param ('expectedValue')
 		}).then (function (validation) {
@@ -45,6 +46,7 @@ module.exports = {
 		}).then (function (validation) {
 			validation.update ({
 				property: req.param ('property'),
+				comparator: req.param ('comparator'),
 				assertionType: req.param ('assertionType'),
 				expectedValue: req.param ('expectedValue')
 			}).then (function (validation) {

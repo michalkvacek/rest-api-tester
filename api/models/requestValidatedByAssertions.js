@@ -24,6 +24,10 @@ module.exports = {
 				key: 'type'
 			}
 		},
+		comparator: {
+			type: Sequelize.ENUM ('eq', 'lt', 'gt', 'le', 'ge', 'ne', 'in', 'not_in'),
+			allowNull: false
+		},
 		property: {
 			type: Sequelize.TEXT,
 			allowNull: true

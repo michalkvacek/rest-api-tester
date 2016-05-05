@@ -95,8 +95,10 @@
 												<th></th>
 												<th>Assertion name</th>
 												<th>Property name</th>
-												<th>Expected value</th>
 												<th>Recieved value</th>
+												<th></th>
+
+												<th>Expected value</th>
 											</tr>
 											</thead>
 											<tbody>
@@ -105,8 +107,19 @@
 															 class="badge"></span></td>
 												<td>{{assert.assertionName}}</td>
 												<td>{{assert.assertionProperty}}</td>
-												<td>{{assert.assertionExpectedValue}}</td>
 												<td>{{assert.recievedValue}}</td>
+
+												<td ng-switch="assert.assertionComparator">
+													<span ng-switch-when="eq">Equal to</span>
+													<span ng-switch-when="lt">Less then</span>
+													<span ng-switch-when="gt">Greater then</span>
+													<span ng-switch-when="le">Less or equal then</span>
+													<span ng-switch-when="ge">Greater or equal then</span>
+													<span ng-switch-when="ne">Not equal to</span>
+													<span ng-switch-when="in">Contains</span>
+													<span ng-switch-when="not_in">Not contains</span>
+												</td>
+												<td>{{assert.assertionExpectedValue}}</td>
 											</tr>
 											</tbody>
 										</table>
