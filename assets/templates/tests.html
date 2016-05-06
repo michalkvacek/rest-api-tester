@@ -1,23 +1,23 @@
 <div ng-controller="TestsController as tests">
 	<div class="row content">
 		<div class="column with-shadow has-controls" ng-init="tests.initStatistics(tests.statisticsButton)"
-			  ng-show="tests.statistics">
+			  ng-show="tests.statistics.testedRequests > 0">
 			<div class="row text-center">
 				<div class="column">
 					<h4>{{tests.statistics.health | number : 1 || '--'}} %</h4>
-					<small>Health</small>
+					<small>{{'Zdraví' | translate}}</small>
 				</div>
 				<div class="column">
 					<h4>{{tests.statistics.avgResponseTime | number : 1 || '--'}} ms</h4>
-					<small>Average response time</small>
+					<small>{{'Průměrná doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.maxResponseTime || '--'}} ms</h4>
-					<small>Longest response time</small>
+					<h4>{{tests.statistics.maxResponseTime | number : 0 || '--'}} ms</h4>
+					<small>{{'Nejdelší doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.testedRequests || '--'}}</h4>
-					tested requests
+					<h4>{{tests.statistics.testedRequests | number : 0 || '--'}}</h4>
+					{{'Testovaných požadavků' | translate}}
 				</div>
 			</div>
 
@@ -25,21 +25,22 @@
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(30); tests.statisticsButton = 30"
 					ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
-					30 days
+					{{':days dnů' | translate:"{days: 30}"}}
 				</a>
 				&nbsp;
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(7); tests.statisticsButton = 7"
 					ng-class="(tests.statisticsButton == 7) ? 'primary' : 'secondary'"
-					class="button tiny">7 days</a>
+					class="button tiny">{{':days dnů' | translate:"{days: 7}"}}</a>
 				&nbsp;
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(1); tests.statisticsButton = 1"
 					ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
-					last 24 hours</a>
+					{{'Posledních 24 hodin' | translate}}</a>
 				&nbsp;
-				<a href="javascript:void(0)" ng-click="runEnvironmentTests(currentEnvironmentId)" class="button success tiny"><i
-						  class="fi-play"> Run all tests</i></a>
+				<a href="javascript:void(0)" ng-click="runEnvironmentTests(currentEnvironmentId)"
+					class="button success tiny"><i
+						  class="fi-play"> {{'Spustit všechny testy' | translate}}</i></a>
 			</div>
 		</div>
 	</div>
@@ -57,51 +58,57 @@
 
 				<span ng-show="test.nextRun != null" class="label warning">
 					<i class="fi-calendar"></i>
-					Next run: {{test.nextRun | date : 'short'}}
+					{{'Další spuštění' | translate}}: {{test.nextRun | date : 'short'}}
 				</span>
 
 					<div class="row align-right" ng-switch="test.lastRunStatus">
-						<span ng-switch-when="success" class="label success fi-check"> Passing</span>
-						<span ng-switch-when="failed" class="label alert fi-x"> Not passing!</span>
+						<span ng-switch-when="success" class="label success fi-check"> {{'Prochází' | translate}}</span>
+						<span ng-switch-when="failed" class="label alert fi-x"> {{'Neprochází' | translate}}!</span>
 						<span ng-switch-when="waiting_for_response"
-								class="label primary fi-check"> Waiting for response</span>
-						<span ng-switch-when="evaluating" class="label warning fi-check"> Running</span>
+								class="label primary fi-check"> {{'Čeká na zpracování' | translate}}</span>
+						<span ng-switch-when="evaluating" class="label warning fi-check"> {{'Zpracovává se' | translate}}</span>
 					</div>
 				</div>
 				<div class="row controls align-right">
-					<a ui-sref="test_detail({testId: test.id})" class="has-tip primary tiny button" data-tooltip
-						aria-haspopup="true"
-						data-disable-hover="false"
-						title="Test detail"><i class="fi-magnifying-glass"></i> <span
-							  class="show-for-medium">Detail</span></a>
+					<a ui-sref="test_detail({testId: test.id})" class="primary tiny button">
+						<i class="fi-magnifying-glass"></i>
+						<span class="show-for-medium">{{'Detail' | translate}}</span>
+					</a>
+
 					&nbsp;
 
-					<a href="javascript:void(0)" ng-click="tests.run(test.id)" class="has-tip success tiny button"
-						data-tooltip aria-haspopup="true"
-						data-disable-hover="false"
-						title="Run now"><i class="fi-play"></i> <span class="show-for-medium">Run now</span></a>
+					<a href="javascript:void(0)" ng-click="tests.run(test.id)" class="success tiny button">
+						<i class="fi-play"></i>
+						<span class="show-for-medium">{{'Spustit nyní' | translate}}</span>
+					</a>
 					&nbsp;
-					<a href="javascript:void(0)" class="button tiny warning" ng-click="tests.setupSchedule(test)"
-						data-open="schedule-test"><i class="fi-calendar"></i> <span
-							  class="show-for-medium">Schedule</span></a>
+					<a href="javascript:void(0)" class="button tiny warning" ng-click="tests.setupSchedule(test)">
+						<i class="fi-calendar"></i>
+						<span class="show-for-medium">{{'Naplánovat spuštění' | translate}}</span></a>
 				</div>
 			</div>
-			<script ng-if="$last && $index > 0">Foundation.reInit('equalizer');</script>
+			<script ng-if="$last && $index > 0">
+				$ (function () {
+					setTimeout (function () {
+						Foundation.reInit ('equalizer');
+					}, 500)
+				});
+			</script>
 		</div>
 	</div>
 	<modal show="tests.manageSchedule" class="large">
 
-		<h3>Schedule test run</h3>
+		<h3>{{'Naplánovat spuštění' | translate}}</h3>
 
 		<form ng-submit="tests.schedule()">
 			<div class="row">
 				<div class="column shrink">
 					<label>
-						Run...
+						{{'Spustit...' | translate}}
 
 						<select ng-model="tests.scheduleData.run">
-							<option value="periodicaly">Periodicaly</option>
-							<option value="once">Only once</option>
+							<option value="periodicaly">{{'Periodicky' | translate}}</option>
+							<option value="once">{{'Pouze jednou' | translate}}</option>
 						</select>
 					</label>
 
@@ -119,14 +126,14 @@
 				</div>
 				<div class="column large-6">
 					<label>
-						Next run at
+						{{'Další spuštění' | translate}} at
 						<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />
 
 					</label>
 				</div>
 			</div>
 
-			<button class="button success float-right" type="submit">Save</button>
+			<button class="button success float-right" type="submit">{{'Uložit' | translate}}</button>
 		</form>
 
 		<!-- Close button -->
@@ -136,7 +143,8 @@
 	</modal>
 
 	<!--Button for creating new resource-->
-	<a data-open="new-test" id="add-test" ng-click="tests.manageTest = true" class="button success material-add-button"><i
+	<a data-open="new-test" id="add-test" ng-click="tests.manageTest = true"
+		class="button success material-add-button"><i
 			  class="fi-plus"></i></a>
 
 	<modal show="tests.manageTest" class="large">
@@ -151,7 +159,7 @@
 			</label>
 
 			<label>
-				Description
+				{{'Popis' | translate}}
 
 				<textarea rows="2" ng-model="tests.formData.description" name="description"></textarea>
 			</label>

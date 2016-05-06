@@ -2,19 +2,19 @@
 	<div class="column with-shadow">
 		<form ng-submit="user.edit()" ng-init="user.initProfile()">
 			<label>
-				Name
+				{{'Jméno' | translate}}
 
 				<input type="text" ng-model="user.profile.name">
 			</label>
 
 			<label>
-				E-mail
+				{{'E-mail' | translate}}
 
 				<input type="text" ng-model="user.profile.email">
 			</label>
 
 			<label>
-				Language
+				{{'Jazyk' | translate}}
 
 				<select ng-model="user.profile.language">
 					<option value="cs">Czech</option>
@@ -23,12 +23,12 @@
 			</label>
 
 			<label>
-				Password
+				{{'Heslo' | translate}}
 
 				<input type="text" ng-model="user.profile.password">
 			</label>
 
-			<button type="submit" class="success button">Save</button>
+			<button type="submit" class="success button">{{'Uložit' | translate}}</button>
 		</form>
 	</div>
 </div>

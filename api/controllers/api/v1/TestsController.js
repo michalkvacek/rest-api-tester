@@ -85,12 +85,18 @@ module.exports = {
 		if (req.param ('withResults', false)) {
 			findCriterium.include.push ({
 				model: runnedTests,
+				required: false,
 				// include results only from past 30 days
-				where: {updatedAt: {$lt: new Date (Date.now () - 30 * 24 * 3600 * 1000)}}
+				where: {updatedAt: {$gt: new Date (Date.now () - 30 * 24 * 3600 * 1000)}}
 			})
 		}
 
 		tests.find (findCriterium).then (function (test) {
+
+			// does this test even exist?
+			if (test == null)
+				return res.notFound();
+
 			// because headers may be assigned to project, environment or test itself, we need to select all these three possibilities
 			if (req.param ('withHeaders', false)) {
 				headers.findAll ({
@@ -102,6 +108,9 @@ module.exports = {
 						]
 					}
 				}).then (function (allHeaders) {
+
+					console.log(test);
+					console.log(req.testId);
 
 					test = test.toJSON ();
 					test.headers = allHeaders;

@@ -16,6 +16,7 @@ app.service ('loginService', ['$http', '$timeout', '$rootScope', '$q', function 
 			$http.get ('/api/v1/users/me').then (function (response) {
 				if (response.status == 200) {
 					$rootScope.identity = response.data;
+					
 					lastAuth = now;
 
 					return true;

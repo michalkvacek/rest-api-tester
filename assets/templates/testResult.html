@@ -2,7 +2,7 @@
 	<div class="row content" ng-init="testResult.init()">
 		<div class="column with-shadow">
 			<h3>{{testResult.test.testName}}
-				<small>(results from {{testResult.test.createdAt | date : 'medium'}})</small>
+				<small>({{'výsledky z' | translate}} {{testResult.test.createdAt | date : 'medium'}})</small>
 			</h3>
 
 			{{testResult.test.testDescription}}
@@ -14,15 +14,15 @@
 			<div class="row text-center">
 				<div class="column">
 					<h4>{{testResult.statistics.health | number : 1}} %</h4>
-					<small>Requests passed</small>
+					<small>{{'Požadavky' | translate}} passed</small>
 				</div>
 				<div class="column">
 					<h4>{{testResult.statistics.avgResponseTime | number : 1}} ms</h4>
-					<small>Average response time</small>
+					<small>{{'Průměrná doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
 					<h4>{{testResult.statistics.maxResponseTime}} ms</h4>
-					<small>Longest response time</small>
+					<small>{{'Nejdelší doba odezvy' | translate}}</small>
 				</div>
 
 			</div>
@@ -31,7 +31,7 @@
 
 	<div class="row">
 		<div class="column with-shadow">
-			<h4>Requests</h4>
+			<h4>{{'Požadavky' | translate}}</h4>
 
 			<div class="row">
 				<div class="column no-padding">
@@ -47,15 +47,21 @@
 								<ul class="tabs">
 									<li class="tabs-title" ng-attr-id="{{'request-'+response.id+'-title'}}">
 										<a href="javascript:void(0)"
-											ng-click="openTab('#request-tabs-'+response.id, '#request-'+response.id)">Request</a>
+											ng-click="openTab('#request-tabs-'+response.id, '#request-'+response.id)">
+											{{'Požadavek' | translate}}
+										</a>
 									</li>
 									<li class="tabs-title is-active" ng-attr-id="{{'assertions-'+response.id+'-title'}}">
 										<a href="javascript:void(0)" aria-selected="true"
-											ng-click="openTab('#request-tabs-'+response.id, '#assertions-'+response.id)">Assertions</a>
+											ng-click="openTab('#request-tabs-'+response.id, '#assertions-'+response.id)">
+											{{'Validátory' | translate}}
+										</a>
 									</li>
 									<li class="tabs-title" ng-attr-id="{{'response-'+response.id+'-title'}}">
 										<a href="javascript:void(0)"
-											ng-click="openTab('#request-tabs-'+response.id, '#response-'+response.id)">Response</a>
+											ng-click="openTab('#request-tabs-'+response.id, '#response-'+response.id)">
+											{{'Odpověď' | translate}}
+										</a>
 									</li>
 								</ul>
 								<div class="tabs-content">
@@ -66,10 +72,10 @@
 
 										<div class="row">
 											<div class="column">
-												<h5>Request headers</h5>
+												<h5>{{'HTTP hlavičky požadavku' | translate}}</h5>
 
 												<div class="warning callout" ng-show="emptyObject(response.requestHeaders)">
-													prazdne
+													{{'Žádný záznam' | translate}}
 												</div>
 
 												<ul ng-show="!emptyObject(response.requestHeaders)">
@@ -95,12 +101,12 @@
 											<thead>
 											<tr>
 												<th></th>
-												<th>Assertion name</th>
-												<th>Property name</th>
-												<th>Recieved value</th>
+												<th>{{'Jméno validátoru' | translate}}</th>
+												<th>{{'Vlastnost objektu' | translate}}</th>
+												<th>{{'Přijatá hodnota' | translate}}</th>
 												<th></th>
 
-												<th>Expected value</th>
+												<th>{{'Očekávaná hodnota' | translate}}</th>
 											</tr>
 											</thead>
 											<tbody>
@@ -109,19 +115,20 @@
 															 class="badge"></span></td>
 												<td>{{assert.assertionName}}</td>
 												<td>{{assert.assertionProperty}}</td>
-												<td>{{assert.recievedValue | limitTo:70}}{{assert.recievedValue.length > 70 ? '...'
-													 : ''}}
+												<td>
+													{{assert.recievedValue | limitTo:70}}{{assert.recievedValue.length > 70 ? '...' :
+													''}}
 												</td>
 
 												<td ng-switch="assert.assertionComparator">
-													<span ng-switch-when="eq">Equal to</span>
-													<span ng-switch-when="lt">Less then</span>
-													<span ng-switch-when="gt">Greater then</span>
-													<span ng-switch-when="le">Less or equal then</span>
-													<span ng-switch-when="ge">Greater or equal then</span>
-													<span ng-switch-when="ne">Not equal to</span>
-													<span ng-switch-when="in">Contains</span>
-													<span ng-switch-when="not_in">Not contains</span>
+													<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
+													<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
+													<span ng-switch-when="gt">{{'Více než' | translate}}</span>
+													<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
+													<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
+													<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
+													<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
+													<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
 												</td>
 												<td>{{assert.assertionExpectedValue}}</td>
 											</tr>
@@ -133,15 +140,17 @@
 
 										<div class="row">
 											<div class="column">
-												<h5>Status</h5>
+												<h5>{{'Status' | translate}}</h5>
 												<ul>
-													<li>Status code: {{response.responseCode}}</li>
-													<li>Response size: {{response.responseSize / 1024 | number: 1}} kB</li>
-													<li>Response time: {{response.responseTime}} ms</li>
+													<li>{{'Status' | translate}} code: {{response.responseCode}}</li>
+													<li>{{'Velikost odpovědi' | translate}}: {{response.responseSize / 1024 | number:
+														 1}} kB
+													</li>
+													<li>{{'Čas odpovědi' | translate}}: {{response.responseTime}} ms</li>
 												</ul>
 											</div>
 											<div class="column" ng-show="response.responseHeaders.length > 0">
-												<h5>Response headers</h5>
+												<h5>{{'HTTP hlavičky odpovědi' | translate}}</h5>
 
 												<ul>
 													<li ng-repeat="(header, value) in response.responseHeaders">
@@ -154,7 +163,7 @@
 
 										<div class="row">
 											<div class="column">
-												<h5>Response body</h5>
+												<h5>{{'Tělo odpovědi' | translate}}</h5>
 
 												<code class="response">
 													{{response.responseBodyRaw}}
@@ -167,7 +176,9 @@
 
 							<script ng-if="$last">
 								$ (function () {
-									Foundation.reInit ('accordion');
+									setTimeout (function () {
+										Foundation.reInit ('accordion');
+									}, 500);
 								});
 							</script>
 

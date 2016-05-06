@@ -5,19 +5,19 @@
 			<li id="basic-info-title" class="tabs-title is-active">
 				<a href="javascript:void(0)"
 					ng-click="openTab('#environment-edit', '#basic-info')" aria-selected="true">
-					Basic info
+					{{'Základní informace' | translate}}
 				</a>
 			</li>
 			<li id="headers-title" class="tabs-title">
 				<a href="javascript:void(0)"
 					ng-click="openTab('#environment-edit', '#headers')">
-					Headers
+					{{'HTTP hlavičky' | translate}}
 				</a>
 			</li>
 			<li id="users-title" class="tabs-title">
 				<a href="javascript:void(0)"
 					ng-click="openTab('#environment-edit', '#users')">
-					Users
+					{{'Uživatelé' | translate}}
 				</a>
 			</li>
 		</ul>
@@ -27,20 +27,20 @@
 				<form ng-submit="environment.edit()" ng-if="environment.detail.id"
 						ng-init="environment.formData = environment.detail">
 					<label>
-						Environment name
+						{{'Jméno' | translate}}
 
 						<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.name" />
 					</label>
 
 					<label>
-						Environment description
+						{{'Popis' | translate}}
 
 						<textarea rows="3" ng-blur="environment.edit()"
 									 ng-model="environment.formData.description"></textarea>
 					</label>
 
 					<label>
-						API endpoint
+						{{'Adresa API serveru' | translate}}
 
 						<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.apiEndpoint" />
 					</label>
@@ -58,46 +58,47 @@
 							<td>{{header.value}}</td>
 							<td class="text-right">
 								<span ng-show="header.environmentsId == environment.detail.id">
-								<a href="javascript:void(0)"
-									data-open="edit-header"
-									ng-click="headers.formData = header">
-									<i class="fi-pencil"></i>
-								</a>
-								<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
-									<i class="fi-x"></i>
-								</a>
-									</span>
+									<a href="javascript:void(0)"
+										data-open="edit-header"
+										ng-click="headers.formData = header">
+										<i class="fi-pencil"></i>
+									</a>
+									<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
+										<i class="fi-x"></i>
+									</a>
+								</span>
 							</td>
 						</tr>
 					</table>
 				</div>
 				<div class="row controls align-right">
-					<a href="javascript:void(0)" ng-click="headers.manageHeaders = true; headers.formData = {environmentsId: environment.detail.id}"
+					<a href="javascript:void(0)"
+						ng-click="headers.manageHeaders = true; headers.formData = {environmentsId: environment.detail.id}"
 						data-open="new-header" class="success tiny button">
 						<i class="fi-plus"></i>
-						<span class="show-for-medium"> Add header</span></a>
+						<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
 				</div>
 
 				<modal show="headers.manageHeaders">
-					<h3 ng-show="headers.formData.id">Edit header</h3>
-					<h3 ng-show="!headers.formData.id">Create new header</h3>
+					<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
+					<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
 
 					<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
 						<div class="row">
 							<div class="column">
 								<label class="required">
-									Name
+									{{'Jméno' | translate}}
 									<input type="text" required ng-model="headers.formData.name">
 								</label>
 							</div>
 							<div class="column">
 								<label>
-									Value
+									{{'Hodnota' | translate}}
 									<input type="text" ng-model="headers.formData.value">
 								</label>
 							</div>
 						</div>
-						<button type="submit" class="button success">Save</button>
+						<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 					</form>
 				</modal>
 			</div>
@@ -107,9 +108,9 @@
 					<thead>
 					<tr>
 						<th></th>
-						<th>Name</th>
-						<th>E-mail</th>
-						<th>Role</th>
+						<th>{{'Jméno' | translate}}</th>
+						<th>{{'E-mail' | translate}}</th>
+						<th>{{'Role' | translate}}</th>
 						<th></th>
 					</tr>
 					</thead>
@@ -122,7 +123,7 @@
 							<a href="javascript:void(0)" ng-click="environment.removeUser(user.id)"
 								class="button small warning">
 								<i class="fi-lock"></i>
-								Remove user
+								{{'Odebrat uživatele' | translate}}
 							</a>
 						</td>
 					</tr>
@@ -132,26 +133,26 @@
 					<a href="javascript:void(0)"
 						ng-click="environment.manageUser=true" class="success  button">
 						<i class="fi-plus"></i>
-						<span class="show-for-medium"> Add user</span></a>
+						<span class="show-for-medium"> {{'Přidat uživatele' | translate}}</span></a>
 				</div>
 
 				<modal show="environments.manageUser">
-					<h4>Add user</h4>
+					<h4>{{'Přidat uživatele' | translate}}</h4>
 					<form ng-submit="environment.assignUser()">
-						<label>Role
+						<label>{{'Role' | translate}}
 							<select ng-model="environment.addUser.role">
-								<option value="manager">Manager</option>
-								<option value="tester">Tester</option>
-								<option value="viewer">Viewer</option>
+								<option value="manager">{{'Manažer' | translate}}</option>
+								<option value="tester">{{'Tester' | translate}}</option>
+								<option value="viewer">{{'Host' | translate}}</option>
 							</select>
 						</label>
 
 						<label>
-							E-mail
+							{{'E-mail' | translate}}
 							<input type="email" ng-model="environment.addUser.email">
 						</label>
 
-						<button type="submit" class="float-right button primary">Add user</button>
+						<button type="submit" class="float-right button primary">{{'Přidat' | translate}}</button>
 
 					</form>
 				</modal>

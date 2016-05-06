@@ -3,12 +3,12 @@
 
 		<form ng-controller="RegistrationController as registration" ng-submit="registration.localRegistration()">
 			<label>
-				E-mail
+				{{'E-mail' | translate}}
 				<input type="email" name="email" ng-model="registration.formData.email"/>
 			</label>
 
 			<label>
-				Name
+				{{'Jméno' | translate}}
 
 				<input type="text" name="name" ng-model="registration.formData.name" />
 			</label>

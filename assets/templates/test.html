@@ -9,50 +9,50 @@
 				</div>
 				<div class="column shrink" ng-switch="tests.detail.lastRunStatus">
 					<p>
-					<!--<span ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">-->
+					<span ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
 						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
 							class="button success small fi-play"> Run now</a>
 						<a href="javascript:void(0)" ng-click="tests.manageTest = true; tests.formData = tests.detail"
-							class="button primary small fi-pencil"> Edit</a>
-					<!--</span>-->
+							class="button primary small fi-pencil"> {{'Upravit' | translate}}</a>
+					</span>
 
 					<span ng-show="tests.detail.lastRunStatus == 'waiting_for_response' || tests.detail.lastRunStatus == 'evaluating'">
-						<button class="button small warning disabled"><i class="fi-play-circle"></i> Running</button>
+						<button class="button small warning disabled"><i class="fi-play-circle"></i> {{'Zpracovává se' | translate}}</button>
 					</span>
 					</p>
 
 					<p>
-						<span ng-switch-when="success" class="label success fi-check"> Passing</span>
-						<span ng-switch-when="failed" class="label alert fi-x"> Not passing</span>
+						<span ng-switch-when="success" class="label success fi-check"> {{'Prochází' | translate}}</span>
+						<span ng-switch-when="failed" class="label alert fi-x"> {{'Neprochází' | translate}}</span>
 						<span ng-switch-when="waiting_for_response"
-								class="label primary fi-clock"> Waiting for response</span>
-						<span ng-switch-when="evaluating" class="label warning fi-eye"> Evaluating</span>
+								class="label primary fi-clock"> {{'Čeká na zpracování' | translate}}</span>
+						<span ng-switch-when="evaluating" class="label warning fi-eye"> {{'Zpracovává se' | translate}}</span>
 					</p>
 
-					<span ng-show="tests.detail.nextRun" class="label secondary fi-calendar"> Next run: {{tests.detail.nextRunRaw | date : 'short' }}</span>
+					<span ng-show="tests.detail.nextRun" class="label secondary fi-calendar"> {{'Další spuštění' | translate}}: {{tests.detail.nextRunRaw | date : 'short' }}</span>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)" ng-show="tests.statistics">
+	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)" ng-show="tests.statistics.testedRequests > 0">
 		<div class="column with-shadow has-controls">
 			<div class="row text-center">
 				<div class="column">
 					<h4>{{tests.statistics.health | number : 1 || '--'}} %</h4>
-					<small>Health</small>
+					<small>{{'Zdraví' | translate}}</small>
 				</div>
 				<div class="column">
 					<h4>{{tests.statistics.avgResponseTime | number : 1 || '--'}} ms</h4>
-					<small>Average response time</small>
+					<small>{{'Průměrná doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.maxResponseTime || '--'}} ms</h4>
-					<small>Longest response time</small>
+					<h4>{{tests.statistics.maxResponseTime | number : 0 || '--'}} ms</h4>
+					<small>{{'Nejdelší doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.testedRequests || '--'}}</h4>
-					tested requests
+					<h4>{{tests.statistics.testedRequests | number : 0|| '--'}}</h4>
+					{{'Testovaných požadavků' | translate}}
 				</div>
 
 			</div>
@@ -61,25 +61,25 @@
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(30)"
 					ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
-					30 days
+					{{':days dnů' | translate:"{days: 30}"}}
 				</a>
 				&nbsp;
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(7)"
 					ng-class="(tests.statisticsButton == 7) ? 'primary' : 'secondary'"
-					class="button tiny">7 days</a>
+					class="button tiny">{{':days dnů' | translate:"{days: 7}"}}</a>
 				&nbsp;
 				<a href="javascript:void(0)"
 					ng-click="tests.initStatistics(1)"
 					ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
-					last 24 hours</a>
+					{{'Posledních 24 hodin' | translate}}</a>
 			</div>
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="column has-controls with-shadow">
-			<h4>Requests</h4>
+			<h4>{{'Požadavky' | translate}}</h4>
 
 			<div ng-show="tests.detail.requests.length == 0" class="callout warning">Zadny request</div>
 
@@ -110,12 +110,12 @@
 										<a href="javascript:void(0)"
 											ng-click="openTab('#request-tabs-'+request.id, '#request-'+request.id)"
 											aria-selected="true">
-											Request</a>
+											{{'Požadavek' | translate}}</a>
 									</li>
 									<li ng-attr-id="{{ 'assertions-'+request.id+'-title'}}" class="tabs-title">
 										<a href="javascript:void(0)"
 											ng-click="openTab('#request-tabs-'+request.id, '#assertions-'+request.id); asserts.initRequestAssertions(request.id)">
-											Assertions
+											{{'Validátory' | translate}}
 										</a>
 									</li>
 								</ul>
@@ -133,7 +133,7 @@
 										<p>{{request.description}}</p>
 
 										<div class="headers" ng-show="reqController.detail[request.id].headers.length > 0">
-											<h5>Headers</h5>
+											<h5>{{'HTTP hlavičky' | translate}}</h5>
 											<ul>
 												<li ng-repeat="header in reqController.detail[request.id].headers">
 													<strong>{{header.name}}</strong>: {{header.value}}
@@ -143,17 +143,17 @@
 
 										<a class="button success tiny" ui-sref="request({requestId: request.id})">
 											<i class="fi-magnifying-glass"></i>
-											Detail
+											{{'Detail' | translate}}
 										</a>
 
 										<a class="button primary tiny" ui-sref="request_editor({requestId: request.id})">
 											<i class="fi-pencil"></i>
-											Edit
+											{{'Upravit' | translate}}
 										</a>
 
 										<a class="button alert tiny" ng-click="tests.removeRequest(request.id)">
 											<i class="fi-x"></i>
-											Delete from test
+											{{'Odebrat z testu' | translate}}
 										</a>
 
 									</div>
@@ -161,16 +161,16 @@
 
 										<div class="callout warning"
 											  ng-show="emptyObject(asserts.assertions[request.id])">
-											Prazdne
+											{{'Žádný záznam' | translate}}
 										</div>
 
 										<table ng-show="!emptyObject(asserts.assertions[request.id])">
 											<thead>
 											<tr>
-												<th>Assertion name</th>
-												<th>Property name</th>
+												<th>{{'Jméno validátoru' | translate}}</th>
+												<th>{{'Vlastnost objektu' | translate}}</th>
 												<th></th>
-												<th>Expected value</th>
+												<th>{{'Očekávaná hodnota' | translate}}</th>
 												<th></th>
 											</tr>
 											</thead>
@@ -179,14 +179,14 @@
 												<td>{{assertion.assertion.name}}</td>
 												<td>{{assertion.property}}</td>
 												<td ng-switch="assertion.comparator">
-													<span ng-switch-when="eq">Equal to</span>
-													<span ng-switch-when="lt">Less then</span>
-													<span ng-switch-when="gt">Greater then</span>
-													<span ng-switch-when="le">Less or equal then</span>
-													<span ng-switch-when="ge">Greater or equal then</span>
-													<span ng-switch-when="ne">Not equal to</span>
-													<span ng-switch-when="in">Contains</span>
-													<span ng-switch-when="not_in">Not contains</span>
+													<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
+													<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
+													<span ng-switch-when="gt">{{'Více než' | translate}}</span>
+													<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
+													<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
+													<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
+													<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
+													<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
 												</td>
 												<td>{{assertion.expectedValue}}</td>
 												<td>
@@ -204,7 +204,7 @@
 										</table>
 										<button ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.id}"
 												  class="button success float-right">
-											<i class="fi-plus"></i> Add assertion
+											<i class="fi-plus"></i> {{'Nový validátor' | translate}}
 										</button>
 										<div class="clearfix"></div>
 									</div>
@@ -222,12 +222,12 @@
 					</ul>
 
 					<modal show="asserts.openModal">
-						<h3 ng-show="asserts.formData.id">Edit assertion</h3>
-						<h3 ng-show="!asserts.formData.id">Add new assertion</h3>
+						<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
+						<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
 						<form ng-submit="asserts.formData.id ? asserts.edit() : asserts.create()">
 							<label class="required" ng-if="asserts.openModal" ng-init="asserts.initTypes()">
-								Assertion type
+								{{'Typ validátoru' | translate}}
 
 								<select required name="input-type" ng-model="asserts.formData.assertionType">
 									<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
@@ -235,35 +235,35 @@
 							</label>
 
 							<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
-								Property
+								{{'Vlastnost objektu' | translate}}
 
-								<input type="text" name="property" placeholder="Property name"
+								<input type="text" name="property" placeholder="{{'Vlastnost objektu' | translate}}"
 										 ng-model="asserts.formData.property" />
 							</label>
 
 							<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
-								Compare
+								{{'Porovnání' | translate}}
 
 								<select required ng-model="asserts.formData.comparator">
-									<option value="eq">Equal to</option>
-									<option value="lt">Less then</option>
-									<option value="gt">Greater then</option>
-									<option value="le">Less or equal then</option>
-									<option value="ge">Greater or equal then</option>
-									<option value="ne">Not equal to</option>
-									<option value="in">Contains</option>
-									<option value="not_in">Not contains</option>
+									<option value="eq">{{'Odpovídá' | translate}}</option>
+									<option value="lt">{{'Méně než' | translate}}</option>
+									<option value="gt">{{'Více než' | translate}}</option>
+									<option value="le">{{'Méně nebo stejně' | translate}}</option>
+									<option value="ge">{{'Více nebo stejně' | translate}}</option>
+									<option value="ne">{{'Neodpovídá' | translate}}</option>
+									<option value="in">{{'Obsahuje' | translate}}</option>
+									<option value="not_in">{{'Neobsahuje' | translate}}</option>
 								</select>
 							</label>
 
 							<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
-								Value
+								{{'Hodnota' | translate}}
 
-								<input type="text" name="value" placeholder="Property value"
+								<input type="text" name="value" placeholder="{{'Vlastnost objektu' | translate}} value"
 										 ng-model="asserts.formData.expectedValue" />
 							</label>
 
-							<button type="submit" class="button success">Save</button>
+							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 						</form>
 					</modal>
 				</div>
@@ -282,10 +282,10 @@
 		<div class="row">
 			<div class="column no-padding">
 
-				<h4>Headers</h4>
+				<h4>{{'HTTP hlavičky' | translate}}</h4>
 
 				<div class="callout warning" ng-show="emptyObject(tests.detail.headers)">
-					Prazdne
+					{{'Žádný záznam' | translate}}
 				</div>
 
 				<table ng-show="!emptyObject(tests.detail.headers)">
@@ -307,7 +307,7 @@
 		</div>
 		<div class="row controls align-right">
 			<button class="button success tiny" ng-click="tests.manageHeaders=true; tests.formData.headers = {}">
-				<i class="fi-check"></i> Add header
+				<i class="fi-check"></i> {{'Přidat' | translate}}
 			</button>
 		</div>
 	</div>
@@ -327,25 +327,25 @@
 	</div>
 
 	<modal show="tests.manageHeaders">
-		<h3 ng-show="tests.formData.headers.id">Edit header</h3>
-		<h3 ng-show="!tests.formData.headers.id">Create new header</h3>
+		<h3 ng-show="tests.formData.headers.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
+		<h3 ng-show="!tests.formData.headers.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
 
 		<form ng-submit="tests.formData.headers.id ? tests.headers.edit() : tests.headers.create(tests.detail.id)">
 			<div class="row">
 				<div class="column">
 					<label class="required">
-						Name
+						{{'Jméno' | translate}}
 						<input type="text" required ng-model="tests.formData.headers.name">
 					</label>
 				</div>
 				<div class="column">
 					<label>
-						Value
+						{{'Hodnota' | translate}}
 						<input type="text" ng-model="tests.formData.headers.value">
 					</label>
 				</div>
 			</div>
-			<button type="submit" class="button success">Save</button>
+			<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 		</form>
 	</modal>
 
@@ -370,7 +370,7 @@
 						<div class="row">
 							<div class="column">
 								<label class="required">
-									Request name
+									{{'Jméno' | translate}}
 
 									<input type="text" required name="name" ng-model="request.formData.name" />
 
@@ -388,7 +388,6 @@
 										<option value="POST">POST</option>
 										<option value="PUT">PUT</option>
 										<option value="DELETE">DELETE</option>
-										<option value="OPTION">OPTION</option>
 										<option value="PATCH">PATCH</option>
 									</select>
 								</label>
@@ -421,7 +420,7 @@
 					</button>
 
 					<div class="callout warning" ng-show="request.environmentRequests.length == 0">
-						Prazdne
+						{{'Žádný záznam' | translate}}
 					</div>
 
 				</div>
@@ -431,7 +430,7 @@
 	</modal>
 
 	<modal class="large" show="tests.manageTest">
-		<h3>Edit test</h3>
+		<h3>{{'Upravit' | translate}} test</h3>
 
 		<form ng-submit="tests.edit()">
 
@@ -445,7 +444,7 @@
 			<div class="row">
 
 				<label class="column">
-					Description
+					{{'Popis' | translate}}
 
 					<textarea rows="2" ng-model="tests.formData.description"></textarea>
 				</label>
@@ -475,14 +474,14 @@
 				</div>
 				<div class="column large-6">
 					<label>
-						Next run at
+						{{'Další spuštění' | translate}} at
 						<input type="datetime" ng-model="tests.formData.nextRun" name="run-at" />
 					</label>
 				</div>
 			</div>
 			<div class="row">
 				<div class="column">
-					<button type="submit" class="button success float-right">Save</button>
+					<button type="submit" class="button success float-right">{{'Uložit' | translate}}</button>
 				</div>
 			</div>
 		</form>

@@ -29,6 +29,8 @@ var jsFilesToInject = [
 	// Load sails.io before everything else
 	'js/dependencies/jquery.min.js',
 	'js/dependencies/angular/angular.min.js',
+	'js/dependencies/angular/angular-ui-router.min.js',
+	'js/dependencies/angular/angular-translate.min.js',
 
 	// Dependencies like jQuery, or Angular are brought in here
 	'js/dependencies/**/*.js',
@@ -53,6 +55,10 @@ var templateFilesToInject = [
 	'templates/**/*.html',
 ];
 
+var localesToInject = [
+	'locales/**'
+];
+
 // Default path for public folder (see documentation for more information)
 var tmpPath = '.tmp/public/';
 
@@ -61,6 +67,9 @@ var tmpPath = '.tmp/public/';
 // they reside in the first place)
 module.exports.cssFilesToInject = cssFilesToInject.map (function (cssPath) {
 	return require ('path').join ('.tmp/public/', cssPath);
+});
+module.exports.localesToInject = localesToInject.map (function (locales) {
+	return require ('path').join ('.tmp/public/', locales);
 });
 module.exports.jsFilesToInject = jsFilesToInject.map (function (jsPath) {
 	return require ('path').join ('.tmp/public/', jsPath);

@@ -10,77 +10,75 @@
 			<div class="row" ng-controller="AuthenticationsController as auths">
 				<div class="column" ng-controller="VersionsController as versions">
 
-					<h5>Basic info</h5>
+					<h5>{{'Základní informace' | translate}}</h5>
 					<ul>
-
-						<li>In tests:
-
+						<li>{{'Vyskytuje se v testech' | translate}}:
 							<a ng-repeat="test in request.current.tests" ui-sref="test_detail({testId: test.id})">
 								{{test.name}}{{$last ? '' : ', '}}
 							</a>
 						</li>
 
 						<li>
-							Authentication:
+							{{'Autentifikace' | translate}}:
 							<a ng-show="request.current.authentication"
 								ng-click="auths.manageAuth = true; auths.formData = request.current.authentication">
 								{{request.current.authentication.name}}
 							</a>
-							<span ng-show="!request.current.authentication">Nic</span>
+							<span ng-show="!request.current.authentication"><em>{{'Nenastaveno' | translate}}</em></span>
 						</li>
 						<li>
-							API version:
+							{{'Verze API' | translate}}:
 							<a ng-show="request.current.version"
 								ng-click="versions.manageVersion = true; versions.formData = request.current.version">
 								{{request.current.version.name}}
 							</a>
-							<span ng-show="!request.current.version">Nic</span>
+							<span ng-show="!request.current.version"><em>{{'Nenastaveno' | translate}}</em></span>
 						</li>
 					</ul>
 
 					<!--Modal window for version edit-->
 					<modal show="versions.manageVersion">
-						<h3>Edit version</h3>
+						<h3>{{'Upravit verzi' | translate}}</h3>
 						<form ng-submit="versions.edit(request.current.version.projectsId)">
 							<label class="required">
-								Name
+								{{'Jméno' | translate}}
 								<input type="text" required ng-model="versions.formData.name">
 							</label>
 							<label>
-								Description
+								{{'Popis' | translate}}
 								<textarea rows="2" ng-model="versions.formData.description"></textarea>
 							</label>
 							<label>
-								URL segment
+								{{'Část URL adresy' | translate}}
 								<input type="text" ng-model="versions.formData.urlSegment">
 							</label>
 
-							<button type="submit" class="button success">Save</button>
+							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 						</form>
 					</modal>
 
 
 					<modal show="auths.manageAuth">
-						<h3>Edit authentication</h3>
+						<h3>{{'Upravit autentifikaci' | translate}}</h3>
 
 						<form ng-submit="auths.edit()">
 							<label class="required">
-								Name
+								{{'Jméno' | translate}}
 								<input type="text" required ng-model="auths.formData.name">
 							</label>
 
 							<label class="required">
-								Username
+								{{'Přihlašovací jméno' | translate}}
 								<input type="text" required ng-model="auths.formData.username">
 							</label>
 
 							<label class="required">
-								Password
+								{{'Heslo' | translate}}
 								<input type="text" required ng-model="auths.formData.password">
 							</label>
 
 							<label class="required">
-								Authentication type
+								{{'Autentifikace' | translate}} type
 
 								<select required ng-model="auths.formData.type">
 									<option value="base">Base Auth</option>
@@ -90,28 +88,30 @@
 
 							<div ng-show="auths.formData.type == 'bearer'">
 								<label>
-									API method
+									{{'URL API metody' | translate}}
 									<input type="text" ng-model="auths.formData.apiMethod">
 								</label>
 
 								<label>
-									API parameters (specified as <em>property=value&foo=bar</em>
+									{{'Rozšiřující parametry API ve formátu foo=bar&prop=val (poslané jako query string
+									parametry)' | translate}}
 									<input type="text" ng-model="auths.formData.apiParams">
 								</label>
 
 								<label>
-									Token property
+									{{'Vlastnost objektu odpovědi, ve které je obsažen token (např. auth.loggedUser.token)' |
+									translate}}
 									<input type="text" ng-model="auths.formData.tokenProperty">
 								</label>
 							</div>
 
-							<button type="submit" class="button success">Save</button>
+							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 						</form>
 					</modal>
 
 				</div>
 				<div class="column">
-					<h5>Headers</h5>
+					<h5>{{'HTTP hlavičky' | translate}}</h5>
 					<ul>
 						<li ng-repeat="header in request.current.headers">
 							<strong>{{header.name}}</strong>: {{header.value}}
@@ -123,13 +123,13 @@
 			<div class="row">
 				<div class="column" ng-show="request.current.queryString.length > 0">
 
-					<h5>Query string parameters</h5>
+					<h5>{{'Query string parametry' | translate}}</h5>
 
 					<table>
 						<thead>
 						<tr>
-							<th>Parameter name</th>
-							<th>Parameter value</th>
+							<th>{{'Jméno parametru' | translate}}</th>
+							<th>{{'Hodnota' | translate}}</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -143,13 +143,13 @@
 				</div>
 
 				<div class="column" ng-show="request.current.httpParameters.length > 0">
-					<h5>{{request.current.httpMethod}} parameters</h5>
+					<h5>{{":method parametry" | translate:"{method: "+request.current.httpMethod+"}"}}</h5>
 
 					<table>
 						<thead>
 						<tr>
-							<th>Parameter name</th>
-							<th>Parameter value</th>
+							<th>{{'Jméno parametru' | translate}}</th>
+							<th>{{'Hodnota' | translate}}</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -165,13 +165,13 @@
 		<div class="row controls align-right">
 			<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"><i
 					  class="fi-pencil"></i> <span
-					  class="show-for-medium">Edit</span></a>
+					  class="show-for-medium">{{'Upravit' | translate}}</span></a>
 
 			&nbsp;
 			<a href="javascript:void(0)" ng-click="request.delete(request.current.environmentsId, request.current.id)"
 				class="alert tiny button">
 				<i class="fi-x"></i>
-				<span class="show-for-medium">Delete</span>
+				<span class="show-for-medium">{{'Smazat' | translate}}</span>
 			</a>
 		</div>
 	</div>
@@ -181,16 +181,16 @@
 			<div class="content-holder">
 				<div class="callout warning"
 					  ng-show="asserts.assertions[request.current.id].length == 0">
-					Prazdne
+					{{'Žádný záznam' | translate}}
 				</div>
 
 				<table ng-show="asserts.assertions[request.current.id].length != 0">
 					<thead>
 					<tr>
-						<th>Assertion name</th>
-						<th>Property name</th>
-						<th></th>
-						<th>Expected value</th>
+						<th>{{'Jméno validátoru' | translate}}</th>
+						<th>{{'Vlastnost objektu' | translate}}</th>
+						<th>{{'Porovnání' | translate}}</th>
+						<th>{{'Očekávaná hodnota' | translate}}</th>
 						<th></th>
 					</tr>
 					</thead>
@@ -199,14 +199,14 @@
 						<td>{{assertion.assertion.name}}</td>
 						<td>{{assertion.property}}</td>
 						<td ng-switch="assertion.comparator">
-							<span ng-switch-when="eq">Equal to</span>
-							<span ng-switch-when="lt">Less then</span>
-							<span ng-switch-when="gt">Greater then</span>
-							<span ng-switch-when="le">Less or equal then</span>
-							<span ng-switch-when="ge">Greater or equal then</span>
-							<span ng-switch-when="ne">Not equal to</span>
-							<span ng-switch-when="in">Contains</span>
-							<span ng-switch-when="not_in">Not contains</span>
+							<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
+							<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
+							<span ng-switch-when="gt">{{'Více než' | translate}}</span>
+							<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
+							<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
+							<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
+							<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
+							<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
 						</td>
 						<td>{{assertion.expectedValue}}</td>
 						<td>
@@ -225,77 +225,77 @@
 			</div>
 
 			<div class="row controls align-right">
-				<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id}"
-						  class="button tiny success float-right">
+				<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id, assertionType: 'status_code', comparator: 'eq'}"
+					class="button tiny success float-right">
 					<i class="fi-plus"></i>
-					<span class="show-for-medium"> Add assertion</span></a>
+					<span class="show-for-medium"> {{'Nový validátor' | translate}}</span>
+				</a>
 			</div>
 		</div>
 
 		<modal show="asserts.openModal">
-			<h3 ng-show="asserts.formData.id">Edit assertion</h3>
-			<h3 ng-show="!asserts.formData.id">Add new assertion</h3>
+			<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
+			<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
 			<form ng-submit="asserts.formData.id ? asserts.edit() : asserts.create()">
 				<label ng-if="asserts.openModal" ng-init="asserts.initTypes()">
-					Assertion type
+					{{'Typ validátoru' | translate}}
 
 					<select name="input-type" ng-model="asserts.formData.assertionType">
-						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name}}</option>
+						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name | translate}}</option>
 					</select>
 				</label>
 
 				<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
-					Property
+					{{'Vlastnost objektu' | translate}}
 
-					<input type="text" name="property" placeholder="Property name"
+					<input type="text" name="property" placeholder="{{'Vlastnost objektu' | translate}}"
 							 ng-model="asserts.formData.property" />
 				</label>
 
 				<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
-					Compare
+					{{'Porovnání' | translate}}
 
 					<select required ng-model="asserts.formData.comparator">
-						<option value="eq">Equal to</option>
-						<option value="lt">Less then</option>
-						<option value="gt">Greater then</option>
-						<option value="le">Less or equal then</option>
-						<option value="ge">Greater or equal then</option>
-						<option value="ne">Not equal to</option>
-						<option value="in">Contains</option>
-						<option value="not_in">Not contains</option>
+						<option value="eq">{{'Odpovídá' | translate}}</option>
+						<option value="lt">{{'Méně než' | translate}}</option>
+						<option value="gt">{{'Více než' | translate}}</option>
+						<option value="le">{{'Méně nebo stejně' | translate}}</option>
+						<option value="ge">{{'Více nebo stejně' | translate}}</option>
+						<option value="ne">{{'Neodpovídá' | translate}}</option>
+						<option value="in">{{'Obsahuje' | translate}}</option>
+						<option value="not_in">{{'Neobsahuje' | translate}}</option>
 					</select>
 				</label>
 
 				<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
-					Value
+					{{'Hodnota' | translate}}
 
-					<input type="text" name="value" placeholder="Property value"
+					<input type="text" name="value" placeholder="{{'Vlastnost objektu' | translate}} value"
 							 ng-model="asserts.formData.expectedValue" />
 				</label>
 
-				<button type="submit" class="button success">Save</button>
+				<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 			</form>
 		</modal>
-
-
 	</div>
 
 	<div class="row" ng-init="request.initLastResponse()" ng-show="request.lastResponse.id > 0">
 		<div class="column with-shadow">
-			<h4>Last request call</h4>
+			<h4>{{'Výsledek posledního dotazu' | translate}}</h4>
 
 			<div class="row">
 				<div class="column">
-					<h5>Status</h5>
+					<h5>{{'Status' | translate}}</h5>
 					<ul>
-						<li>Status code: {{request.lastResponse.responseCode}}</li>
-						<li>Response size: {{request.lastResponse.responseSize / 1024 | number: 1}} kB</li>
-						<li>Response time: {{request.lastResponse.responseTime}} ms</li>
+						<li>{{'Status' | translate}} code: {{request.lastResponse.responseCode}}</li>
+						<li>{{'Velikost odpovědi' | translate}}: {{request.lastResponse.responseSize / 1024 | number: 1}} kB
+						</li>
+						<li>{{'Čas odpovědi' | translate}}: {{request.lastResponse.responseTime}} ms</li>
 					</ul>
 				</div>
 				<div class="column">
-					<h5>Response headers</h5>
+					<h5>{{'HTTP hlavičky odpovědi' | translate}}</h5>
 
 					<ul>
 						<li ng-repeat="(header, value) in request.lastResponse.responseHeaders">
@@ -305,7 +305,7 @@
 				</div>
 			</div>
 
-			<h5>Response body</h5>
+			<h5>{{'Tělo odpovědi' | translate}}</h5>
 
 			<code class="response">
 				{{request.lastResponse.responseBodyRaw}}

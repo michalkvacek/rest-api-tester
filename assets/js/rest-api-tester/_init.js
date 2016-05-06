@@ -1,13 +1,12 @@
-var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', "ngAnimate"]);
+var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', "ngAnimate", 'pascalprecht.translate']);
 
-app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
-	function ($stateProvider, $urlRouterProvider, $httpProvider) {
+app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',
+	function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider) {
 
 		// interceptor
 		$httpProvider.interceptors.push (function ($q) {
 			return {
 				request: function (config) {
-
 					var token = localStorage.getItem ('auth_token');
 
 					if (token) {
@@ -24,14 +23,17 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider',
 			};
 		});
 
+		// translations
+		$translateProvider.useStaticFilesLoader({
+			prefix: 'locales/translation-',
+			suffix: '.json'
+		});
+		$translateProvider.preferredLanguage('cs');
+		
 		// routing
 		$urlRouterProvider.otherwise ("/");
 
-		// login
-		// http://stackoverflow.com/questions/22537311/angular-ui-router-login-authentication
-
-		$stateProvider.state ('auth',
-			{
+		$stateProvider.state ('auth', {
 				abstract: true,
 				template: '<div ui-view></div>',
 

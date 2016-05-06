@@ -4,12 +4,12 @@
 
 		<form ng-controller="LoginController as login" ng-submit="login.localAuth({redirect: true})">
 			<label>
-				E-mail
+				{{'E-mail' | translate}}
 				<input type="email" name="email" ng-model="login.formData.email" />
 			</label>
 
 			<label>
-				Password
+				{{'Heslo' | translate}}
 
 				<input type="password" name="password" ng-model="login.formData.password" />
 			</label>

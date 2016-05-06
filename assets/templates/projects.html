@@ -1,6 +1,6 @@
 <div class="content">
 	<div class="project-overview row" data-equalizer>
-		<div class="column no-padding" ng-repeat="project in projects.overview">
+		<div class="column no-padding" ng-show="projects.overview.length"  ng-repeat="project in projects.overview">
 			<div class="with-shadow project text-center has-controls">
 				<div class="content" data-equalizer-watch>
 					<h3><a ui-sref="dashboard({projectId: project.id})">{{project.name}}</a></h3>
@@ -14,19 +14,19 @@
 							<a class="label curson-pointer"
 								ui-sref="tests({environmentId: environment.id})">{{environment.name}}</a>
 						</span>
-						<span ng-show="!project.environments.length" class="label secondary">No environments</span>
+						<span ng-show="!project.environments.length" class="label secondary">{{"Žádné prostředí" | translate}}</span>
 					</p>
 				</div>
 
 				<div class="row align-center controls">
 					<a ui-sref="dashboard({projectId: project.id})" class="button primary">
 						<i class="fi-graph-trend"></i>
-						Dashboard
+						{{"Přehled prostředí" | translate}}
 					</a>
 					&nbsp;
 					<a ui-sref="projects_settings({projectId: project.id})" class="button warning">
 						<i class="fi-wrench"></i>
-						Settings
+						{{"Nastavení" | translate}}
 					</a>
 				</div>
 			</div>
@@ -35,37 +35,46 @@
 				$ (function () {
 					setTimeout (function () {
 						Foundation.reInit ('equalizer');
-					}, 300);
+					}, 500);
 				});
 			</script>
 		</div>
 
-		<div ng-show="!projects.overview.length" class="callout warning">
-			Prazdne
-		</div>
-	</div>
+		<div ng-show="!projects.overview.length" class="callout warning text-center">
+			<p>
+				{{"Neexistuje žádný projekt, se kterým by bylo možné pracovat." | translate}}
+			</p>
 
+			<p>
+				<a class="button success" ng-click="projects.newProjectWindow = true">
+					<i class="fi-plus"></i>
+					{{"Nový projekt" | translate}}
+				</a>
+			</p>
+		</div>
+
+	</div>
 
 	<a ng-click="projects.newProjectWindow = true" class="button success material-add-button"><i class="fi-plus"></i></a>
 
 	<modal show="projects.newProjectWindow">
-		<h3>Add project</h3>
+		<h3>{{"Nový projekt" | translate}}</h3>
 
 		<form ng-submit="projects.create()">
 			<label class="required">
-				Name
+				{{'Jméno' | translate}}
 
-				<input type="text" placeholder="Project name" required name="name" ng-model="projects.formData.name" />
+				<input type="text" placeholder="{{'Jméno projektu' | translate}}" required name="name" ng-model="projects.formData.name" />
 			</label>
 
 			<label>
-				Description
+				{{'Popis' | translate}}
 
 				<textarea rows="2" name="description" ng-model="projects.formData.description"
-							 placeholder="Some brief description of this API"></textarea>
+							 placeholder="{{'Stručný popis projektu pro lepší orientaci' | translate}}"></textarea>
 			</label>
 
-			<button type="submit" class="button success float-right">Create new</button>
+			<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
 		</form>
 	</modal>
 </div>

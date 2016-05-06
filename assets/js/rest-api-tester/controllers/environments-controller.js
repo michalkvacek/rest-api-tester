@@ -117,7 +117,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 			// get detail
 			environmentsService.detail (environmentId).then (function (response) {
 				if (response.status != 200)
-					return
+					return;
 
 				self.detail = response.data;
 

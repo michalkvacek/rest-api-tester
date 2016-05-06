@@ -2,7 +2,6 @@
 	  ng-init="environments.initOverview(); " data-equalizer>
 	<div class="environment column no-padding " ng-repeat="environment in environments.overview">
 		<div class="with-shadow has-controls">
-
 			<div class="content-holder" data-equalizer-watch>
 				<h4 class="text-center">{{environment.name}}</h4>
 
@@ -20,15 +19,17 @@
 
 				<div class="row small">
 					<div class="column">
-						<i class="fi-arrow-left"></i> Older
+						<i class="fi-arrow-left"></i>
+						{{"Starší" | translate}}
 					</div>
 					<div class="column text-right">
-						Recent <i class="fi-arrow-right"></i>
+						{{"Novější" | translate}}
+						<i class="fi-arrow-right"></i>
 					</div>
 				</div>
 
 				<div ng-show="failedDasboardTests[environment.id].length>0">
-					<h5>Last failed tests</h5>
+					<h5>{{"Poslední selhané testy" | translate}}</h5>
 					<div class="failed-tests">
 						<div class="row align-center">
 
@@ -43,40 +44,43 @@
 				</div>
 			</div>
 			<div class="row controls align-right">
-				<a ui-sref="tests({environmentId: environment.id})" class="primary button has-tip tiny" data-tooltip
-					aria-haspopup="true"
-					data-disable-hover="false"
-					title="Tests overview"><i class="fi-list"></i> All tests</a>
+				<a ui-sref="tests({environmentId: environment.id})" class="primary button tiny"><i class="fi-list"></i>
+					{{"Všechny testy" | translate}}</a>
 
 				&nbsp;
 
-				<a ui-sref="environment_settings({environmentId: environment.id})" data-tooltip aria-haspopup="true"
-					class="warning button has-tip tiny"
-					data-disable-hover="false"
-					title="Environment settings"><i class="fi-wrench"></i> Environment settings</a>
+				<a ui-sref="environment_settings({environmentId: environment.id})"
+					class="warning button tiny">
+					<i class="fi-wrench"></i> {{"Nastavení prostředí" | translate}}</a>
 			</div>
 		</div>
 
-		<script ng-if="$last && $index > 0">Foundation.reInit ('equalizer')</script>
+		<script ng-if="$last && $index > 0">
+			$ (function () {
+				setTimeout (function () {
+					Foundation.reInit ('equalizer');
+				}, 500)
+			});
+		</script>
 	</div>
 
 
-	<a data-open="new-environment" id="add-project" ng-model="environments.manageEnvironments = true" class="button success material-add-button"><i
+	<a id="add-project" ng-click="environments.manageEnvironments = true" class="button success material-add-button"><i
 			  class="fi-plus"></i></a>
 
 	<modal show="environments.manageEnvironments">
 
-		<h3>Add environment</h3>
+		<h3>{{"Nové prostředí" | translate}}</h3>
 
 		<form ng-submit="environments.create()">
 			<label class="required">
-				Name
+				{{"Jméno" | translate}}
 
-				<input type="text" required placeholder="Environment name" ng-model="environments.formData.name" />
+				<input type="text" required placeholder="{{'Jméno' | translate}}" ng-model="environments.formData.name" />
 			</label>
 
 			<label class="required">
-				API endpoint
+				{{"Adresa API serveru" | translate}}
 
 				<input required type="url" placeholder="https://api.example.com/api/v1"
 						 ng-model="environments.formData.apiEndpoint" />
@@ -84,20 +88,16 @@
 
 
 			<label>
-				Description
+				{{"Popis" | translate}}
 
 			<textarea rows="2" name="description" ng-model="environments.formData.description"
-						 placeholder="Some brief description of this API environment"></textarea>
+						 placeholder="{{'Stručný popis prostředí pro lepší přehlednost a orientaci v systému' | translate}}"></textarea>
 			</label>
 
-			<button type="submit" class="button success float-right">Create new</button>
+			<button type="submit" class="button success float-right">{{"Vytvořit" | translate}}</button>
 		</form>
-
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
+	</modal>
+</div>
 
 
 </div>
