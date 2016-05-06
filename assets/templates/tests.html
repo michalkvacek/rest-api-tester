@@ -1,40 +1,40 @@
 <div ng-controller="TestsController as tests">
-	<div class="row content">
-		<div class="column with-shadow has-controls" ng-init="tests.initStatistics(tests.statisticsButton)"
+	<div class="row content" ng-init="tests.initStatistics(tests.statisticsButton)">
+		<div class="column with-shadow has-controls"
 			  ng-show="tests.statistics.testedRequests > 0">
 			<div class="row text-center">
 				<div class="column">
-					<h4>{{tests.statistics.health | number : 1 || '--'}} %</h4>
+					<h4>{{tests.statistics.health | number : 1}} %</h4>
 					<small>{{'Zdraví' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.avgResponseTime | number : 1 || '--'}} ms</h4>
+					<h4>{{tests.statistics.avgResponseTime | number : 1}} ms</h4>
 					<small>{{'Průměrná doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.maxResponseTime | number : 0 || '--'}} ms</h4>
+					<h4>{{tests.statistics.maxResponseTime}} ms</h4>
 					<small>{{'Nejdelší doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.testedRequests | number : 0 || '--'}}</h4>
+					<h4>{{tests.statistics.testedRequests}}</h4>
 					{{'Testovaných požadavků' | translate}}
 				</div>
 			</div>
 
 			<div class="row controls align-right" ng-controller="EnvironmentsController as environments">
 				<a href="javascript:void(0)"
-					ng-click="tests.initStatistics(30); tests.statisticsButton = 30"
+					ng-click="tests.initStatistics(30)"
 					ng-class="(tests.statisticsButton == 30) ? 'primary' : 'secondary'" class="button tiny">
 					{{':days dnů' | translate:"{days: 30}"}}
 				</a>
 				&nbsp;
 				<a href="javascript:void(0)"
-					ng-click="tests.initStatistics(7); tests.statisticsButton = 7"
+					ng-click="tests.initStatistics(7)"
 					ng-class="(tests.statisticsButton == 7) ? 'primary' : 'secondary'"
 					class="button tiny">{{':days dnů' | translate:"{days: 7}"}}</a>
 				&nbsp;
 				<a href="javascript:void(0)"
-					ng-click="tests.initStatistics(1); tests.statisticsButton = 1"
+					ng-click="tests.initStatistics(1)"
 					ng-class="(tests.statisticsButton == 1) ? 'primary' : 'secondary'" class="button tiny">
 					{{'Posledních 24 hodin' | translate}}</a>
 				&nbsp;
@@ -66,7 +66,8 @@
 						<span ng-switch-when="failed" class="label alert fi-x"> {{'Neprochází' | translate}}!</span>
 						<span ng-switch-when="waiting_for_response"
 								class="label primary fi-check"> {{'Čeká na zpracování' | translate}}</span>
-						<span ng-switch-when="evaluating" class="label warning fi-check"> {{'Zpracovává se' | translate}}</span>
+						<span ng-switch-when="evaluating"
+								class="label warning fi-check"> {{'Zpracovává se' | translate}}</span>
 					</div>
 				</div>
 				<div class="row controls align-right">
@@ -96,79 +97,74 @@
 			</script>
 		</div>
 	</div>
-	<modal show="tests.manageSchedule" class="large">
+	<!--<modal show="tests.manageSchedule" class="large">-->
 
-		<h3>{{'Naplánovat spuštění' | translate}}</h3>
+	<!--<h3>{{'Naplánovat spuštění' | translate}}</h3>-->
 
-		<form ng-submit="tests.schedule()">
-			<div class="row">
-				<div class="column shrink">
-					<label>
-						{{'Spustit...' | translate}}
+	<!--<form ng-submit="tests.schedule()">-->
+	<!--<div class="row">-->
+	<!--<div class="column shrink">-->
+	<!--<label>-->
+	<!--{{'Spustit...' | translate}}-->
 
-						<select ng-model="tests.scheduleData.run">
-							<option value="periodicaly">{{'Periodicky' | translate}}</option>
-							<option value="once">{{'Pouze jednou' | translate}}</option>
-						</select>
-					</label>
+	<!--<select ng-model="tests.scheduleData.run">-->
+	<!--<option value="periodicaly">{{'Periodicky' | translate}}</option>-->
+	<!--<option value="once">{{'Pouze jednou' | translate}}</option>-->
+	<!--</select>-->
+	<!--</label>-->
 
-				</div>
-				<div class="column" ng-show="tests.scheduleData.run == 'periodicaly'">
-					<label>
-						every
-						<select ng-model='tests.scheduleData.runInterval'>
-							<option value="30">30 minutes</option>
-							<option value="60">hour</option>
-							<option value="360">6 hours</option>
-							<option value="8640">day</option>
-						</select>
-					</label>
-				</div>
-				<div class="column large-6">
-					<label>
-						{{'Další spuštění' | translate}} at
-						<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />
+	<!--</div>-->
+	<!--<div class="column" ng-show="tests.scheduleData.run == 'periodicaly'">-->
+	<!--<label>-->
+	<!--every-->
+	<!--<select ng-model='tests.scheduleData.runInterval'>-->
+	<!--<option value="30">30 minutes</option>-->
+	<!--<option value="60">hour</option>-->
+	<!--<option value="360">6 hours</option>-->
+	<!--<option value="8640">day</option>-->
+	<!--</select>-->
+	<!--</label>-->
+	<!--</div>-->
+	<!--<div class="column large-6">-->
+	<!--<label>-->
+	<!--{{'Další spuštění' | translate}} at-->
+	<!--<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />-->
 
-					</label>
-				</div>
-			</div>
+	<!--</label>-->
+	<!--</div>-->
+	<!--</div>-->
 
-			<button class="button success float-right" type="submit">{{'Uložit' | translate}}</button>
-		</form>
+	<!--<button class="button success float-right" type="submit">{{'Uložit' | translate}}</button>-->
+	<!--</form>-->
+	<!--</modal>-->
 
-		<!-- Close button -->
-		<button class="close-button" data-close aria-label="Close modal" type="button">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</modal>
+	<!--&lt;!&ndash;Button for creating new resource&ndash;&gt;-->
+	<!--<a data-open="new-test" id="add-test" ng-click="tests.manageTest = true"-->
+	<!--class="button success material-add-button"><i-->
+	<!--class="fi-plus"></i></a>-->
 
-	<!--Button for creating new resource-->
-	<a data-open="new-test" id="add-test" ng-click="tests.manageTest = true"
-		class="button success material-add-button"><i
-			  class="fi-plus"></i></a>
+	<!--<modal show="tests.manageTest" class="large">-->
+	<!--<h3>New test</h3>-->
 
-	<modal show="tests.manageTest" class="large">
-		<h3>New test</h3>
+	<!--<form ng-submit="tests.newTest()">-->
 
-		<form ng-submit="tests.newTest()">
+	<!--<label class="required">-->
+	<!--Test name-->
 
-			<label class="required">
-				Test name
+	<!--<input type="text" required ng-model="tests.formData.name" name="name" />-->
+	<!--</label>-->
 
-				<input type="text" required ng-model="tests.formData.name" name="name" />
-			</label>
+	<!--<label>-->
+	<!--{{'Popis' | translate}}-->
 
-			<label>
-				{{'Popis' | translate}}
+	<!--<textarea rows="2" ng-model="tests.formData.description" name="description"></textarea>-->
+	<!--</label>-->
 
-				<textarea rows="2" ng-model="tests.formData.description" name="description"></textarea>
-			</label>
-
-			<div class="row">
-				<div class="column">
-					<button type="submit" class="button success float-right">Create</button>
-				</div>
-			</div>
-		</form>
-	</modal>
+	<!--<div class="row">-->
+	<!--<div class="column">-->
+	<!--<button type="submit" class="button success float-right">Create</button>-->
+	<!--</div>-->
+	<!--</div>-->
+	<!--</form>-->
+	<!--</modal>-->
 </div>

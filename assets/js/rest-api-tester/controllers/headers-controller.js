@@ -19,7 +19,6 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 			filter = lastFilter;
 
 		headersService.overview (filter).then (function (response) {
-			
 			if (response.status != 200) {
 				return;
 			}
@@ -37,6 +36,9 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 	self.create = function () {
 		headersService.create (self.formData).then (function (response) {
 			if (response.status != 201) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 				return;
 			}
 			
@@ -52,12 +54,19 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 	self.edit = function () {
 		headersService.edit (self.formData.id, self.formData).then (function (response) {
 			if (response.status != 200) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 				return;
 			}
 			
 			self.initOverview ();
 
 			self.manageHeaders = false;
+
+			$translate ('Úspěšně uloženo').then (function (translation) {
+				notificationsService.push ('success', translation);
+			});
 		});
 	};
 
@@ -66,11 +75,12 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 	 * @param id
 	 */
 	self.delete = function (id) {
-		var confirmation = confirm ('Opravdu?');
-
-		if (confirmation) {
+		if (confirm($translate.instant('Opravdu?'))) {
 			headersService.delete (id).then (function (response) {
 				if (response.status != 200) {
+					$translate ('Nelze vykonat požadavek').then (function (translation) {
+						notificationsService.push ('alert', translation);
+					});
 					return;
 				}
 				

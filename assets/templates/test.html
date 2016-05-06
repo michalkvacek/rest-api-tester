@@ -11,7 +11,7 @@
 					<p>
 					<span ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
 						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
-							class="button success small fi-play"> Run now</a>
+							class="button success small fi-play"> {{'Spustit nyní' | translate}}</a>
 						<a href="javascript:void(0)" ng-click="tests.manageTest = true; tests.formData = tests.detail"
 							class="button primary small fi-pencil"> {{'Upravit' | translate}}</a>
 					</span>
@@ -35,7 +35,8 @@
 		</div>
 	</div>
 
-	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)" ng-show="tests.statistics.testedRequests > 0">
+	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)"
+		  ng-show="tests.statistics.testedRequests > 0">
 		<div class="column with-shadow has-controls">
 			<div class="row text-center">
 				<div class="column">
@@ -47,11 +48,11 @@
 					<small>{{'Průměrná doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.maxResponseTime | number : 0 || '--'}} ms</h4>
+					<h4>{{tests.statistics.maxResponseTime}} ms</h4>
 					<small>{{'Nejdelší doba odezvy' | translate}}</small>
 				</div>
 				<div class="column">
-					<h4>{{tests.statistics.testedRequests | number : 0|| '--'}}</h4>
+					<h4>{{tests.statistics.testedRequests}}</h4>
 					{{'Testovaných požadavků' | translate}}
 				</div>
 
@@ -77,14 +78,13 @@
 		</div>
 	</div>
 
-	<div class="row">
+	<div class="row" ng-controller="RequestsController as reqController">
 		<div class="column has-controls with-shadow">
 			<h4>{{'Požadavky' | translate}}</h4>
 
-			<div ng-show="tests.detail.requests.length == 0" class="callout warning">Zadny request</div>
+			<div ng-show="tests.detail.requests.length == 0" class="callout warning">{{'Žádný záznam' | translate}}</div>
 
-			<div class="row content-holder" ng-show="tests.detail.requests.length"
-				  ng-controller="RequestsController as reqController">
+			<div class="row content-holder" ng-show="tests.detail.requests.length">
 				<div class="column no-padding" ng-controller="AssertionsController as asserts">
 					<ul class="accordion" id="requests-list" data-accordion data-multi-expand="true"
 						 data-allow-all-closed="true">
@@ -169,7 +169,7 @@
 											<tr>
 												<th>{{'Jméno validátoru' | translate}}</th>
 												<th>{{'Vlastnost objektu' | translate}}</th>
-												<th></th>
+												<th>{{'Porovnání' | translate}}</th>
 												<th>{{'Očekávaná hodnota' | translate}}</th>
 												<th></th>
 											</tr>
@@ -237,7 +237,7 @@
 							<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
 								{{'Vlastnost objektu' | translate}}
 
-								<input type="text" name="property" placeholder="{{'Vlastnost objektu' | translate}}"
+								<input type="text" name="property" placeholder="foo.bar.0.bar2"
 										 ng-model="asserts.formData.property" />
 							</label>
 
@@ -270,11 +270,92 @@
 			</div>
 
 			<div class="row controls align-right">
-				<a href="javascript:void(0)" ng-click="tests.addRequestModal=true" class="success tiny button">
+				<a href="javascript:void(0)" ng-click="reqController.addRequestModal=true" class="success tiny button">
 					<i class="fi-plus"></i>
-					<span class="show-for-medium"> Add request</span>
+					<span class="show-for-medium"> {{'Přidat požadavek' | translate}}</span>
 				</a>
 			</div>
+
+			<modal class="large" show="reqController.addRequestModal">
+				<div id="new-request-window">
+					<h3>{{'Nový požadavek' | translate}}</h3>
+
+					<ul class="tabs">
+						<li id="new-request-title" class="tabs-title is-active">
+							<a ng-click="openTab('#new-request-window', '#new-request')" aria-selected="true">
+								{{'Nový požadavek' | translate}}</a>
+						</li>
+						<li id="existing-request-title" class="tabs-title">
+							<a ng-click="openTab('#new-request-window', '#existing-request'); reqController.initEnvironmentOverview(tests.detail.environmentsId, {ignoreTest: tests.detail.id})">
+								{{'Požadavky vytvořené v aktuálním prostředí' | translate}}
+							</a>
+						</li>
+					</ul>
+
+					<div class="tabs-content">
+						<div class="tabs-panel is-active" id="new-request">
+							<form ng-submit="reqController.create()">
+								<div class="row">
+									<div class="column">
+										<label class="required">
+											{{'Jméno' | translate}}
+
+											<input type="text" required name="name" ng-model="reqController.formData.name" />
+
+										</label>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="column large-3">
+										<label class="required">
+											{{'HTTP metoda' | translate}}
+
+											<select name="httpMethod" required ng-model="reqController.formData.httpMethod">
+												<option value="GET">GET</option>
+												<option value="POST">POST</option>
+												<option value="PUT">PUT</option>
+												<option value="DELETE">DELETE</option>
+												<option value="PATCH">PATCH</option>
+											</select>
+										</label>
+									</div>
+
+									<div class="column large-9">
+										<label class="required">
+											{{"URL adresa API metody" | translate}}
+
+											<input type="url" required name="url" ng-model="reqController.formData.url"
+													 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
+										</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="column">
+										<button type="submit" class="button success float-right">{{"Uložit" | translate}}</button>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<div class="tabs-panel" id="existing-request">
+							<button class="button"
+									  ng-repeat="availableRequest in reqController.environmentRequests"
+									  ng-class="tests.assignedRequestIds.hasOwnProperty(availableRequest.id) ? 'warning disabled' : 'success'"
+									  ng-click="tests.assignRequest(availableRequest.id)">
+								{{availableRequest.name}}
+								<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
+							</button>
+
+							<div class="callout warning" ng-show="reqController.environmentRequests.length == 0">
+								{{'Žádný záznam' | translate}}
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+			</modal>
 		</div>
 	</div>
 
@@ -314,7 +395,7 @@
 
 	<div class="row" ng-show="tests.detail.runnedTests.length">
 		<div class="column with-shadow">
-			<h4>Results</h4>
+			<h4>{{'Výsledky' | translate}}</h4>
 
 			<div class="row" ng-show="!emptyObject(tests.detail.runnedTests)">
 				<div class="column no-padding">
@@ -347,86 +428,6 @@
 			</div>
 			<button type="submit" class="button success">{{'Uložit' | translate}}</button>
 		</form>
-	</modal>
-
-	<modal class="large" show="tests.addRequestModal">
-		<div id="new-request-window" ng-controller="RequestsController as request">
-			<h3>Add request</h3>
-
-			<ul class="tabs">
-				<li id="new-request-title" class="tabs-title is-active">
-					<a ng-click="openTab('#new-request-window', '#new-request')" aria-selected="true">New request</a>
-				</li>
-				<li id="existing-request-title" class="tabs-title">
-					<a ng-click="openTab('#new-request-window', '#existing-request'); request.initEnvironmentOverview(tests.detail.environmentsId, {ignoreTest: tests.detail.id})">
-						Existing requests
-					</a>
-				</li>
-			</ul>
-
-			<div class="tabs-content">
-				<div class="tabs-panel is-active" id="new-request">
-					<form ng-submit="request.create()">
-						<div class="row">
-							<div class="column">
-								<label class="required">
-									{{'Jméno' | translate}}
-
-									<input type="text" required name="name" ng-model="request.formData.name" />
-
-								</label>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="column large-3">
-								<label class="required">
-									Method
-
-									<select name="httpMethod" required ng-model="request.formData.httpMethod">
-										<option value="GET">GET</option>
-										<option value="POST">POST</option>
-										<option value="PUT">PUT</option>
-										<option value="DELETE">DELETE</option>
-										<option value="PATCH">PATCH</option>
-									</select>
-								</label>
-							</div>
-
-							<div class="column large-9">
-								<label class="required">
-									URL
-
-									<input type="url" required name="url" ng-model="request.formData.url"
-											 placeholder="https://api.example.com/method?param=value&amp;foo=bar" />
-								</label>
-							</div>
-						</div>
-						<div class="row">
-							<div class="column">
-								<button type="submit" class="button success float-right">Add</button>
-							</div>
-						</div>
-					</form>
-				</div>
-
-				<div class="tabs-panel" id="existing-request">
-					<button class="button"
-							  ng-repeat="availableRequest in request.environmentRequests"
-							  ng-class="tests.assignedRequestIds.hasOwnProperty(availableRequest.id) ? 'warning disabled' : 'success'"
-							  ng-click="tests.assignRequest(availableRequest.id)">
-						{{availableRequest.name}}
-						<small>({{availableRequest.httpMethod | uppercase}} {{availableRequest.url}})</small>
-					</button>
-
-					<div class="callout warning" ng-show="request.environmentRequests.length == 0">
-						{{'Žádný záznam' | translate}}
-					</div>
-
-				</div>
-			</div>
-
-		</div>
 	</modal>
 
 	<modal class="large" show="tests.manageTest">

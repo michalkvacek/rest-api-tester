@@ -101,7 +101,7 @@ module.exports = {
 					requests.create ({
 						usersId: environment.usersId,
 						environmentsId: environment.id,
-						url: '/',
+						url: 'http://example.com',
 						httpMethod: 'GET',
 						name: "Example request"
 					}).then (function (request) {

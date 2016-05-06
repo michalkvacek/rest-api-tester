@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.service ('loginService', ['$http', '$timeout', '$rootScope', '$q', function ($http, $timeout, $rootScope, $q) {
+app.service ('loginService', ['$http', '$timeout', '$rootScope', '$translate', '$q', function ($http, $timeout, $rootScope, $translate, $q) {
 
 	var lastAuth = null;
 	$rootScope.identity = {};
@@ -42,6 +42,10 @@ app.service ('loginService', ['$http', '$timeout', '$rootScope', '$q', function 
 
 				// set identity
 				$rootScope.identity = response.data.user;
+
+				// load angular localization and new language
+				$.getScript( "/locales/i10l/angular_"+$rootScope.identity.language+".js");
+				$translate.use($rootScope.identity.language);
 
 				return d.resolve (response);
 			}, d.reject);

@@ -19,13 +19,17 @@ app.service ('notificationsService', ['$rootScope', function ($rootScope) {
 		if ($rootScope.globalNotifications[index]) {
 			var notifications = $rootScope.globalNotifications;
 
-			// move all notifications to previous index
-			for (var i = index; i < notifications.length-1; i++) {
-				notifications[i] = notifications[i+1];
+			if (notifications.length == 1) {
+				$rootScope.globalNotifications = [];
+			} else {
+				// move all notifications to previous index
+				for (var i = index; i < notifications.length - 1; i++) {
+					notifications[i] = notifications[i + 1];
+				}
+
+				// remove last item - is udplicated
+				$rootScope.globalNotifications = notifications.slice (0, notifications.length - 1);
 			}
-			
-			// remove last item - is udplicated
-			$rootScope.globalNotifications = notifications.slice(0, notifications.length - 1);
 		}
 	};
 

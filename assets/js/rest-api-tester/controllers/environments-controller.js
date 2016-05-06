@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
-app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$timeout', 'testsResultsService', 'environmentsService', 'testsService', '$stateParams',
-	function ($scope, $rootScope, $state, $timeout, testsResultsService, environmentsService, testsService, $stateParams) {
+app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$timeout', '$translate', 'notificationsService', 'testsResultsService', 'environmentsService', 'testsService', '$stateParams',
+	function ($scope, $rootScope, $state, $timeout, $translate, notificationsService, testsResultsService, environmentsService, testsService, $stateParams) {
 		var self = this;
 
 		self.formData = {};
@@ -61,10 +61,26 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 			$rootScope.testAddedOrInProgress = true;
 
 			testsService.runAll (environmentId).then (function (response) {
-				// becase of some time needed for preparing test we will display some "waiting" image before loading test list again
-				$timeout (function () {
-					$rootScope.loadTests (false);
-				}, 3 * 1000);
+				switch (response.status) {
+					case 200:
+						// becase of some time needed for preparing test we will display some "waiting" image before loading test list again
+						$timeout (function () {
+							$rootScope.loadTests (false);
+						}, 3 * 1000);
+						break;
+
+					case 403:
+						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
+						break;
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
+						break;
+				}
+
 			});
 		};
 
@@ -92,12 +108,34 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 			// get all environments in given project
 			environmentsService.getOverview (projectId).then (function (response) {
 
-				if (response.status != 200)
-					return;
+				switch (response.status) {
+					case 200:
+						self.overview = response.data;
 
-				self.overview = response.data;
+						$rootScope.setEnvironment (selectedEnvironmentId, projectId);
+						break;
 
-				$rootScope.setEnvironment (selectedEnvironmentId, projectId);
+					case 403:
+						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					case 404:
+						$translate ('Tento projekt neexistuje, nelze zobrazit přehled prostředí.').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+				}
 			});
 		};
 
@@ -116,17 +154,42 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 
 			// get detail
 			environmentsService.detail (environmentId).then (function (response) {
-				if (response.status != 200)
-					return;
+				switch (response.status) {
+					case 200:
 
-				self.detail = response.data;
+						self.detail = response.data;
 
-				// update breadcrumbs
-				if (updateBreadcrumbs)
-					$rootScope.breadcrumbs = [{
-						label: 'Settings',
-						href: $state.href ('environment_settings', {environmentId: response.data.id})
-					}];
+						// update breadcrumbs
+						$translate ('Nastavení').then (function (settings) {
+							if (updateBreadcrumbs)
+								$rootScope.breadcrumbs = [{
+									label: settings,
+									href: $state.href ('environment_settings', {environmentId: response.data.id})
+								}];
+						});
+						break;
+
+					case 403:
+						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					case 404:
+						$translate ('Tento projekt neexistuje, nelze zobrazit přehled prostředí.').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+				}
 			});
 		};
 
@@ -137,51 +200,150 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 			var projectId = $stateParams.projectId;
 
 			environmentsService.create (projectId, self.formData).then (function (response) {
-				if (response.status != 201) {
-					alert ('error');
-					return;
+				switch (response.status) {
+					case 200:
+						self.initOverview ();
+
+						self.manageEnvironments = false;
+						break;
+
+					case 403:
+						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
 				}
-
-				self.initOverview ();
-
-				self.manageEnvironments = false;
 			});
 		};
 
+		/**
+		 * Edit current environment
+		 */
 		self.edit = function () {
 			var environmentId = $stateParams.environmentId;
 
 			environmentsService.edit (environmentId, self.formData).then (function (data) {
-				$rootScope.refreshProjectOverview ();
-				// self.initOverview(data.data.projectsId, environmentId);
-				self.loadDetail ();
+				switch (data.status) {
+					case 200:
+						$rootScope.refreshProjectOverview ();
+						self.loadDetail ();
+						break;
+
+					case 403:
+						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+				}
 			});
 		};
 
+		/**
+		 * Delete given environment
+		 * @param environmentId
+		 */
 		self.delete = function (environmentId) {
-			if (confirm ('Really?')) {
+			if (confirm ($translate.instant ('Opravdu?'))) {
 				environmentsService.delete (environmentId).then (function (response) {
-					self.initOverview ();
+					switch (response.status) {
+						case 200:
+							self.initOverview ();
+							break;
+
+						case 403:
+							$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+								notificationsService.push ('alert', translation);
+								$state.go ('projects');
+							});
+							break;
+
+						default:
+							$translate ('Nelze vykonat požadavek').then (function (translation) {
+								notificationsService.push ('alert', translation);
+								$state.go ('projects');
+							});
+							break;
+					}
 				});
 			}
 		};
 
+		/**
+		 * Assign user to current environment
+		 */
 		self.assignUser = function () {
 			var environmentId = $stateParams.environmentId;
 
 			environmentsService.addUser (environmentId, self.addUser).then (function (response) {
-				self.loadDetail ();
+				switch (response.status) {
+					case 200:
+						self.loadDetail ();
 
-				self.manageUser = false;
+						self.manageUser = false;
+						break;
+
+					case 403:
+						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
+						break;
+				}
 			});
 		};
 
+		/**
+		 * Remove specified user from current environment
+		 * 
+		 * @param userId
+		 */
 		self.removeUser = function (userId) {
 			var environmentId = $stateParams.environmentId;
 
-			if (confirm ('Really?')) {
+			if (confirm ($translate.instant ('Opravdu?'))) {
 				environmentsService.removeUser (environmentId, userId).then (function (response) {
-					self.loadDetail ();
+					switch (response.status) {
+						case 200:
+							self.loadDetail ();
+							break;
+
+						case 403:
+							$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+								notificationsService.push ('alert', translation);
+								$state.go ('projects');
+							});
+							break;
+
+						default:
+							$translate ('Nelze vykonat požadavek').then (function (translation) {
+								notificationsService.push ('alert', translation);
+								$state.go ('projects');
+							});
+							break;
+					}
 				});
 			}
 		};

@@ -1,27 +1,36 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('LoginController', ['$scope', '$rootScope', '$location', 'loginService', function ($scope, $rootScope, $location, loginService) {
+app.controller ('LoginController', ['$scope', '$rootScope', '$location', '$translate', 'notificationsService', 'loginService',
+	function ($scope, $rootScope, $location, $translate, notificationsService, loginService) {
 
-	var self = this;
+		var self = this;
 
-	self.formData = {};
+		self.formData = {};
 
-	self.localAuth = function (options) {
-		if (typeof options == "undefined")
-			options = {};
+		/**
+		 * Login user with local credentials
+		 *
+		 * @param options
+		 */
+		self.localAuth = function (options) {
+			if (typeof options == "undefined")
+				options = {};
 
-		loginService.localAuth (self.formData).then (function (response) {
-			if (response.status != 200) {
-				alert ('login se nepovedl');
-				return;
-			}
+			loginService.localAuth (self.formData).then (function (response) {
+				if (response.status != 200) {
+					$translate ('Přihlášení selhalo').then (function (translation) {
+						notificationsService.push ('alert', translation);
+					});
 
-			if (options.redirect)
-				$location.path ('/projects');
+					return;
+				}
 
-			$rootScope.refreshProjectOverview ();
-		});
-	};
+				if (options.redirect)
+					$location.path ('/projects');
 
-	return self;
-}]);
+				$rootScope.refreshProjectOverview ();
+			});
+		};
+
+		return self;
+	}]);

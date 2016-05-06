@@ -14,7 +14,7 @@
 			<div class="row text-center">
 				<div class="column">
 					<h4>{{testResult.statistics.health | number : 1}} %</h4>
-					<small>{{'Požadavky' | translate}} passed</small>
+					<small>{{'Úspěšných požadavků' | translate}}</small>
 				</div>
 				<div class="column">
 					<h4>{{testResult.statistics.avgResponseTime | number : 1}} ms</h4>
@@ -113,7 +113,7 @@
 											<tr ng-repeat="assert in response.evaluatedAssertions">
 												<td><span ng-class="assert.passed ? 'success fi-check' : 'fi-x alert'"
 															 class="badge"></span></td>
-												<td>{{assert.assertionName}}</td>
+												<td>{{assert.assertionName | translate}}</td>
 												<td>{{assert.assertionProperty}}</td>
 												<td>
 													{{assert.recievedValue | limitTo:70}}{{assert.recievedValue.length > 70 ? '...' :

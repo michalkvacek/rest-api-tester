@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('UsersController', ['$scope', '$rootScope', 'usersService', function ($scope, $rootScope, usersService) {
+app.controller ('UsersController', ['$scope', '$rootScope', '$translate', 'usersService', function ($scope, $rootScope, $translate, usersService) {
 
 	var self = this;
 	self.profile = {};
@@ -14,6 +14,10 @@ app.controller ('UsersController', ['$scope', '$rootScope', 'usersService', func
 	self.edit = function () {
 		usersService.edit (self.profile).then (function (response) {
 			$rootScope.identity = response.data;
+
+			$.getScript( "/locales/i10l/angular_"+$rootScope.identity.language+".js");
+			$translate.use($rootScope.identity.language);
+
 		});
 	};
 
