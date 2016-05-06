@@ -83,7 +83,11 @@ module.exports = {
 
 		// append also test results?
 		if (req.param ('withResults', false)) {
-			findCriterium.include.push ({model: runnedTests})
+			findCriterium.include.push ({
+				model: runnedTests,
+				// include results only from past 30 days
+				where: {updatedAt: {$lt: new Date (Date.now () - 30 * 24 * 3600 * 1000)}}
+			})
 		}
 
 		tests.find (findCriterium).then (function (test) {
