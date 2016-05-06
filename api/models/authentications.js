@@ -46,6 +46,14 @@ module.exports = {
 			type: Sequelize.TEXT,
 			allowNull: true
 		},
+		apiParams: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
+		token: {
+			type: Sequelize.TEXT,
+			allowNull: true
+		},
 
 		tokenProperty: {
 			type: Sequelize.TEXT,
