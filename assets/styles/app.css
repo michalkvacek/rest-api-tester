@@ -12,8 +12,8 @@
 
 .notifications {
 	position: fixed;
-	top: 1em;
-	right: 1em;
+	top: 0;
+	right: 0;
 	width: 25%;
 	font-size: 85%;
 }
@@ -24,7 +24,16 @@
 	border-radius: 3px;
 	font-weight: bold;
 	color: white;
-	margin-top: .25rem;
+	margin-top: .5rem;
+	opacity: 0.8;
+	box-shadow: #333 0 0 10px 0;
+	transition: opacity .5s
+}
+
+.notifications .notification:hover {
+	opacity: 1;
+	cursor: pointer;
+	transition: opacity .5s
 }
 
 .notifications .notification.alert {
