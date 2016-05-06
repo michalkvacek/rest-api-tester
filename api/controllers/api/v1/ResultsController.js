@@ -38,7 +38,7 @@ module.exports = {
 
 		var age = req.param ('age', false),
 			findCriterium = {
-				attributes: ['id', 'testsId', 'status', 'updatedAt', 'testName'],
+				attributes: ['id', 'testsId', 'environmentsId', 'status', 'updatedAt', 'testName'],
 				where: [{environmentsId: {$in: managedEnvironmentIds}}],
 				order: [
 					['updatedAt', 'DESC']
