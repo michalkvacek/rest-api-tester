@@ -32,29 +32,21 @@ module.exports = {
 
 				runStart = Date.now ();
 
-				// todo pridat podporu autentifikace
+				evaluator.getRequestOptions(originalRequest.authentication, request, originalRequest.envelope, function (requestOptions) {
+					HttpRequest (requestOptions, function (error, response, body) {
+						var responseTime = Date.now () - runStart;
 
-				console.log(request.requestUrl);
-				console.log(request.requestMethod);
-				console.log(request.requestHeaders);
+						// ignore errors
+						if (error) {
+							response = {};
+							body = '';
+						}
 
-				HttpRequest ({
-					url: request.requestUrl,
-					method: request.requestMethod,
-					headers: request.requestHeaders,
-					// body: request.requestHttpParameters
-				}, function (error, response, body) {
-					var responseTime = Date.now () - runStart;
-
-
-					// ignore errors
-					if (error) {
-						response = {};
-						body = '';
-					}
-
-					evaluator.parseRequestResponse (originalRequest, request, preparedResponse, error, response, body, responseTime, done);
+						evaluator.parseRequestResponse (originalRequest, request, preparedResponse, error, response, body, responseTime, done);
+					});
 				});
+				
+				
 			});
 		});
 	}

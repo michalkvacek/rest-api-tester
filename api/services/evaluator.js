@@ -12,9 +12,8 @@ module.exports = {
 	 * @param done
 	 */
 	parseRequestResponse: function (originalRequest, request, preparedResponse, error, response, body, responseTime, done) {
-
 		// body is empty on error
-		var passing = body.length > 0;
+		var passing = Object.keys (response).length > 0;
 
 		// assign assertsions
 		requestValidatedByAssertions.findAll ({
@@ -28,6 +27,9 @@ module.exports = {
 				if (!evaluator.evaluate (assertions[i], request, response, body, responseTime))
 					passing = false;
 			}
+
+			if (typeof body == 'object')
+				body = JSON.stringify (body);
 
 			// and save the result into database
 			preparedResponse.update ({
@@ -46,6 +48,51 @@ module.exports = {
 		});
 	},
 
+	getRequestOptions: function (auth, request, envelope, callback) {
+		var options = {
+			url: request.requestUrl,
+			method: request.requestMethod,
+			headers: request.requestHeaders,
+			json: true
+		};
+
+		if (request.requestMethod != 'GET') {
+			var data = {};
+			if (envelope != null)
+				data[envelope] = request.requestHttpParameters;
+			else
+				data = request.requestHttpParameters;
+
+			options.form = data;
+		}
+
+		if (auth) {
+			switch (auth.type) {
+				case 'bearer':
+					options.auth = {'bearer': auth.token};
+
+					// append to url
+					if (auth.tokenParameter) {
+						options.url += options.url.indexOf ('?') == -1 ? '?' : '&';
+						options.url += auth.tokenParameter + "=" + auth.token
+					}
+					break;
+
+				case 'base':
+					options.auth = {
+						user: auth.username,
+						pass: auth.password
+					};
+					break;
+			}
+		}
+
+		console.log(options);
+
+
+		return callback(options);
+
+	},
 
 	/**
 	 * Evaluate given assertion
@@ -107,11 +154,6 @@ module.exports = {
 			case 'count':
 
 				var property = evaluator.getProperty (body, requestAssertion.property);
-
-				console.log(property);
-				console.log(body);
-				console.log(requestAssertion.property);
-
 				if (typeof property == 'undefined' || property == null || !property)
 					return 0;
 
@@ -151,7 +193,7 @@ module.exports = {
 			route = property.split ('.').reverse ();
 
 		try {
-			element = JSON.parse (body);
+			element = (typeof body == 'object') ? body : JSON.parse (body);
 
 			// user wants root element
 			if (property == null)

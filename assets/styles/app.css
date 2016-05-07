@@ -182,7 +182,7 @@ li.separator {
 }
 
 .test-results {
-	max-height: 25em;
+	max-height: 35em;
 	overflow: auto;
 }
 

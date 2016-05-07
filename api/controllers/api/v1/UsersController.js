@@ -109,7 +109,7 @@ module.exports = {
 			// generate some random password (8 chars long)
 			require ('crypto').randomBytes (4, function (err, buffer) {
 				user.update ({password: buffer.toString ('hex')}).then (function (updated) {
-					return emailSender.forgottenPassword (res, buffer, user);
+					return emailSender.forgottenPassword (res, buffer.toString ('hex'), user);
 				})
 			});
 		});

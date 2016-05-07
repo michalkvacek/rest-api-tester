@@ -34,19 +34,10 @@ module.exports = {
 		},
 		password: {
 			type: Sequelize.TEXT,
-			allowNull: false
+			allowNull: true
 		},
 
 		username: {
-			type: Sequelize.TEXT,
-			allowNull: false
-		},
-
-		apiMethod: {
-			type: Sequelize.TEXT,
-			allowNull: true
-		},
-		apiParams: {
 			type: Sequelize.TEXT,
 			allowNull: true
 		},
@@ -55,8 +46,8 @@ module.exports = {
 			allowNull: true
 		},
 
-		tokenProperty: {
-			type: Sequelize.TEXT,
+		tokenParameter: {
+			type: Sequelize.STRING,
 			allowNull: true
 		}
 	},

@@ -11,146 +11,244 @@
 				</div>
 
 				<div ng-show="identity.roles[currentEnvironment.id] != 'host'">
-				<ul class="tabs" data-tabs id="request-editor">
-					<li class="tabs-title is-active"><a href="#basic-info" aria-selected="true">{{'Základní informace' | translate}}</a></li>
-					<li class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
-						<a href="#request-parameters">{{":method parametry" | translate:"{method: "+request.formData.httpMethod+"}"}}</a>
-					</li>
-					<li class="tabs-title"><a href="#headers">{{'HTTP hlavičky' | translate}}</a></li>
-				</ul>
-				<div class="tabs-content" data-tabs-content="request-editor">
-					<div class="tabs-panel is-active" id="basic-info">
-						<form ng-submit="request.edit()">
-							<div class="row">
-								<div class="column">
-									<label class="required">
-										{{'Jméno' | translate}}
+					<ul class="tabs" data-tabs id="request-editor">
+						<li class="tabs-title is-active"><a href="#basic-info" aria-selected="true">{{'Základní informace' |
+																															 translate}}</a></li>
+						<li class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
+							<a href="#request-parameters">{{"HTTP parametry" | translate}}</a>
+						</li>
+						<li class="tabs-title"><a href="#headers">{{'HTTP hlavičky' | translate}}</a></li>
+					</ul>
+					<div class="tabs-content" data-tabs-content="request-editor">
+						<div class="tabs-panel is-active" id="basic-info">
+							<form ng-submit="request.edit()">
+								<div class="row">
+									<div class="column">
+										<label class="required">
+											{{'Jméno' | translate}}
 
-										<input type="text" required ng-model="request.formData.name" ng-blur="request.edit()">
-									</label>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="column large-2">
-									<label class="required">
-										<select required ng-blur="request.edit()" name="input-type"
-												  ng-model="request.formData.httpMethod">
-											<option>POST</option>
-											<option>GET</option>
-											<option>PUT</option>
-											<option>DELETE</option>
-											<option>PATCH</option>
-										</select>
-									</label>
+											<input type="text" required ng-model="request.formData.name" ng-blur="request.edit()">
+										</label>
+									</div>
 								</div>
 
-								<div class="column required large-10">
-									<input required ng-blur="request.edit()" type="text"
-											 ng-model="request.formData.url">
-								</div>
-							</div>
+								<div class="row">
+									<div class="column large-2">
+										<label class="required">
+											<select required ng-blur="request.edit()" name="input-type"
+													  ng-model="request.formData.httpMethod">
+												<option>POST</option>
+												<option>GET</option>
+												<option>PUT</option>
+												<option>DELETE</option>
+												<option>PATCH</option>
+											</select>
+										</label>
+									</div>
 
-							<div class="row">
-								<div class="column">
-									<label>
-										{{'Popis' | translate}}
+									<div class="column required large-10">
+										<input required ng-blur="request.edit()" type="text"
+												 ng-model="request.formData.url">
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="column">
+										<label>
+											{{'Popis' | translate}}
 									<textarea rows="3" ng-model="request.formData.description"
 												 ng-blur="request.edit()"></textarea>
-									</label>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="column">
-									<label>
-										{{'Verze API' | translate}}
-										<select ng-show="versions.overview.length > 0"
-												  ng-blur="request.edit()"
-												  ng-model="request.formData.versionsId"
-												  ng-if="request.environment.projectsId"
-												  ng-init="versions.init(request.environment.projectsId, request.formData.versionsId)">
-											<option ng-repeat="version in versions.overview" value="{{version.id}}">
-												{{version.name}}
-											</option>
-										</select>
-									</label>
-								</div>
-								<div class="column shrink align-bottom">
-									<a href="javascript:void(0)" class="button success" data-open="new-version">
-										<i class="fi-plus"></i>
-									</a>
+										</label>
+									</div>
 								</div>
 
-								<div class="column">
-									<div class="row">
-										<div class="column">
-											<label>
-												{{'Autentifikace' | translate}}
-												<select ng-show="auths.overview.length > 0"
-														  ng-blur="request.edit()"
-														  ng-model="request.formData.authenticationsId"
-														  ng-if="request.environment.id"
-														  ng-init="auths.init(request.environment.id)">
-													<option ng-repeat="auth in auths.overview" value="{{auth.id}}">
-														{{auth.name}}
-													</option>
-												</select>
-											</label>
-										</div>
-										<div class="column shrink align-bottom">
-											<a href="javascript:void(0)" class="button success"
-												data-open="new-authentication">
-												<i class="fi-plus"></i>
-											</a>
+								<div class="row">
+									<div class="column">
+										<label>
+											{{'Verze API' | translate}}
+											<select ng-show="versions.overview.length > 0"
+													  ng-blur="request.edit()"
+													  ng-model="request.formData.versionsId"
+													  ng-if="request.environment.projectsId"
+													  ng-init="versions.init(request.environment.projectsId, request.formData.versionsId)">
+												<option ng-repeat="version in versions.overview" value="{{version.id}}">
+													{{version.name}}
+												</option>
+											</select>
+										</label>
+									</div>
+									<div class="column shrink align-bottom">
+										<a href="javascript:void(0)" class="button success" data-open="new-version">
+											<i class="fi-plus"></i>
+										</a>
+									</div>
+
+									<div class="column">
+										<div class="row">
+											<div class="column">
+												<label>
+													{{'Autentifikace' | translate}}
+													<select ng-show="auths.overview.length > 0"
+															  ng-blur="request.edit()"
+															  ng-model="request.formData.authenticationsId"
+															  ng-if="request.environment.id"
+															  ng-init="auths.init(request.environment.id)">
+														<option ng-repeat="auth in auths.overview" value="{{auth.id}}">
+															{{auth.name}}
+														</option>
+													</select>
+												</label>
+											</div>
+											<div class="column shrink align-bottom">
+												<a href="javascript:void(0)" class="button success"
+													ng-click="auths.manageAuth = true; auths.formData.environmentsId = request.environment.id">
+													<i class="fi-plus"></i>
+												</a>
+											</div>
 										</div>
 									</div>
 								</div>
+							</form>
+
+							<modal ng-if="identity.roles[currentEnvironment.id] != 'host'" show="auths.manageAuth">
+								<h3>{{'Vytvořit autentifikaci' | translate}}</h3>
+
+								<form ng-submit="auths.create()">
+									<label class="required">
+										{{'Jméno' | translate}}
+										<input type="text" required ng-model="auths.formData.name">
+									</label>
+
+									<label class="required">
+										{{'Autentifikace' | translate}} type
+
+										<select required ng-model="auths.formData.type">
+											<option value="base">Base Auth</option>
+											<option value="bearer">Bearer token</option>
+										</select>
+									</label>
+
+									<div ng-show="auths.formData.type == 'base'">
+										<label>
+											{{'Přihlašovací jméno' | translate}}
+											<input type="text" ng-model="auths.formData.username">
+										</label>
+
+										<label>
+											{{'Heslo' | translate}}
+											<input type="text" ng-model="auths.formData.password">
+										</label>
+
+									</div>
+
+									<div ng-show="auths.formData.type == 'bearer'">
+										<label>
+											{{'Autentifikační token' | translate}}
+											<input type="text" ng-model="auths.formData.token">
+											<em>{{"Bude odesílán jako HTTP hlavička Authorization: Bearer *token*" | translate}}</em>
+										</label>
+
+										<label>
+											{{'Query string parametr' | translate}}
+											<input type="text" ng-model="auths.formData.tokenParameter">
+											<em>{{"Pokud API očekává token jako parametr v URL, zadejte jeho jméno." | translate}}</em>
+										</label>
+									</div>
+
+									<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+								</form>
+
+							</modal>
+
+						</div>
+
+						<div class="tabs-panel has-controls" id="request-parameters">
+							<h5>{{"HTTP parametry" | translate}}</h5>
+
+							<div class="content-holder">
+								<form ng-submit="request.edit()" class="row">
+									<label class="column shrink">
+										{{"Odesílat data v tzv. obálce?" | translate}}
+
+										<input type="checkbox" ng-model="request.formData.sendInEnvelope">
+									</label>
+
+									<label class="column" ng-show="request.formData.sendInEnvelope">
+										{{"Jméno obálky" | translate}}
+
+										<input type="text" ng-model="request.formData.envelope">
+										<em>{{'Obálka je objekt, do kterého se vloží níže definované parametry. ' | translate}} </em>
+
+									</label>
+
+									<div class="column">
+										<button class="button success" type="submit">{{"Uložit" | translate}}</button>
+									</div>
+								</form>
+
+								<div class="callout warning" ng-show="emptyObject(request.formData.httpParameters)">
+									{{'Žádný záznam' | translate}}
+								</div>
+
+								<table ng-show="!emptyObject(request.formData.httpParameters)">
+									<tr ng-repeat="param in request.formData.httpParameters">
+										<td>{{param.name}}</td>
+										<td>{{param.value}}</td>
+										<td class="text-right">
+											<a href="javascript:void(0)"
+												ng-click="request.manageHttpParameters = true; request.httpParametersData = param">
+												<i class="fi-pencil"></i>
+											</a>
+											<a href="javascript:void(0)" ng-click="request.httpParameters.delete(param.id)">
+												<i class="fi-x"></i>
+											</a>
+										</td>
+									</tr>
+								</table>
 							</div>
-						</form>
-					</div>
+							<div class="row controls align-right">
+								<a href="javascript:void(0)"
+									ng-click="request.manageHttpParameters = true; request.httpParametersData = {}"
+									class="success tiny button"><i class="fi-plus"></i> <span
+										  class="show-for-medium"> {{'Nový parametr' | translate}}</span></a>
+							</div>
 
-					<div class="tabs-panel has-controls" id="request-parameters">
-						<h5>{{":method parametry" | translate:"{method: "+request.formData.httpMethod+"}"}}</h5>
+							<modal ng-if="identity.roles[currentEnvironment.id] != 'host' && request.formData.httpMethod"
+									 show="request.manageHttpParameters">
+								<h3 ng-show="request.httpParametersData.id">{{'Upravit HTTP parametr' | translate}}</h3>
+								<h3 ng-show="!request.httpParametersData.id">{{'Vytvořit nový HTTP parametr' | translate}}</h3>
 
-						<div class="content-holder">
+								<form ng-submit="request.httpParametersData.id ? request.httpParameters.edit() : request.httpParameters.create()">
+									<div class="row">
+										<div class="column">
+											<label class="required">
+												{{'Jméno' | translate}}
+												<input type="text" required ng-model="request.httpParametersData.name">
+											</label>
+										</div>
+										<div class="column">
+											<label>
+												{{'Hodnota' | translate}}
+												<input type="text" ng-model="request.httpParametersData.value">
+											</label>
+										</div>
+									</div>
+									<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+								</form>
+							</modal>
 
-							<div class="callout warning" ng-show="emptyObject(request.formData.httpParameters)">{{'Žádný záznam' | translate}}</div>
-
-							<table ng-show="!emptyObject(request.formData.httpParameters)">
-								<tr ng-repeat="param in request.formData.httpParameters">
-									<td>{{param.name}}</td>
-									<td>{{param.value}}</td>
-									<td class="text-right">
-										<a href="javascript:void(0)"
-											ng-click="request.manageHttpParameters = true; request.httpParametersData = param">
-											<i class="fi-pencil"></i>
-										</a>
-										<a href="javascript:void(0)" ng-click="request.httpParameters.delete(param.id)">
-											<i class="fi-x"></i>
-										</a>
-									</td>
-								</tr>
-							</table>
 						</div>
-						<div class="row controls align-right">
-							<a href="javascript:void(0)"
-								ng-click="request.manageHttpParameters = true; request.httpParametersData = {}"
-								class="success tiny button"><i class="fi-plus"></i> <span
-									  class="show-for-medium"> {{'Nový parametr' | translate}}</span></a>
-						</div>
-					</div>
 
-					<div class="tabs-panel has-controls" id="headers" ng-controller="HeadersController as headers">
-						<h5>{{'HTTP hlavičky požadavku' | translate}}</h5>
+						<div class="tabs-panel has-controls" id="headers" ng-controller="HeadersController as headers">
+							<h5>{{'HTTP hlavičky požadavku' | translate}}</h5>
 
-						<div class="content-holder">
-							<table ng-if="request.environment.id"
-									 ng-init="headers.initOverview({projectId: request.environment.projectsId, environmentId: request.environment.id, requestId: request.formData.id})">
-								<tr ng-repeat="header in headers.overview">
-									<td>{{header.name}}</td>
-									<td>{{header.value}}</td>
-									<td class="text-right">
+							<div class="content-holder">
+								<table ng-if="request.environment.id"
+										 ng-init="headers.initOverview({projectId: request.environment.projectsId, environmentId: request.environment.id, requestId: request.formData.id})">
+									<tr ng-repeat="header in headers.overview">
+										<td>{{header.name}}</td>
+										<td>{{header.value}}</td>
+										<td class="text-right">
 								<span ng-show="header.requestsId == request.formData.id">
 									<a href="javascript:void(0)"
 										ng-click="headers.manageHeaders = true; headers.formData = header">
@@ -160,43 +258,43 @@
 										<i class="fi-x"></i>
 									</a>
 								</span>
-									</td>
-								</tr>
-							</table>
-						</div>
-						<div class="row controls align-right">
-							<a href="javascript:void(0)"
-								ng-click="headers.manageHeaders = true; headers.formData= {requestsId: request.formData.id}"
-								class="success tiny button">
-								<i class="fi-plus"></i>
-								<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
-						</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="row controls align-right">
+								<a href="javascript:void(0)"
+									ng-click="headers.manageHeaders = true; headers.formData= {requestsId: request.formData.id}"
+									class="success tiny button">
+									<i class="fi-plus"></i>
+									<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
+							</div>
 
-						<modal show="headers.manageHeaders">
-							<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
-							<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
+							<modal show="headers.manageHeaders">
+								<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
+								<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
 
-							<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
-								<div class="row">
-									<div class="column">
-										<label class="required">
-											{{'Jméno' | translate}}
-											<input type="text" required ng-model="headers.formData.name">
-										</label>
+								<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
+									<div class="row">
+										<div class="column">
+											<label class="required">
+												{{'Jméno' | translate}}
+												<input type="text" required ng-model="headers.formData.name">
+											</label>
+										</div>
+										<div class="column">
+											<label>
+												{{'Hodnota' | translate}}
+												<input type="text" ng-model="headers.formData.value">
+											</label>
+										</div>
 									</div>
-									<div class="column">
-										<label>
-											{{'Hodnota' | translate}}
-											<input type="text" ng-model="headers.formData.value">
-										</label>
-									</div>
-								</div>
-								<button type="submit" class="button success">{{'Uložit' | translate}}</button>
-							</form>
-						</modal>
+									<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+								</form>
+							</modal>
 
+						</div>
 					</div>
-				</div>
 				</div>
 
 			</div>
@@ -204,7 +302,7 @@
 			<!--================================-->
 			<!--Modal windows-->
 
-			<modal ng-if="identity.roles[currentEnvironment.id] == 'host'" show="versions.manageVersion">
+			<modal ng-if="identity.roles[currentEnvironment.id] != 'host'" show="versions.manageVersion">
 				<h3>{{'Vytvoření nové verze API' | translate}}</h3>
 
 				<form ng-submit="versions.create()">
@@ -226,59 +324,9 @@
 
 			</modal>
 
-			<modal ng-if="identity.roles[currentEnvironment.id] == 'host'" show="auths.manageAuth">
-				<h3>{{'Vytvořit autentifikaci' | translate}}</h3>
-
-				<form ng-submit="auths.create()">
-					<label class="required">
-						{{'Jméno' | translate}}
-						<input type="text" required ng-model="auths.formData.name">
-					</label>
-
-					<label class="required">
-						{{'Přihlašovací jméno' | translate}}
-						<input type="text" required ng-model="auths.formData.username">
-					</label>
-
-					<label class="required">
-						{{'Heslo' | translate}}
-						<input type="text" required ng-model="auths.formData.password">
-					</label>
-
-					<label class="required">
-						{{'Autentifikace' | translate}} type
-
-						<select required ng-model="auths.formData.type">
-							<option value="base">Base Auth</option>
-							<option value="bearer">Bearer token</option>
-						</select>
-					</label>
-
-					<div ng-show="auths.formData.type == 'bearer'">
-						<label>
-							{{'URL API metody' | translate}}
-							<input type="text" ng-model="auths.formData.apiMethod">
-						</label>
-
-						<label>
-							{{'Rozšiřující parametry API ve formátu foo=bar&prop=val (poslané jako query string parametry)' | translate}}
-							<input type="text" ng-model="auths.formData.apiParams">
-						</label>
-
-						<label>
-							{{'Vlastnost objektu odpovědi, ve které je obsažen token (např. auth.loggedUser.token)' | translate}}
-							<input type="text" ng-model="auths.formData.tokenProperty">
-						</label>
-					</div>
-
-					<button type="submit" class="button success">{{'Uložit' | translate}}</button>
-				</form>
-
-			</modal>
-
 			<modal ng-if="identity.roles[currentEnvironment.id] == 'host'" show="request.manageHttpParameters">
-				<h3 ng-show="request.httpParametersData.id">{{'Upravit :method parametr' | translate:'{method: '+request.formData.httpMethod+'}'}}</h3>
-				<h3 ng-show="!request.httpParametersData.id">{{'Vytvořit nový :method parametr' | translate:'{method: '+request.formData.httpMethod+'}'}}</h3>
+				<h3 ng-show="request.httpParametersData.id">{{'Upravit HTTP parametr' | translate}}</h3>
+				<h3 ng-show="!request.httpParametersData.id">{{'Vytvořit nový HTTP parametr' | translate}}</h3>
 
 				<form ng-submit="request.httpParametersData.id ? request.httpParameters.edit() : request.httpParameters.create()">
 					<div class="row">

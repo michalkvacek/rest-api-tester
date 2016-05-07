@@ -15,8 +15,8 @@ module.exports = {
 			type: req.param ('type'),
 			username: req.param ('username'),
 			password: req.param ('password'),
-			apiMethod: req.param ('apiMethod'),
-			tokenProperty: req.param ('tokenProperty'),
+			token: req.param ('token'),
+			tokenParameter: req.param ('tokenParameter'),
 		};
 
 		authentications.create (parameters).then (function (authentication) {
@@ -43,8 +43,8 @@ module.exports = {
 				type: req.param ('type'),
 				username: req.param ('username'),
 				password: req.param ('password'),
-				apiMethod: req.param ('apiMethod'),
-				tokenProperty: req.param ('tokenProperty'),
+				token: req.param ('token'),
+				tokenParameter: req.param ('tokenParameter'),
 			}).then (function (edit) {
 				return res.ok (authentication);
 			}, function (error) {

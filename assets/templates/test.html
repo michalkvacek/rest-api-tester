@@ -226,7 +226,7 @@
 						</li>
 					</ul>
 
-					<modal show="asserts.openModal && identity.roles[currentEnvironment.id] != 'host'">
+					<modal show="asserts.openModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
 						<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
 						<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
@@ -283,7 +283,7 @@
 				</a>
 			</div>
 
-			<modal class="large" show="reqController.addRequestModal && identity.roles[currentEnvironment.id] != 'host'">
+			<modal class="large" show="reqController.addRequestModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
 				<div id="new-request-window">
 					<h3>{{'Nový požadavek' | translate}}</h3>
 
@@ -447,7 +447,7 @@
 
 			<div class="row">
 				<label class="column required">
-					Test name
+					{{"Jméno" | translate}}
 
 					<input type="text" required ng-model="tests.formData.name" />
 				</label>
@@ -463,29 +463,29 @@
 			<div class="row">
 				<div class="column shrink">
 					<label>
-						Run...
+						{{"Spustit..." | translate}}
 
 						<select ng-model="tests.formData.run">
-							<option value="periodicaly">Periodicaly</option>
-							<option value="once">Only once</option>
+							<option value="periodicaly">{{'Periodicky' | translate}}</option>
+							<option value="once">{{'Pouze jednou' | translate}}</option>
 						</select>
 					</label>
 
 				</div>
 				<div class="column" ng-show="tests.formData.run == 'periodicaly'">
 					<label>
-						every
+						{{"po" | translate}}
 						<select ng-model='tests.formData.runInterval'>
-							<option value="30">30 minutes</option>
-							<option value="60">hour</option>
-							<option value="360">6 hours</option>
-							<option value="8640">day</option>
+							<option value="30">30 {{"minutách" | translate}}</option>
+							<option value="60">{{"hodině" | translate}}</option>
+							<option value="360">6 {{"hodinách" | translate}}</option>
+							<option value="8640">{{"dni" | translate}}</option>
 						</select>
 					</label>
 				</div>
 				<div class="column large-6">
 					<label>
-						{{'Další spuštění' | translate}} at
+						{{'Další spuštění v' | translate}}
 						<input type="datetime" ng-model="tests.formData.nextRun" name="run-at" />
 					</label>
 				</div>

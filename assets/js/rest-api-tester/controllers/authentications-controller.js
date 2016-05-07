@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('AuthenticationsController', ['$scope', 'authenticationsService', function ($scope, authenticationsService) {
+app.controller ('AuthenticationsController', ['$scope', '$translate', 'notificationsService', 'authenticationsService', function ($scope, $translate, notificationsService, authenticationsService) {
 
 	var self = this;
 	self.overview = {};
@@ -56,9 +56,23 @@ app.controller ('AuthenticationsController', ['$scope', 'authenticationsService'
 	 */
 	self.create = function () {
 		authenticationsService.create (self.formData.environmentsId, self.formData).then (function (response) {
-			self.init (self.formData.environmentId);
+			switch (response.status) {
+				case 201:
+					self.init (self.formData.environmentsId);
 
-			self.manageAuth = false;
+					self.manageAuth = false;
+					break;
+				case 403:
+					$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+						notificationsService.push ('alert', translation);
+					});
+					break;
+				default:
+					$translate ('Nelze vykonat požadavek').then (function (translation) {
+						notificationsService.push ('alert', translation);
+					});
+					break;
+			}
 		});
 	};
 
@@ -68,7 +82,7 @@ app.controller ('AuthenticationsController', ['$scope', 'authenticationsService'
 	self.edit = function () {
 		authenticationsService.edit (self.formData.environmentsId, self.formData.id, self.formData).then (function (response) {
 			switch (response.status) {
-				case 201:
+				case 200:
 					self.init (self.formData.environmentsId);
 
 					self.manageAuth = false;

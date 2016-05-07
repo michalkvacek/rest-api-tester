@@ -75,6 +75,7 @@ module.exports = {
 			description: req.param ('description', null),
 			httpMethod: req.param ('httpMethod'),
 			resourceName: req.param ('resourceName', null),
+			envelope: req.param ('envelope', null),
 			methodName: req.param ('methodName', null)
 		};
 
@@ -112,14 +113,12 @@ module.exports = {
 
 	edit: function (req, res) {
 		requests.find ({where: {id: req.requestId}}).then (function (request) {
-
-			if (!request) return res.notFound ();
-
 			request.update ({
 				name: req.param ('name'),
 				description: req.param ('description'),
 				url: req.param ('url'),
 				httpMethod: req.param ('httpMethod'),
+				envelope: req.param ('envelope', null),
 				versionsId: req.param ('versionsId'),
 				authenticationsId: req.param ('authenticationsId')
 			}).then (function (edited) {

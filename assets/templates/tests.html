@@ -99,7 +99,7 @@
 			</script>
 		</div>
 	</div>
-	<modal show="tests.manageSchedule && identity.roles[currentEnvironment.id] != 'host'" class="large">
+	<modal show="tests.manageSchedule" ng-if="identity.roles[currentEnvironment.id] != 'host'" class="large">
 
 		<h3>{{'Naplánovat spuštění' | translate}}</h3>
 
@@ -118,20 +118,19 @@
 				</div>
 				<div class="column" ng-show="tests.scheduleData.run == 'periodicaly'">
 					<label>
-						every
-						<select ng-model='tests.scheduleData.runInterval'>
-							<option value="30">30 minutes</option>
-							<option value="60">hour</option>
-							<option value="360">6 hours</option>
-							<option value="8640">day</option>
+						{{"po" | translate}}
+						<select ng-model='tests.formData.runInterval'>
+							<option value="30">30 {{"minutách" | translate}}</option>
+							<option value="60">{{"hodině" | translate}}</option>
+							<option value="360">6 {{"hodinách" | translate}}</option>
+							<option value="8640">{{"dni" | translate}}</option>
 						</select>
 					</label>
 				</div>
 				<div class="column large-6">
 					<label>
-						{{'Další spuštění' | translate}} at
+						{{'Další spuštění v' | translate}}
 						<input type="datetime" ng-model="tests.scheduleData.nextRun" name="run-at" />
-
 					</label>
 				</div>
 			</div>
@@ -141,11 +140,11 @@
 	</modal>
 
 	<!--Button for creating new resource-->
-	<a data-open="new-test" id="add-test" ng-if="identity.roles[currentEnvironment.id] != 'host'" ng-click="tests.manageTest = true"
+	<a id="add-test" ng-if="identity.roles[currentEnvironment.id] != 'host'" ng-click="tests.manageTest = true"
 		class="button success material-add-button"><i
 			  class="fi-plus"></i></a>
 
-	<modal show="tests.manageTest && identity.roles[currentEnvironment.id] != 'host'" class="large">
+	<modal show="tests.manageTest" ng-if="identity.roles[currentEnvironment.id] != 'host'" class="large">
 		<h3>{{"Vytvořit nový test" | translate}}</h3>
 
 		<form ng-submit="tests.newTest()">

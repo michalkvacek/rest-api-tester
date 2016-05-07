@@ -108,6 +108,7 @@ app.controller ('RequestsController', [
 
 							self.detail = request;
 							self.formData = angular.copy (response.data);
+							self.formData.sendInEnvelope = self.formData.envelope != null;
 							break;
 
 						case 404:
@@ -231,6 +232,9 @@ app.controller ('RequestsController', [
 			// ignore not-changed form
 			if (angular.equals (self.formData, self.detail))
 				return;
+
+			if (!self.formData.sendInEnvelope)
+				self.formData.envelope = null;
 
 			requestsService.edit (id, self.formData).then (function (response) {
 				if (response.status != 200) {

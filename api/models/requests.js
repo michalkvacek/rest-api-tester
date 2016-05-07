@@ -38,6 +38,10 @@ module.exports = {
 			type: Sequelize.STRING,
 			allowNull: true
 		},
+		envelope: {
+			type: Sequelize.STRING,
+			allowNull: true
+		},
 		httpMethod: {
 			type: Sequelize.STRING,
 			allowNull: true

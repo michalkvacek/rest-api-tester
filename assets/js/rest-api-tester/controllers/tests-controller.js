@@ -181,7 +181,7 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 
 			testsService.create (environmentId, self.formData).then (function (response) {
 				switch (response.status) {
-					case 200:
+					case 201:
 						$rootScope.setEnvironment (environmentId);
 						self.initTestOverview ();
 

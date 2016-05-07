@@ -35,9 +35,8 @@ module.exports.routes = {
 	'delete /api/v1/requests/:requestId': 'api/v1/Requests.delete',
 	'delete /api/v1/requests/:requestId/httpParameters/:httpParameterId': 'api/v1/HttpParameters.delete',
 	'delete /api/v1/tests/:testId/requests/:requestId': 'api/v1/Tests.removeRequest',
-	'get /api/v1/assertions/:assertionId': 'api/v1/Assertions.detail',
-
 	'get /api/v1/assertions/types': 'api/v1/Assertions.types',
+	'get /api/v1/assertions/:assertionId': 'api/v1/Assertions.detail',
 	'get /api/v1/environments/:environmentId': 'api/v1/Environments.detail',
 	'get /api/v1/environments/:environmentId/auths': 'api/v1/Authentications.index',
 	'get /api/v1/environments/:environmentId/auths/:authId': 'api/v1/Authentications.detail',

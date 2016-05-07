@@ -110,7 +110,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translat
 	$rootScope.emptyObject = function (object) {
 
 		// undefined object is probably also without data and therefore empty
-		if (typeof object == 'undefined')
+		if (typeof object == 'undefined' || object == null)
 			return true;
 
 		return Object.keys (object).length == 0;
