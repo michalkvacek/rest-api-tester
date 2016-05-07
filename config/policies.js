@@ -25,16 +25,20 @@ module.exports.policies = {
 	'api/v1/Projects': {
 		index: ['jwToken'],
 		create: ['jwToken'],
+		update: ['jwToken', 'projectIdRequired', 'projectOwner'],
 		'*': ['jwToken', 'projectIdRequired']
 	},
 	'api/v1/Users': {
-		assignToEnvironment: ['jwToken', 'environmentIdRequired'],
+		forgottenPassword: true,
+		assignToEnvironment: ['jwToken', 'environmentIdRequired', 'manager'],
 		'*': ['jwToken']
 	},
 	'api/v1/Environments': {
 		index: ['jwToken', 'projectIdRequired'],
-		create: ['jwToken', 'projectIdRequired'],
-		'*': ['jwToken', 'environmentIdRequired']
+		create: ['jwToken', 'projectIdRequired', 'projectOwner'],
+		detail: ['jwToken', 'environmentIdRequired'],
+		runTest: ['jwToken', 'environmentIdRequired', 'tester', 'manager'],
+		'*': ['jwToken', 'environmentIdRequired', 'manager']
 	},
 	'api/v1/Tests': {
 		detail: ['jwToken', 'testIdRequired'],

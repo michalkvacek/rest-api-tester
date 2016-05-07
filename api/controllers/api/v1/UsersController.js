@@ -31,6 +31,7 @@ module.exports = {
 	loggedUser: function (req, res) {
 		users.find ({where: {id: req.token.id}}).then (function (user) {
 			user = user.toJSON ();
+			user.roles = req.managedEnvironments;
 
 			delete user.password;
 
@@ -61,13 +62,18 @@ module.exports = {
 
 				var name = email.split ('@');
 
-				userService.registerNewUser ({email: email, name: name[0], environmentId: req.environmentId, role: role}, function (user) {
-					user = user.toJSON();
+				userService.registerNewUser ({
+					email: email,
+					name: name[0],
+					environmentId: req.environmentId,
+					role: role
+				}, function (user) {
+					user = user.toJSON ();
 
 					// remove password from user's object
 					delete user.password;
 
-					return res.created(user);
+					return res.created (user);
 				});
 			} else {
 				userService.assignToEnvironment (foundUser.id, req.environmentId, role, function (assignedUser) {
@@ -76,7 +82,7 @@ module.exports = {
 					// check if user was not inserted again into the same environment
 
 					if (err.name == 'SequelizeUniqueConstraintError')
-						return res.badRequest('user already assigned');
+						return res.badRequest ('user already assigned');
 
 					return res.serverError (err);
 				});
@@ -100,11 +106,10 @@ module.exports = {
 		users.find ({where: {email: email}}).then (function (user) {
 			if (!user)
 				return res.notFound ('invalid user');
-
 			// generate some random password (8 chars long)
 			require ('crypto').randomBytes (4, function (err, buffer) {
-				user.update ({password: buffer}).then (function (updated) {
-					return email.forgottenPassword (res, buffer, user);
+				user.update ({password: buffer.toString ('hex')}).then (function (updated) {
+					return emailSender.forgottenPassword (res, buffer, user);
 				})
 			});
 		});
@@ -127,12 +132,12 @@ module.exports = {
 			};
 
 			// if specified, change password
-			if (req.param ('password')) {
+			if (req.param ('password') && req.param ('password') != '') {
 				update.password = req.param ('password');
 			}
 
 			user.update (update).then (function (updated) {
-				updated = updated.toJSON();
+				updated = updated.toJSON ();
 
 				delete updated.password;
 

@@ -123,7 +123,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 						break;
 
 					case 404:
-						$translate ('Tento projekt neexistuje, nelze zobrazit přehled prostředí.').then (function (translation) {
+						$translate ('Požadované prostředí neexistuje. Vyberte prosím jiné.').then (function (translation) {
 							notificationsService.push ('alert', translation);
 							$state.go ('projects');
 						});
@@ -158,6 +158,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 					case 200:
 
 						self.detail = response.data;
+						self.formData = angular.copy(response.data);
 
 						// update breadcrumbs
 						$translate ('Nastavení').then (function (settings) {
@@ -230,11 +231,23 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 		self.edit = function () {
 			var environmentId = $stateParams.environmentId;
 
+			console.log(self.formData.name);
+			console.log(self.detail.name);
+
+			// ignore not-changed form
+			if (self.formData.name == self.detail.name && self.formData.description == self.detail.description && self.formData.apiEndpoint == self.detail.apiEndpoint)
+				return;
+
+
 			environmentsService.edit (environmentId, self.formData).then (function (data) {
 				switch (data.status) {
 					case 200:
 						$rootScope.refreshProjectOverview ();
 						self.loadDetail ();
+
+						$translate ('Úspěšně uloženo.').then (function (translation) {
+							notificationsService.push ('success', translation);
+						});
 						break;
 
 					case 403:
@@ -292,7 +305,7 @@ app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$t
 
 			environmentsService.addUser (environmentId, self.addUser).then (function (response) {
 				switch (response.status) {
-					case 200:
+					case 201:
 						self.loadDetail ();
 
 						self.manageUser = false;

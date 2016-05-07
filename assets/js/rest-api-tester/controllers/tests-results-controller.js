@@ -28,8 +28,6 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 
 			testsResultsService.getOverview (self.lastTestsAge).then (function (response) {
 
-				// todo iterate over returned tests and try to update only changed tests
-
 				$rootScope.testList = response.data;
 
 				if (!testResultsFirstRun) {

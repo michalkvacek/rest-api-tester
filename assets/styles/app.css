@@ -10,6 +10,10 @@
 	padding: .5rem;
 }
 
+.callout {
+	position: static;
+}
+
 .notifications {
 	position: fixed;
 	top: 0;
@@ -50,10 +54,6 @@
 	background: none;
 }
 
-.has-tip {
-	position: static;
-}
-
 #main-menu .title-bar-right .menu {
 	justify-content: flex-end;
 }
@@ -61,35 +61,6 @@
 #loaded-view {
 	padding-left: 0;
 }
-
-/*nav .quick-search {*/
-/*float: right;*/
-/*}*/
-
-/*.quick-search {*/
-/*background: transparent url(img/search-icon.png) no-repeat 100% center;*/
-/*border: none;*/
-/*outline: none;*/
-/*box-shadow: none;*/
-/*color: white;*/
-/*width: 24px;*/
-/*cursor: pointer;*/
-/*-webkit-transition: width .5s;*/
-/*-moz-transition: width .5s;*/
-/*transition: width .5s;*/
-/*}*/
-
-/*.quick-search:focus, .quick-search:hover {*/
-/*width: 100%;*/
-/*border: none;*/
-/*box-shadow: none;*/
-/*outline: none;*/
-/*border-bottom: solid 1px;*/
-/*background-color: transparent;*/
-/*-webkit-transition: width .5s;*/
-/*-moz-transition: width .5s;*/
-/*transition: width .5s;*/
-/*}*/
 
 .tabs-title {
 	font-weight: bold;
@@ -192,16 +163,8 @@ table .button {
 	box-shadow: none;
 }
 
-html, body {
-	background: #EEE;
-}
-
 .no-padding {
 	padding: 0;
-}
-
-.user-profile {
-	padding: 1em;
 }
 
 li.separator {
@@ -226,6 +189,8 @@ li.separator {
 code {
 	display: block;
 	word-break: break-all;
+	max-height: 35em;
+	overflow: scroll;
 }
 
 .dropdown li.is-submenu-item:hover {

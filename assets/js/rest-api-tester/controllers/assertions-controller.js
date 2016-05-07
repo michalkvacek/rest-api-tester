@@ -101,7 +101,7 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', '$translate',
 			if (confirm ($translate.instant ('Opravdu?'))) {
 				assertionsService.delete (id).then (function (response) {
 					switch (response.status) {
-						case 201:
+						case 200:
 							// update assertions list
 							self.initRequestAssertions (requestId);
 							break;

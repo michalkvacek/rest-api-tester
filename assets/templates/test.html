@@ -9,12 +9,12 @@
 				</div>
 				<div class="column shrink" ng-switch="tests.detail.lastRunStatus">
 					<p>
-					<span ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
+						<span ng-if="identity.roles[currentEnvironment.id] != 'host'" ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
 						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
 							class="button success small fi-play"> {{'Spustit nyní' | translate}}</a>
 						<a href="javascript:void(0)" ng-click="tests.manageTest = true; tests.formData = tests.detail"
 							class="button primary small fi-pencil"> {{'Upravit' | translate}}</a>
-					</span>
+						</span>
 
 					<span ng-show="tests.detail.lastRunStatus == 'waiting_for_response' || tests.detail.lastRunStatus == 'evaluating'">
 						<button class="button small warning disabled"><i class="fi-play-circle"></i> {{'Zpracovává se' | translate}}</button>
@@ -146,12 +146,14 @@
 											{{'Detail' | translate}}
 										</a>
 
-										<a class="button primary tiny" ui-sref="request_editor({requestId: request.id})">
+										<a class="button primary tiny" ui-sref="request_editor({requestId: request.id})"
+											ng-if="identity.roles[currentEnvironment.id] != 'host'">
 											<i class="fi-pencil"></i>
 											{{'Upravit' | translate}}
 										</a>
 
-										<a class="button alert tiny" ng-click="tests.removeRequest(request.id)">
+										<a class="button alert tiny" ng-click="tests.removeRequest(request.id)"
+											ng-if="identity.roles[currentEnvironment.id] != 'host'">
 											<i class="fi-x"></i>
 											{{'Odebrat z testu' | translate}}
 										</a>
@@ -191,10 +193,12 @@
 												<td>{{assertion.expectedValue}}</td>
 												<td>
 													<a href="javascript:void(0)"
+														ng-if="identity.roles[currentEnvironment.id] != 'host'"
 														ng-click="asserts.openModal = true; asserts.formData = assertion">
 														<i class="fi-pencil" data-open="edit-assertion"></i>
 													</a>
 													<a href="javascript:void(0)"
+														ng-if="identity.roles[currentEnvironment.id] != 'host'"
 														ng-click="asserts.delete(assertion.id, request.id)">
 														<i class="fi-x"></i>
 													</a>
@@ -203,6 +207,7 @@
 											</tbody>
 										</table>
 										<button ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.id}"
+												  ng-if="identity.roles[currentEnvironment.id] != 'host'"
 												  class="button success float-right">
 											<i class="fi-plus"></i> {{'Nový validátor' | translate}}
 										</button>
@@ -221,7 +226,7 @@
 						</li>
 					</ul>
 
-					<modal show="asserts.openModal">
+					<modal show="asserts.openModal && identity.roles[currentEnvironment.id] != 'host'">
 						<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
 						<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
@@ -270,13 +275,15 @@
 			</div>
 
 			<div class="row controls align-right">
-				<a href="javascript:void(0)" ng-click="reqController.addRequestModal=true" class="success tiny button">
+				<a href="javascript:void(0)" ng-click="reqController.addRequestModal=true"
+					ng-if="identity.roles[currentEnvironment.id] != 'host'"
+					class="success tiny button">
 					<i class="fi-plus"></i>
 					<span class="show-for-medium"> {{'Přidat požadavek' | translate}}</span>
 				</a>
 			</div>
 
-			<modal class="large" show="reqController.addRequestModal">
+			<modal class="large" show="reqController.addRequestModal && identity.roles[currentEnvironment.id] != 'host'">
 				<div id="new-request-window">
 					<h3>{{'Nový požadavek' | translate}}</h3>
 
@@ -375,10 +382,12 @@
 						<td>{{header.value}}</td>
 						<td class="text-right">
 							<a href="javascript:void(0)"
+								ng-if="identity.roles[currentEnvironment.id] != 'host'"
 								ng-click="tests.manageHeaders = true; tests.formData.headers = header">
 								<i class="fi-pencil"></i>
 							</a>
-							<a href="javascript:void(0)" ng-click="tests.headers.delete(header.id)">
+							<a href="javascript:void(0)" ng-click="tests.headers.delete(header.id)"
+								ng-if="identity.roles[currentEnvironment.id] != 'host'">
 								<i class="fi-x"></i>
 							</a>
 						</td>
@@ -387,7 +396,8 @@
 			</div>
 		</div>
 		<div class="row controls align-right">
-			<button class="button success tiny" ng-click="tests.manageHeaders=true; tests.formData.headers = {}">
+			<button class="button success tiny" ng-if="identity.roles[currentEnvironment.id] != 'host'"
+					  ng-click="tests.manageHeaders=true; tests.formData.headers = {}">
 				<i class="fi-check"></i> {{'Přidat' | translate}}
 			</button>
 		</div>

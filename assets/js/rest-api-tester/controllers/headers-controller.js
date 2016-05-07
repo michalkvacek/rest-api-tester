@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService', function ($scope, $stateParams, headersService) {
+app.controller ('HeadersController', ['$scope', '$translate', '$stateParams', 'headersService', function ($scope, $translate, $stateParams, headersService) {
 
 	var self = this;
 
@@ -11,7 +11,7 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 
 	/**
 	 * List of all headers matching given filter
-	 * 
+	 *
 	 * @param filter
 	 */
 	self.initOverview = function (filter) {
@@ -22,7 +22,7 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 			if (response.status != 200) {
 				return;
 			}
-			
+
 			self.overview = response.data;
 
 			// save filter for further usage
@@ -41,7 +41,7 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 				});
 				return;
 			}
-			
+
 			self.initOverview ();
 
 			self.manageHeaders = false;
@@ -59,7 +59,7 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 				});
 				return;
 			}
-			
+
 			self.initOverview ();
 
 			self.manageHeaders = false;
@@ -75,7 +75,7 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 	 * @param id
 	 */
 	self.delete = function (id) {
-		if (confirm($translate.instant('Opravdu?'))) {
+		if (confirm ($translate.instant ('Opravdu?'))) {
 			headersService.delete (id).then (function (response) {
 				if (response.status != 200) {
 					$translate ('Nelze vykonat požadavek').then (function (translation) {
@@ -83,7 +83,7 @@ app.controller ('HeadersController', ['$scope', '$stateParams', 'headersService'
 					});
 					return;
 				}
-				
+
 				self.initOverview ();
 			});
 		}

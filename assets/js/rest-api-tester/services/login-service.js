@@ -1,6 +1,6 @@
 var app = angular.module ('restApiTester');
 
-app.service ('loginService', ['$http', '$timeout', '$rootScope', '$translate', '$q', function ($http, $timeout, $rootScope, $translate, $q) {
+app.service ('loginService', ['$http', '$timeout', '$rootScope', 'notificationsService', '$translate', '$q', function ($http, $timeout, $rootScope, notificationsService, $translate, $q) {
 
 	var lastAuth = null;
 	$rootScope.identity = {};
@@ -38,6 +38,11 @@ app.service ('loginService', ['$http', '$timeout', '$rootScope', '$translate', '
 		localAuth: function (data) {
 			var d = $q.defer ();
 			$http.post ('/api/v1/login', data).then (function (response) {
+				if (response.status == 403) {
+					notificationsService.push('alert', $translate.instant('Přihlášení se nezdařilo. Zkontrolujte přihlašovací údaje, prosím.'));
+					return;
+				}
+				
 				localStorage.setItem ('auth_token', response.data.token);
 
 				// set identity
@@ -53,7 +58,7 @@ app.service ('loginService', ['$http', '$timeout', '$rootScope', '$translate', '
 			return d.promise;
 		},
 		isAuthenticated: function () {
-			return localStorage.getItem ('auth_token') != null;
+			return $rootScope.identity.id != 'undefined' && localStorage.getItem ('auth_token') != null;
 		}
 	}
 }]);

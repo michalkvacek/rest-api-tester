@@ -23,12 +23,16 @@ app.service ('headersService', ['$http', '$q', function ($http, $q) {
 		edit: function (headerId, data) {
 			var d = $q.defer ();
 
+			data.name = data.name.replace(/ /g, '-');
+
 			$http.put ('/api/v1/headers/' + headerId, data).then (d.resolve, d.reject);
 
 			return d.promise;
 		},
 		create: function (data) {
 			var d = $q.defer ();
+
+			data.name = data.name.replace(/ /g, '-');
 
 			$http.post ('/api/v1/headers', data).then (d.resolve, d.reject);
 

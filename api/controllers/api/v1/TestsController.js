@@ -108,10 +108,6 @@ module.exports = {
 						]
 					}
 				}).then (function (allHeaders) {
-
-					console.log(test);
-					console.log(req.testId);
-
 					test = test.toJSON ();
 					test.headers = allHeaders;
 

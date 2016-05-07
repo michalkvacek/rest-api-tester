@@ -30,7 +30,11 @@ app.controller ('ProjectsController', ['$rootScope', '$state', '$stateParams', '
 		/**
 		 * Load list of all projects
 		 */
-		self.initOverview = function () {
+		self.initOverview = function (selectedProjectId) {
+
+			if (typeof selectedProjectId != 'undefined')
+				$rootScope.setEnvironment(undefined, selectedProjectId);
+
 			projectsService.getOverview ().then (function (response) {
 				if (response.status != 200) {
 					$translate ('Nelze načíst seznam projektů. Stavový kód odpovědi: :statusCode', {statusCode: response.status}).then (function (translation) {
@@ -64,10 +68,11 @@ app.controller ('ProjectsController', ['$rootScope', '$state', '$stateParams', '
 				switch (response.status) {
 					case 200:
 						self.detail = response.data;
+						self.formData = angular.copy(response.data);
 
 						// update breadcrumbs
 						if (updateBreadcrumbs)
-							$translation ('Nastavení').then (function (settings) {
+							$translate ('Nastavení').then (function (settings) {
 								$rootScope.breadcrumbs = [{
 									label: settings,
 									href: $state.href ('project_settings', {projectId: response.data.id})
@@ -118,15 +123,30 @@ app.controller ('ProjectsController', ['$rootScope', '$state', '$stateParams', '
 			if (typeof self.formData.name == 'undefined' || self.formData.name == '')
 				return;
 
+			// ignore not-changed form
+			if (self.formData.name == self.detail.name && self.formData.description == self.detail.description)
+				return;
+
 			projectsService.edit (self.formData.id, self.formData).then (function (response) {
-				switch (response.status == 200) {
+
+				switch (response.status) {
 					case 200:
-						self.initOverview ();
+						self.loadDetail ();
+						self.initOverview(self.formData.id);
+
+						$translate ('Úspěšně uloženo.').then (function (translation) {
+							notificationsService.push ('success', translation);
+						});
 						break;
 					case 403:
 						$translate ('Pro úpravu projektu nemáte dostatečné oprávnění.').then (function (translation) {
-							notificationsService.push ('alert', $translate.instant (translation));
+							notificationsService.push ('alert', translation);
 							$state.go ('projects');
+						});
+						break;
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
 						});
 						break;
 				}

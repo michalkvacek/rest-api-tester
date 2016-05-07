@@ -19,7 +19,7 @@ module.exports = {
 				}
 
 				// send email
-				email.registrationEmail (userInfo.password, user, function (err, email) {
+				emailSender.registrationEmail (userInfo.password, user, function (err, email) {
 					callback (user);
 				});
 

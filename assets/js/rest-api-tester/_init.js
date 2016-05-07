@@ -1,4 +1,4 @@
-var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', "ngAnimate", 'pascalprecht.translate']);
+var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', 'ngAnimate', 'ngSanitize', 'pascalprecht.translate']);
 
 app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',
 	function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider) {
@@ -29,6 +29,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translat
 			suffix: '.json'
 		});
 		$translateProvider.preferredLanguage('cs');
+		$translateProvider.useSanitizeValueStrategy('escape');
 		
 		// routing
 		$urlRouterProvider.otherwise ("/");
@@ -144,6 +145,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translat
 			$rootScope.currentEnvironmentId = {};
 			$rootScope.breadcrumbs = {};
 			$rootScope.enableLoadingDashboardTests = false;
+			$rootScope.hideProjectInBreadcrumbs = false;
 		});
 
 	$rootScope.$on ('$viewContentLoaded', function () {

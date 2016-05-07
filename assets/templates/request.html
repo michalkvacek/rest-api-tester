@@ -37,7 +37,7 @@
 					</ul>
 
 					<!--Modal window for version edit-->
-					<modal show="versions.manageVersion">
+					<modal show="versions.manageVersion && identity.roles[currentEnvironment.id] != 'host'">
 						<h3>{{'Upravit verzi' | translate}}</h3>
 						<form ng-submit="versions.edit(request.current.version.projectsId)">
 							<label class="required">
@@ -58,7 +58,7 @@
 					</modal>
 
 
-					<modal show="auths.manageAuth">
+					<modal show="auths.manageAuth && identity.roles[currentEnvironment.id] != 'host'">
 						<h3>{{'Upravit autentifikaci' | translate}}</h3>
 
 						<form ng-submit="auths.edit()">
@@ -163,12 +163,14 @@
 			</div>
 		</div>
 		<div class="row controls align-right">
-			<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"><i
-					  class="fi-pencil"></i> <span
-					  class="show-for-medium">{{'Upravit' | translate}}</span></a>
+			<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"
+				ng-if="identity.roles[currentEnvironment.id] != 'host'">
+				<i class="fi-pencil"></i>
+				<span class="show-for-medium">{{'Upravit' | translate}}</span></a>
 
 			&nbsp;
 			<a href="javascript:void(0)" ng-click="request.delete(request.current.environmentsId, request.current.id)"
+				ng-if="identity.roles[currentEnvironment.id] != 'host'"
 				class="alert tiny button">
 				<i class="fi-x"></i>
 				<span class="show-for-medium">{{'Smazat' | translate}}</span>
@@ -211,10 +213,12 @@
 						<td>{{assertion.expectedValue}}</td>
 						<td>
 							<a href="javascript:void(0)"
+								ng-if="identity.roles[currentEnvironment.id] != 'host'"
 								ng-click="asserts.openModal = true; asserts.formData = assertion">
 								<i class="fi-pencil" data-open="edit-assertion"></i>
 							</a>
 							<a href="javascript:void(0)"
+								ng-if="identity.roles[currentEnvironment.id] != 'host'"
 								ng-click="asserts.delete(assertion.id, request.current.id)">
 								<i class="fi-x"></i>
 							</a>
@@ -226,6 +230,7 @@
 
 			<div class="row controls align-right">
 				<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id, assertionType: 'status_code', comparator: 'eq'}"
+					ng-if="identity.roles[currentEnvironment.id] != 'host'"
 					class="button tiny success float-right">
 					<i class="fi-plus"></i>
 					<span class="show-for-medium"> {{'Nový validátor' | translate}}</span>
@@ -233,7 +238,7 @@
 			</div>
 		</div>
 
-		<modal show="asserts.openModal">
+		<modal show="asserts.openModal && identity.roles[currentEnvironment.id] != 'host'">
 			<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
 			<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 

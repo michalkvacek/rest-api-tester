@@ -1,166 +1,174 @@
 <div class="row content">
 	<div class="column with-shadow" ng-controller="ProjectsController as project" id="project-edit"
-		  ng-init="project.loadDetail()">
+		  ng-init="project.loadDetail(); project.initOverview()">
 
 		<h3>{{'Nastavení projektu' | translate}}</h3>
 
+		<div class="callout alert" ng-if="currentProject.usersId != identity.id">
+			{{"Do nastavení projektu má přístup jen a pouze ten uživatel, který projekt vytvořil." | translate}}
+		</div>
 
-		<ul class="tabs" id="project-settings">
-			<li id="basic-info-title" class="tabs-title is-active">
-				<a href="javascript:void(0)"
-					ng-click="openTab('#project-edit', '#basic-info')"
-					aria-selected="true">{{'Základní informace' | translate}}
-				</a>
-			</li>
-			<li id="environments-title" class="tabs-title">
-				<a href="javascript:void(0)"
-					ng-click="openTab('#project-edit', '#environments')">
-					{{'Prostředí' | translate}}
-				</a>
-			</li>
-			<li id="headers-title" class="tabs-title">
-				<a href="javascript:void(0)"
-					ng-click="openTab('#project-edit', '#headers')">
-					{{'HTTP hlavičky' | translate}}
-				</a>
-			</li>
-		</ul>
+		<div ng-if="currentProject.usersId == identity.id">
+			<ul class="tabs" id="project-settings">
+				<li id="basic-info-title" class="tabs-title is-active">
+					<a href="javascript:void(0)"
+						ng-click="openTab('#project-edit', '#basic-info')"
+						aria-selected="true">{{'Základní informace' | translate}}
+					</a>
+				</li>
+				<li id="environments-title" class="tabs-title">
+					<a href="javascript:void(0)"
+						ng-click="openTab('#project-edit', '#environments')">
+						{{'Prostředí' | translate}}
+					</a>
+				</li>
+				<li id="headers-title" class="tabs-title">
+					<a href="javascript:void(0)"
+						ng-click="openTab('#project-edit', '#headers')">
+						{{'HTTP hlavičky' | translate}}
+					</a>
+				</li>
+			</ul>
 
-		<div class="tabs-content">
-			<div class="tabs-panel is-active" id="basic-info">
-				<form ng-submit="project.edit()" ng-if="project.detail.id" ng-init="project.formData = project.detail">
-					<label class="required">
-						{{'Jméno projektu' | translate}}
-
-						<input type="text" ng-blur="project.edit()" required ng-model="project.formData.name" />
-					</label>
-
-					<label>
-						{{'Popis' | translate}}
-
-						<textarea rows="3" ng-blur="project.edit()" ng-model="project.formData.description"></textarea>
-					</label>
-				</form>
-			</div>
-
-			<div class="tabs-panel" id="environments" ng-controller="EnvironmentsController as environments"
-					 ng-init="environments.initOverview();">
-				<table>
-					<thead>
-					<tr>
-						<th>{{'Jméno prostředí' | translate}}</th>
-						<th>{{'Popis' | translate}}</th>
-						<th>{{'Adresa API serveru' | translate}}</th>
-						<th></th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr ng-repeat="environment in environments.overview">
-						<td>{{environment.name}}</td>
-						<td>{{environment.description}}</td>
-						<td>{{environment.apiEndpoint}}</td>
-						<td class="text-right">
-							<a ui-sref="environment_settings({environmentId: environment.id})" class="button tiny warning">
-								<i class="fi-wrench"></i>
-								{{'Nastavení prostředí' | translate}}
-							</a>
-							<a href="javascript:void(0)" class="button tiny alert"
-								ng-click="environments.delete(environment.id)">
-								<i class="fi-x"></i>
-								{{'Smazat' | translate}}
-							</a>
-						</td>
-					</tr>
-					</tbody>
-				</table>
-
-				<a href="javascript:void(0)" class="button success" ng-click="environments.manageEnvironments = true">
-					<i class="fi-plus"></i> {{'Vytvořit nové prostředí' | translate}}</a>
-
-				<modal show="environments.manageEnvironments" ng-if="true">
-					<h3>{{'Nové prostředí' | translate}}</h3>
-
-					<form ng-submit="environments.create()">
+			<div class="tabs-content">
+				<div class="tabs-panel is-active" id="basic-info">
+					<form ng-submit="project.edit()" ng-if="project.detail.id">
 						<label class="required">
-							{{'Jméno' | translate}}
+							{{'Jméno projektu' | translate}}
 
-							<input type="text" required placeholder="{{'Jméno prostředí' | translate}}" ng-model="environments.formData.name" />
+							<input type="text" ng-blur="project.edit()" required ng-model="project.formData.name" />
 						</label>
-
-						<label class="required">
-							{{'Adresa API serveru' | translate}}
-
-							<input type="url" required placeholder="https://api.example.com/api/v1"
-									 ng-model="environments.formData.apiEndpoint" />
-						</label>
-
 
 						<label>
 							{{'Popis' | translate}}
 
-						<textarea rows="2" name="description" ng-model="environments.formData.description"
-									 placeholder="Some brief description of this API environment"></textarea>
+							<textarea rows="3" ng-blur="project.edit()" ng-model="project.formData.description"></textarea>
 						</label>
-
-						<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
 					</form>
-				</modal>
-		</div>
+				</div>
 
-		<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers" ng-if="project.detail.id" ng-init="headers.initOverview({projectId: project.detail.id})">
+				<div class="tabs-panel" id="environments" ng-controller="EnvironmentsController as environments"
+					  ng-init="environments.initOverview();">
+					<table>
+						<thead>
+						<tr>
+							<th>{{'Jméno prostředí' | translate}}</th>
+							<th>{{'Popis' | translate}}</th>
+							<th>{{'Adresa API serveru' | translate}}</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="environment in environments.overview">
+							<td>{{environment.name}}</td>
+							<td>{{environment.description}}</td>
+							<td>{{environment.apiEndpoint}}</td>
+							<td class="text-right">
+								<a ui-sref="environment_settings({environmentId: environment.id})" class="button tiny warning">
+									<i class="fi-wrench"></i>
+									{{'Nastavení prostředí' | translate}}
+								</a>
+								<a href="javascript:void(0)" class="button tiny alert"
+									ng-click="environments.delete(environment.id)">
+									<i class="fi-x"></i>
+									{{'Smazat' | translate}}
+								</a>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 
-			<div class="callout warning" ng-show="emptyObject(headers.overview)">{{'Žádný záznam' | translate}}</div>
+					<a href="javascript:void(0)" class="button success" ng-click="environments.manageEnvironments = true">
+						<i class="fi-plus"></i> {{'Vytvořit nové prostředí' | translate}}</a>
 
-			<div class="content-holder">
-				<table ng-show="!emptyObject(headers.overview)">
-					<tr ng-repeat="header in headers.overview">
-						<td>{{header.name}}</td>
-						<td>{{header.value}}</td>
-						<td class="text-right">
-							<a href="javascript:void(0)"
-								data-open="edit-header"
-								ng-click="headers.manageHeaders = true; headers.formData = header">
-								<i class="fi-pencil"></i>
-							</a>
-							<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
-								<i class="fi-x"></i>
-							</a>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div class="row controls align-right">
-				<a href="javascript:void(0)" ng-click="headers.manageHeaders = true; headers.formData = {projectsId: project.detail.id}"
-					data-open="new-header" class="success tiny button">
-					<i class="fi-plus"></i>
-					<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
-			</div>
+					<modal show="environments.manageEnvironments" ng-if="true">
+						<h3>{{'Nové prostředí' | translate}}</h3>
 
-			<modal show="headers.manageHeaders">
-				<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
-				<h3 ng-show="!headers.formData.id">{{'Vytvořit novou HTTP hlavičku' | translate}}</h3>
-
-				<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
-					<div class="row">
-						<div class="column">
+						<form ng-submit="environments.create()">
 							<label class="required">
 								{{'Jméno' | translate}}
 
-								<input type="text" required ng-model="headers.formData.name">
+								<input type="text" required placeholder="{{'Jméno prostředí' | translate}}"
+										 ng-model="environments.formData.name" />
 							</label>
-						</div>
-						<div class="column">
-							<label>
-								{{'Hodnota' | translate}}
 
-								<input type="text" ng-model="headers.formData.value">
+							<label class="required">
+								{{'Adresa API serveru' | translate}}
+
+								<input type="url" required placeholder="https://api.example.com/api/v1"
+										 ng-model="environments.formData.apiEndpoint" />
 							</label>
-						</div>
+
+
+							<label>
+								{{'Popis' | translate}}
+
+						<textarea rows="2" name="description" ng-model="environments.formData.description"
+									 placeholder="Some brief description of this API environment"></textarea>
+							</label>
+
+							<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
+						</form>
+					</modal>
+				</div>
+
+				<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers" ng-if="project.detail.id"
+					  ng-init="headers.initOverview({projectId: project.detail.id})">
+
+					<div class="callout warning" ng-show="emptyObject(headers.overview)">{{'Žádný záznam' | translate}}</div>
+
+					<div class="content-holder">
+						<table ng-show="!emptyObject(headers.overview)">
+							<tr ng-repeat="header in headers.overview">
+								<td>{{header.name}}</td>
+								<td>{{header.value}}</td>
+								<td class="text-right">
+									<a href="javascript:void(0)"
+										data-open="edit-header"
+										ng-click="headers.manageHeaders = true; headers.formData = header">
+										<i class="fi-pencil"></i>
+									</a>
+									<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
+										<i class="fi-x"></i>
+									</a>
+								</td>
+							</tr>
+						</table>
 					</div>
-					<button type="submit" class="button success">{{'Uložit' | translate}}</button>
-				</form>
-			</modal>
+					<div class="row controls align-right">
+						<a href="javascript:void(0)"
+							ng-click="headers.manageHeaders = true; headers.formData = {projectsId: project.detail.id}"
+							data-open="new-header" class="success tiny button">
+							<i class="fi-plus"></i>
+							<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
+					</div>
+
+					<modal show="headers.manageHeaders">
+						<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
+						<h3 ng-show="!headers.formData.id">{{'Vytvořit novou HTTP hlavičku' | translate}}</h3>
+
+						<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
+							<div class="row">
+								<div class="column">
+									<label class="required">
+										{{'Jméno' | translate}}
+
+										<input type="text" required ng-model="headers.formData.name">
+									</label>
+								</div>
+								<div class="column">
+									<label>
+										{{'Hodnota' | translate}}
+
+										<input type="text" ng-model="headers.formData.value">
+									</label>
+								</div>
+							</div>
+							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+						</form>
+					</modal>
+				</div>
+			</div>
 		</div>
 	</div>
-</div>
 </div>

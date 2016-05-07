@@ -34,6 +34,10 @@ module.exports = {
 
 				// todo pridat podporu autentifikace
 
+				console.log(request.requestUrl);
+				console.log(request.requestMethod);
+				console.log(request.requestHeaders);
+
 				HttpRequest ({
 					url: request.requestUrl,
 					method: request.requestMethod,
@@ -41,6 +45,7 @@ module.exports = {
 					// body: request.requestHttpParameters
 				}, function (error, response, body) {
 					var responseTime = Date.now () - runStart;
+
 
 					// ignore errors
 					if (error) {

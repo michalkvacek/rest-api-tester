@@ -24,7 +24,8 @@
 						{{"Přehled prostředí" | translate}}
 					</a>
 					&nbsp;
-					<a ui-sref="projects_settings({projectId: project.id})" class="button warning">
+
+					<a ui-sref="projects_settings({projectId: project.id})" ng-if="identity.id == project.usersId" class="button warning">
 						<i class="fi-wrench"></i>
 						{{"Nastavení" | translate}}
 					</a>

@@ -1,62 +1,78 @@
-<div ng-controller="EnvironmentsController as environment" class="row content" id="environment-edit"
+<div ng-controller="EnvironmentsController as environment" class="row" id="environment-edit"
 	  ng-init="enableLoadingDashboardTests = false; environment.loadDetail()">
 	<div class="column with-shadow">
-		<ul class="tabs" id="project-settings">
-			<li id="basic-info-title" class="tabs-title is-active">
-				<a href="javascript:void(0)"
-					ng-click="openTab('#environment-edit', '#basic-info')" aria-selected="true">
-					{{'Základní informace' | translate}}
-				</a>
-			</li>
-			<li id="headers-title" class="tabs-title">
-				<a href="javascript:void(0)"
-					ng-click="openTab('#environment-edit', '#headers')">
-					{{'HTTP hlavičky' | translate}}
-				</a>
-			</li>
-			<li id="users-title" class="tabs-title">
-				<a href="javascript:void(0)"
-					ng-click="openTab('#environment-edit', '#users')">
-					{{'Uživatelé' | translate}}
-				</a>
-			</li>
-		</ul>
 
-		<div class="tabs-content">
-			<div class="tabs-panel is-active" id="basic-info">
-				<form ng-submit="environment.edit()" ng-if="environment.detail.id"
-						ng-init="environment.formData = environment.detail">
-					<label>
-						{{'Jméno' | translate}}
+		<h3>{{"Nastavení prostředí" | translate}}</h3>
 
-						<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.name" />
-					</label>
+		<div class="callout alert" ng-if="identity.roles[environment.detail.id] != 'manager'">
+			{{'Do nastavení prostředí má přístup jen manažer daného prostředí.' | translate}}
+		</div>
 
-					<label>
-						{{'Popis' | translate}}
+		<div ng-if="true || identity.roles[environment.detail.id] == 'manager'">
+
+			<ul class="tabs" id="project-settings">
+				<li id="basic-info-title" class="tabs-title is-active">
+					<a href="javascript:void(0)"
+						ng-click="openTab('#environment-edit', '#basic-info')" aria-selected="true">
+						{{'Základní informace' | translate}}
+					</a>
+				</li>
+				<li id="headers-title" class="tabs-title">
+					<a href="javascript:void(0)"
+						ng-click="openTab('#environment-edit', '#headers')">
+						{{'HTTP hlavičky' | translate}}
+					</a>
+				</li>
+				<li id="users-title" class="tabs-title">
+					<a href="javascript:void(0)"
+						ng-click="openTab('#environment-edit', '#users')">
+						{{'Uživatelé' | translate}}
+					</a>
+				</li>
+			</ul>
+
+			<div class="tabs-content">
+				<div class="tabs-panel is-active" id="basic-info">
+					<form ng-submit="environment.edit()" ng-if="environment.detail.id">
+						<label>
+							{{'Jméno' | translate}}
+
+							<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.name" />
+						</label>
+
+						<label>
+							{{'Popis' | translate}}
 
 						<textarea rows="3" ng-blur="environment.edit()"
 									 ng-model="environment.formData.description"></textarea>
-					</label>
+						</label>
 
-					<label>
-						{{'Adresa API serveru' | translate}}
+						<label>
+							{{'Adresa API serveru' | translate}}
 
-						<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.apiEndpoint" />
-					</label>
+							<input type="text" ng-blur="environment.edit()" ng-model="environment.formData.apiEndpoint" />
+						</label>
 
-				</form>
-			</div>
+					</form>
+				</div>
 
-			<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers">
+				<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers" ng-init="headers.initOverview({projectId: environment.detail.projectsId, environmentId: environment.detail.id})">
 
-				<div class="content-holder">
-					<table ng-if="environment.detail.id"
-							 ng-init="headers.initOverview({projectId: environment.detail.projectsId, environmentId: environment.detail.id})">
-						<tr ng-repeat="header in headers.overview">
-							<td>{{header.name}}</td>
-							<td>{{header.value}}</td>
-							<td class="text-right">
+					<div class="callout warning" ng-show="emptyObject(headers.overview)">
+						{{'Žádný záznam' | translate}}
+					</div>
+
+					<div class="content-holder">
+						<table ng-if="environment.detail.id"
+								 ng-show="!emptyObject(headers.overview)">
+							<tr ng-repeat="header in headers.overview">
+								<td>{{header.name}}</td>
+								<td>{{header.value}}</td>
+								<td class="text-right">
+
+
+									<span ng-show="header.projectsId != null"><em>{{'Definováno v nastavení projektu' | translate}}</em></span>
+
 								<span ng-show="header.environmentsId == environment.detail.id">
 									<a href="javascript:void(0)"
 										data-open="edit-header"
@@ -67,98 +83,98 @@
 										<i class="fi-x"></i>
 									</a>
 								</span>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="row controls align-right">
+						<a href="javascript:void(0)"
+							ng-click="headers.manageHeaders = true; headers.formData = {environmentsId: environment.detail.id}"
+							data-open="new-header" class="success tiny button">
+							<i class="fi-plus"></i>
+							<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
+					</div>
+
+					<modal show="headers.manageHeaders">
+						<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
+						<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
+
+						<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
+							<div class="row">
+								<div class="column">
+									<label class="required">
+										{{'Jméno' | translate}}
+										<input type="text" required ng-model="headers.formData.name">
+									</label>
+								</div>
+								<div class="column">
+									<label>
+										{{'Hodnota' | translate}}
+										<input type="text" ng-model="headers.formData.value">
+									</label>
+								</div>
+							</div>
+							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+						</form>
+					</modal>
+				</div>
+
+				<div class="tabs-panel" id="users">
+					<table class="users">
+						<thead>
+						<tr>
+							<th></th>
+							<th>{{'Jméno' | translate}}</th>
+							<th>{{'E-mail' | translate}}</th>
+							<th>{{'Role' | translate}}</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tr ng-repeat="user in environment.detail.teamMembers">
+							<td><img gravatar-src="user.email" alt="avatar" /></td>
+							<td>{{user.name}}</td>
+							<td>{{user.email}}</td>
+							<td>{{user.userBelongsToEnvironment.userRole}}</td>
+							<td class="text-right">
+								<a href="javascript:void(0)" ng-if="identity.id != user.id"
+									ng-click="environment.removeUser(user.id)"
+									class="button small warning">
+									<i class="fi-lock"></i>
+									{{'Odebrat uživatele' | translate}}
+								</a>
 							</td>
 						</tr>
 					</table>
+
+					<div class="text-right">
+						<a href="javascript:void(0)"
+							ng-click="environment.manageUser=true" class="success  button">
+							<i class="fi-plus"></i>
+							<span class="show-for-medium"> {{'Přidat uživatele' | translate}}</span></a>
+					</div>
+
+					<modal show="environment.manageUser">
+						<h4>{{'Přidat uživatele' | translate}}</h4>
+						<form ng-submit="environment.assignUser()">
+							<label>{{'Role' | translate}}
+								<select ng-model="environment.addUser.role">
+									<option value="manager">{{'Manažer' | translate}}</option>
+									<option value="tester">{{'Tester' | translate}}</option>
+									<option value="viewer">{{'Host' | translate}}</option>
+								</select>
+							</label>
+
+							<label>
+								{{'E-mail' | translate}}
+								<input type="email" ng-model="environment.addUser.email">
+							</label>
+
+							<button type="submit" class="float-right button primary">{{'Přidat' | translate}}</button>
+
+						</form>
+					</modal>
 				</div>
-				<div class="row controls align-right">
-					<a href="javascript:void(0)"
-						ng-click="headers.manageHeaders = true; headers.formData = {environmentsId: environment.detail.id}"
-						data-open="new-header" class="success tiny button">
-						<i class="fi-plus"></i>
-						<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
-				</div>
-
-				<modal show="headers.manageHeaders">
-					<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
-					<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
-
-					<form ng-submit="headers.formData.id ? headers.edit() : headers.create()">
-						<div class="row">
-							<div class="column">
-								<label class="required">
-									{{'Jméno' | translate}}
-									<input type="text" required ng-model="headers.formData.name">
-								</label>
-							</div>
-							<div class="column">
-								<label>
-									{{'Hodnota' | translate}}
-									<input type="text" ng-model="headers.formData.value">
-								</label>
-							</div>
-						</div>
-						<button type="submit" class="button success">{{'Uložit' | translate}}</button>
-					</form>
-				</modal>
-			</div>
-
-			<div class="tabs-panel" id="users">
-				<table class="users">
-					<thead>
-					<tr>
-						<th></th>
-						<th>{{'Jméno' | translate}}</th>
-						<th>{{'E-mail' | translate}}</th>
-						<th>{{'Role' | translate}}</th>
-						<th></th>
-					</tr>
-					</thead>
-					<tr ng-repeat="user in environment.detail.teamMembers">
-						<td><img gravatar-src="user.email" alt="avatar" /></td>
-						<td>{{user.name}}</td>
-						<td>{{user.email}}</td>
-						<td>{{user.userBelongsToEnvironment.userRole}}</td>
-						<td class="text-right">
-							<a href="javascript:void(0)" ng-click="environment.removeUser(user.id)"
-								class="button small warning">
-								<i class="fi-lock"></i>
-								{{'Odebrat uživatele' | translate}}
-							</a>
-						</td>
-					</tr>
-				</table>
-
-				<div class="text-right">
-					<a href="javascript:void(0)"
-						ng-click="environment.manageUser=true" class="success  button">
-						<i class="fi-plus"></i>
-						<span class="show-for-medium"> {{'Přidat uživatele' | translate}}</span></a>
-				</div>
-
-				<modal show="environments.manageUser">
-					<h4>{{'Přidat uživatele' | translate}}</h4>
-					<form ng-submit="environment.assignUser()">
-						<label>{{'Role' | translate}}
-							<select ng-model="environment.addUser.role">
-								<option value="manager">{{'Manažer' | translate}}</option>
-								<option value="tester">{{'Tester' | translate}}</option>
-								<option value="viewer">{{'Host' | translate}}</option>
-							</select>
-						</label>
-
-						<label>
-							{{'E-mail' | translate}}
-							<input type="email" ng-model="environment.addUser.email">
-						</label>
-
-						<button type="submit" class="float-right button primary">{{'Přidat' | translate}}</button>
-
-					</form>
-				</modal>
 			</div>
 		</div>
-
-
 	</div>
 </div>

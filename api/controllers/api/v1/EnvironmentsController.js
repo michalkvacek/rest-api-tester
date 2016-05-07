@@ -43,6 +43,12 @@ module.exports = {
 		});
 	},
 
+	/**
+	 * Get detail of selected environment
+	 * 
+	 * @param req
+	 * @param res
+	 */
 	detail: function (req, res) {
 		var findCriterium = {
 			where: {id: req.environmentId},

@@ -106,7 +106,8 @@ app.controller ('RequestsController', [
 
 							$rootScope.setEnvironment (request.environmentsId);
 
-							self.formData = response.data;
+							self.detail = request;
+							self.formData = angular.copy (response.data);
 							break;
 
 						case 404:
@@ -227,17 +228,28 @@ app.controller ('RequestsController', [
 		self.edit = function () {
 			var id = $stateParams.requestId;
 
+			// ignore not-changed form
+			if (angular.equals (self.formData, self.detail))
+				return;
+
 			requestsService.edit (id, self.formData).then (function (response) {
-				if (response.status != 200)
+				if (response.status != 200) {
 					$translate ('Nelze vykonat požadavek').then (function (translation) {
 						notificationsService.push ('alert', translation);
 					});
+				}
+
+				self.initDetailForEdit();
+
+				$translate ('Úspěšně uloženo.').then (function (translation) {
+					notificationsService.push ('success', translation);
+				});
 			})
 		};
 
 		/**
 		 * Delete request
-		 * 
+		 *
 		 * @param environmentId
 		 * @param requestId
 		 */
@@ -280,7 +292,7 @@ app.controller ('RequestsController', [
 				$translate ('Úspěšně uloženo').then (function (translation) {
 					notificationsService.push ('success', translation);
 				});
-				
+
 			});
 		};
 
@@ -312,7 +324,7 @@ app.controller ('RequestsController', [
 					self.initDetailForEdit ();
 
 					self.manageHttpParameters = false;
-					
+
 					$translate ('Úspěšně vytvořeno').then (function (translation) {
 						notificationsService.push ('success', translation);
 					});

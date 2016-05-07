@@ -50,6 +50,7 @@
 				&nbsp;
 
 				<a ui-sref="environment_settings({environmentId: environment.id})"
+					ng-if="identity.roles[environment.id] == 'manager'"
 					class="warning button tiny">
 					<i class="fi-wrench"></i> {{"Nastavení prostředí" | translate}}</a>
 			</div>
@@ -65,10 +66,10 @@
 	</div>
 
 
-	<a id="add-project" ng-click="environments.manageEnvironments = true" class="button success material-add-button"><i
+	<a id="add-project" ng-if="currentProject.usersId == identity.id" ng-click="environments.manageEnvironments = true" class="button success material-add-button"><i
 			  class="fi-plus"></i></a>
 
-	<modal show="environments.manageEnvironments">
+	<modal show="environments.manageEnvironments && currentProject.usersId == identity.id">
 
 		<h3>{{"Nové prostředí" | translate}}</h3>
 
@@ -97,7 +98,4 @@
 			<button type="submit" class="button success float-right">{{"Vytvořit" | translate}}</button>
 		</form>
 	</modal>
-</div>
-
-
 </div>

@@ -6,6 +6,11 @@
 					<small>({{request.formData.httpMethod}} {{request.formData.url}})</small>
 				</h4>
 
+				<div ng-show="identity.roles[currentEnvironment.id] == 'host'">
+					{{"Jakožto host nemáte přístup do editace požadavků." | translate}}
+				</div>
+
+				<div ng-show="identity.roles[currentEnvironment.id] != 'host'">
 				<ul class="tabs" data-tabs id="request-editor">
 					<li class="tabs-title is-active"><a href="#basic-info" aria-selected="true">{{'Základní informace' | translate}}</a></li>
 					<li class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
@@ -192,12 +197,14 @@
 
 					</div>
 				</div>
+				</div>
+
 			</div>
 
 			<!--================================-->
 			<!--Modal windows-->
 
-			<modal show="versions.manageVersion">
+			<modal ng-if="identity.roles[currentEnvironment.id] == 'host'" show="versions.manageVersion">
 				<h3>{{'Vytvoření nové verze API' | translate}}</h3>
 
 				<form ng-submit="versions.create()">
@@ -219,7 +226,7 @@
 
 			</modal>
 
-			<modal show="auths.manageAuth">
+			<modal ng-if="identity.roles[currentEnvironment.id] == 'host'" show="auths.manageAuth">
 				<h3>{{'Vytvořit autentifikaci' | translate}}</h3>
 
 				<form ng-submit="auths.create()">
@@ -269,8 +276,7 @@
 
 			</modal>
 
-
-			<modal show="request.manageHttpParameters">
+			<modal ng-if="identity.roles[currentEnvironment.id] == 'host'" show="request.manageHttpParameters">
 				<h3 ng-show="request.httpParametersData.id">{{'Upravit :method parametr' | translate:'{method: '+request.formData.httpMethod+'}'}}</h3>
 				<h3 ng-show="!request.httpParametersData.id">{{'Vytvořit nový :method parametr' | translate:'{method: '+request.formData.httpMethod+'}'}}</h3>
 

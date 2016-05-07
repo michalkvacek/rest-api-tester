@@ -22,6 +22,7 @@ module.exports = function (req, res, next) {
 
 		// define some usefull information
 		req.testId = testId;
+		req.test = test;
 
 		return next();
 	}, function (err) {

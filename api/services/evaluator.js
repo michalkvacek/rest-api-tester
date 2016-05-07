@@ -1,74 +1,6 @@
 module.exports = {
-
 	/**
-	 * Evaluate given assertion
-	 *
-	 * @param assert
-	 * @param request
-	 * @param response
-	 * @param body
-	 * @param responseTime
-	 * @returns {*}
-	 */
-	evaluate: function (assert, request, response, body, responseTime) {
-		var recievedValue = {}, status,
-			expectedValue = assert.expectedValue,
-			property = assert.property,
-			comparator = assert.comparator;
-
-		recievedValue = evaluator.getRecievedValue (assert, request, response, body, responseTime);
-
-		// compare data
-		status = evaluator.compare (expectedValue, comparator, recievedValue);
-
-		// create new entry in database
-		evaluatedAssertions.create ({
-			responsesId: request.id,
-			assertionType: assert.assertionType,
-			assertionName: assert.assertion.name,
-			assertionProperty: assert.property,
-			assertionExpectedValue: expectedValue,
-			assertionComparator: comparator,
-			recievedValue: recievedValue,
-			passed: status
-		}).then (function (evaluated) {
-		});
-
-		return status;
-	},
-
-	getRecievedValue: function (requestAssertion, request, response, body, responseTime) {
-		switch (requestAssertion.assertionType) {
-			case 'status_code':
-				return response.statusCode;
-				break;
-
-			case 'response_time':
-				return responseTime;
-				break;
-			case 'count':
-
-				var property = evaluator.getProperty (body, requestAssertion.property);
-
-				return Object.keys (property).length;
-				break;
-
-			case 'property_exists':
-				return evaluator.getProperty (body, requestAssertion.property) != false;
-				break;
-			case 'property_value':
-				return evaluator.getProperty (body, requestAssertion.property);
-				break;
-
-			case 'json':
-				var content = evaluator.getProperty (body, requestAssertion.property);
-				return JSON.stringify (content);
-				break;
-
-		}
-	},
-
-	/**
+	 * Method called from background job for evaluating request
 	 *
 	 * @param originalRequest
 	 * @param request
@@ -111,10 +43,105 @@ module.exports = {
 					done (null, {request: evaluated.toJSON ()});
 				});
 			});
-
 		});
 	},
 
+
+	/**
+	 * Evaluate given assertion
+	 *
+	 * @param assert
+	 *
+	 * @param request
+	 * @param response
+	 * @param body
+	 * @param responseTime
+	 * @returns {*}
+	 */
+	evaluate: function (assert, request, response, body, responseTime) {
+		var recievedValue = {}, status,
+			expectedValue = assert.expectedValue,
+			property = assert.property,
+			comparator = assert.comparator;
+
+		recievedValue = evaluator.getRecievedValue (assert, request, response, body, responseTime);
+
+		// compare data
+		status = evaluator.compare (expectedValue, comparator, recievedValue);
+
+		// create new entry in database
+		evaluatedAssertions.create ({
+			responsesId: request.id,
+			assertionType: assert.assertionType,
+			assertionName: assert.assertion.name,
+			assertionProperty: assert.property,
+			assertionExpectedValue: expectedValue,
+			assertionComparator: comparator,
+			recievedValue: recievedValue,
+			passed: status
+		}).then (function (evaluated) {
+		});
+
+		return status;
+	},
+
+	/**
+	 * Returns wanted value based on assertion type
+	 *
+	 * @param requestAssertion
+	 * @param request
+	 * @param response
+	 * @param body
+	 * @param responseTime
+	 * @returns {*}
+	 */
+	getRecievedValue: function (requestAssertion, request, response, body, responseTime) {
+		switch (requestAssertion.assertionType) {
+			case 'status_code':
+				return response.statusCode;
+				break;
+
+			case 'response_time':
+				return responseTime;
+				break;
+			case 'count':
+
+				var property = evaluator.getProperty (body, requestAssertion.property);
+
+				console.log(property);
+				console.log(body);
+				console.log(requestAssertion.property);
+
+				if (typeof property == 'undefined' || property == null || !property)
+					return 0;
+
+				return Object.keys (property).length;
+				break;
+
+			case 'property_exists':
+				return evaluator.getProperty (body, requestAssertion.property) != false;
+				break;
+			case 'property_value':
+				return evaluator.getProperty (body, requestAssertion.property);
+				break;
+
+			case 'json':
+				var content = evaluator.getProperty (body, requestAssertion.property);
+				return JSON.stringify (content);
+				break;
+
+		}
+	},
+
+	/**
+	 * Get property value
+	 *
+	 * This method parses recieved body and returns given property.
+	 *
+	 * @param body
+	 * @param property
+	 * @returns {*}
+	 */
 	getProperty: function (body, property) {
 
 		// because of some kind of weird optimalization reasons
@@ -143,15 +170,19 @@ module.exports = {
 				}
 			}
 		} catch (e) {
-			// invalid json
-			console.log (e);
-
 			return null;
 		}
 	},
 
+	/**
+	 * Universal method for comparing recieved and expected value
+	 *
+	 * @param expectedValue
+	 * @param operator
+	 * @param recievedValue
+	 * @returns {boolean}
+	 */
 	compare: function (expectedValue, operator, recievedValue) {
-
 		switch (operator) {
 			case 'eq':
 				return "" + expectedValue == "" + recievedValue;

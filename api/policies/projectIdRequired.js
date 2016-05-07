@@ -18,6 +18,7 @@ module.exports = function (req, res, next) {
 			return res.notFound();
 
 		// define some usefull information
+		req.project = project;
 		req.projectId = projectId;
 
 		return next();
