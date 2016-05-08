@@ -9,7 +9,8 @@
 				</div>
 				<div class="column shrink" ng-switch="tests.detail.lastRunStatus">
 					<p>
-						<span ng-if="identity.roles[currentEnvironment.id] != 'host'" ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
+						<span ng-if="identity.roles[currentEnvironment.id] != 'host'"
+								ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
 						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
 							class="button success small fi-play"> {{'Spustit nyní' | translate}}</a>
 						<a href="javascript:void(0)" ng-click="tests.manageTest = true; tests.formData = tests.detail"
@@ -35,10 +36,9 @@
 		</div>
 	</div>
 
-	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)"
-		  ng-show="tests.statistics.testedRequests > 0">
+	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)">
 		<div class="column with-shadow has-controls">
-			<div class="row text-center">
+			<div class="row text-center" ng-show="tests.statistics.testedRequests > 0">
 				<div class="column">
 					<h4>{{tests.statistics.health | number : 1 || '--'}} %</h4>
 					<small>{{'Zdraví' | translate}}</small>
@@ -55,7 +55,10 @@
 					<h4>{{tests.statistics.testedRequests}}</h4>
 					{{'Testovaných požadavků' | translate}}
 				</div>
+			</div>
 
+			<div class="row text-center callout warning" ng-show="tests.statistics.testedRequests == 0">
+				<em>{{"Nejsou dostupná žádná data pro zvolené období" | translate}}</em>
 			</div>
 
 			<div class="row controls align-right">
@@ -91,17 +94,19 @@
 						<li class="accordion-item" ng-repeat="request in tests.detail.requests" data-accordion-item>
 							<a href="javascript:void(0)" class="accordion-title"
 								ng-click="reqController.initDetail(request.id, tests.detail.id, false)">
-								<h5 ng-switch="request.lastRunStatus">
-
+								<h5 ng-switch="request.lastRunStatus" ng-show="tests.detail.lastRunStatus != 'waiting_for_response' && tests.detail.lastRunStatus != 'evaluating'">
 									<span ng-switch-when="success" class="label success fi-check"> {{request.name}}</span>
 									<span ng-switch-when="failed" class="label alert fi-x"> {{request.name}}</span>
-									<span ng-switch-when="waiting_for_response"
-											class="label primary fi-clock"> {{request.name}}</span>
-									<span ng-switch-when="evaluating" class="label warning fi-eye"> {{request.name}}</span>
 									<span ng-switch-default class="label secondary"> {{request.name}}</span>
 
 									<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
 								</h5>
+
+								<h5 ng-show="tests.detail.lastRunStatus == 'waiting_for_response' || tests.detail.lastRunStatus == 'evaluating'">
+									<span class="label warning fi-eye"> {{request.name}}</span>
+									<small>({{request.httpMethod | uppercase}} {{request.url}})</small>
+								</h5>
+
 								<small>{{request.description}}</small>
 							</a>
 							<div class="accordion-content" ng-attr-id="{{ 'request-tabs-'+request.id}}" data-tab-content>
@@ -194,7 +199,7 @@
 												<td>
 													<a href="javascript:void(0)"
 														ng-if="identity.roles[currentEnvironment.id] != 'host'"
-														ng-click="asserts.openModal = true; asserts.formData = assertion">
+														ng-click="asserts.openModal = true; asserts.formData = assertion"; asserts.formData.requestsId = request.id>
 														<i class="fi-pencil" data-open="edit-assertion"></i>
 													</a>
 													<a href="javascript:void(0)"
@@ -283,7 +288,8 @@
 				</a>
 			</div>
 
-			<modal class="large" show="reqController.addRequestModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
+			<modal class="large" show="reqController.addRequestModal"
+					 ng-if="identity.roles[currentEnvironment.id] != 'host'">
 				<div id="new-request-window">
 					<h3>{{'Nový požadavek' | translate}}</h3>
 
@@ -409,7 +415,7 @@
 
 			<div class="row" ng-show="!emptyObject(tests.detail.runnedTests)">
 				<div class="column no-padding">
-					<a ng-repeat="result in tests.detail.runnedTests" ui-sref="test_result({testResultId: result.id})"
+					<a ng-repeat="result in tests.detail.runnedTests | orderBy: '-id'" ui-sref="test_result({testResultId: result.id})"
 						ng-class="result.status == 'success' ? 'fi-check success' : 'fi-x alert'"
 						class="button tiny"> {{result.createdAt | date : 'shortDate' }}</a>
 				</div>

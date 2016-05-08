@@ -68,11 +68,14 @@ app.controller ('AssertionsController', ['$scope', '$stateParams', '$translate',
 		 * Edit assertion
 		 */
 		self.edit = function () {
+
+			console.log(self.formData);
+
 			assertionsService.edit (self.formData.id, self.formData).then (function (response) {
 					switch (response.status) {
-						case 201:
+						case 200:
 							// update assertions list
-							self.initRequestAssertions (response.data.requestsId);
+							self.initRequestAssertions (self.formData.requestsId);
 
 							self.openModal = false;
 							break;

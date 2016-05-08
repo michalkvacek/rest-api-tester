@@ -13,6 +13,9 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 		// list of tests from last self.lastTestsAge hours
 		$rootScope.testList = [];
 		$rootScope.testAddedOrInProgress = true;
+		$rootScope.currentTestResult = false;
+
+		var lastTestResults = {};
 
 		/**
 		 * Load last tests into sidebar
@@ -28,15 +31,39 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 
 			testsResultsService.getOverview (self.lastTestsAge).then (function (response) {
 
-				$rootScope.testList = response.data;
+				var sentEvents = {}, result = {}, lastResult = {}, broadcast = false;
 
-				if (!testResultsFirstRun) {
-					var sentEvents = {};
-					for (i in $rootScope.testList) {
-						if (sentEvents[$rootScope.testList[i].testsId] == undefined) {
-							$rootScope.$broadcast ('testResultChanged', $rootScope.testList[i].testsId);
-							sentEvents[$rootScope.testList[i].testsId] = true;
-						}
+				// iterate over all found test responses
+				for (i in response.data) {
+					result = response.data[i];
+					lastResult = lastTestResults[result.id];
+
+					broadcast = false;
+
+					if (typeof lastResult == 'undefined') {
+						lastTestResults[result.id] = {
+							status: result.status,
+							position: $rootScope.testList.length
+						};
+
+						$rootScope.testList.push (result);
+
+						broadcast = true;
+
+					} else if (lastResult.status != result.status) {
+						// some updated test
+
+						broadcast = true;
+
+						lastTestResults[result.id].status = result.status;
+						$rootScope.testList[lastResult.position] = result;
+					}
+
+					// send event about changed test
+					if (broadcast && !testResultsFirstRun && sentEvents[result.testsId] == undefined) {
+						$rootScope.$broadcast ('testResultChanged', result.testsId);
+						sentEvents[result.testsId] = true;
+						broadcast = true;
 					}
 				}
 
@@ -44,8 +71,10 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 
 				testResultsFirstRun = false;
 
-				if (withTimeout)
+				if (withTimeout) {
 					$timeout ($rootScope.loadTests, 30 * 1000);
+					return;
+				}
 			});
 		};
 
@@ -62,6 +91,7 @@ app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams
 				switch (response.status) {
 					case 200:
 						$rootScope.setEnvironment (response.data.environmentsId);
+						$rootScope.currentTestResult = resultId;
 
 						// update breadcrumbs
 						$translate ('Test').then (function (transTest) {

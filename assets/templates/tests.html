@@ -1,8 +1,7 @@
 <div ng-controller="TestsController as tests">
 	<div class="row content" ng-init="tests.initStatistics(tests.statisticsButton)">
-		<div class="column with-shadow has-controls"
-			  ng-show="tests.statistics.testedRequests > 0">
-			<div class="row text-center">
+		<div class="column with-shadow has-controls">
+			<div class="row text-center" ng-show="tests.statistics.testedRequests > 0">
 				<div class="column">
 					<h4>{{tests.statistics.health | number : 1}} %</h4>
 					<small>{{'Zdraví' | translate}}</small>
@@ -19,6 +18,10 @@
 					<h4>{{tests.statistics.testedRequests}}</h4>
 					{{'Testovaných požadavků' | translate}}
 				</div>
+			</div>
+
+			<div class="row text-center callout warning" ng-show="tests.statistics.testedRequests == 0">
+				<em>{{"Nejsou dostupná žádná data pro zvolené období" | translate}}</em>
 			</div>
 
 			<div class="row controls align-right" ng-controller="EnvironmentsController as environments">

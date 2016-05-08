@@ -87,11 +87,7 @@ module.exports = {
 			}
 		}
 
-		console.log(options);
-
-
 		return callback(options);
-
 	},
 
 	/**
@@ -128,6 +124,8 @@ module.exports = {
 			passed: status
 		}).then (function (evaluated) {
 		});
+
+		console.log(request.id+" evaluated: "+status);
 
 		return status;
 	},

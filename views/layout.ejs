@@ -76,7 +76,7 @@
 				<li class="separator"></li>
 				<li class="text-center" ng-show="currentEnvironment.apiEndpoint">{{currentEnvironment.apiEndpoint}}</li>
 				<li class="separator"></li>
-				<li ng-show="currentEnvironment.id && identity.roles[currentEnvironment.id] != 'host'">
+				<li ng-controller="EnvironmentsController as environment" ng-show="currentEnvironment.id && identity.roles[currentEnvironment.id] != 'host'">
 					<a href="javascript:void(0)"
 					   ng-click="runEnvironmentTests(currentEnvironmentId)" class="button success">
 						<i class="fi-play"> {{"Spustit všechny testy" | translate}}</i>
@@ -93,7 +93,7 @@
 				<em>{{"Žádné testy" | translate:'{hours: '+tests.lastTestsAge+'}'}}</em>
 			</li>
 
-			<li ng-show="!emptyObject(testList)" ng-repeat="result in testList">
+			<li ng-show="!emptyObject(testList)" ng-repeat="result in testList | orderBy: '-id'" ng-class="result.id == currentTestResult ? 'active' : ''">
 				<a ui-sref="test_result({testResultId: result.id})" ng-switch="result.status">
 					<span ng-switch-when="success" class="badge success fi-check"></span>
 					<span ng-switch-when="failed" class="badge alert fi-x"></span>

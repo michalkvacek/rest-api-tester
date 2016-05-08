@@ -45,7 +45,8 @@ module.exports = {
 
 	update: function (req, res) {
 		requestValidatedByAssertions.find ({
-			where: {id: req.param ('assertionId')}
+			where: {id: req.param ('assertionId')},
+			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator']
 		}).then (function (validation) {
 			validation.update ({
 				property: req.param ('property'),

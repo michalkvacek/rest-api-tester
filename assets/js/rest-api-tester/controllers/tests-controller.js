@@ -19,11 +19,16 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 
 		// update test detail when test has changed its status (loaded from sidebar)
 		$rootScope.$on ('testResultChanged', function (event, testId) {
+
+			console.log('tests controller');
+			console.log(testId == self.currentTestId);
+			console.log('init detail? '+ self.detailInitialized);
+			console.log('------');
+
 			if (testId == self.currentTestId) {
 				if (self.detailInitialized)
 					self.initDetail (false);
 
-				// pridat nejakou podminku na aktualizaci statistik - takhle se to pri kazde udalosti aktualizuje
 				self.initStatistics (self.statisticsButton);
 			}
 		});
@@ -127,6 +132,8 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 						// currentTestId is used for reloading test detail when test is changed
 						self.currentTestId = testId;
 
+						console.log('   inicializuji detail');
+
 						self.detailInitialized = true;
 
 						var test = response.data;
@@ -143,10 +150,13 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 
 						// refresh breadcrumbs when needed
 						if (refreshBreadcrumbs)
-							$rootScope.breadcrumbs = [{
-								label: $translate.instant ('Test') + ': ' + test.name,
-								href: $state.href ('test_detail', {testId: test.id})
-							}];
+							$translate('Test').then(function (translatedTest) {
+								$rootScope.breadcrumbs = [{
+									label: translatedTest + ': ' + test.name,
+									href: $state.href ('test_detail', {testId: test.id})
+								}];
+							});
+
 
 						$rootScope.setEnvironment (test.environmentsId);
 
@@ -311,7 +321,7 @@ app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '$filter
 			var testId = $stateParams.testId;
 
 			testsService.assignRequest (testId, requestId).then (function (response) {
-				if (response.status !== 200) {
+				if (response.status !== 201) {
 					$translate ('Nelze vykonat požadavek').then (function (translation) {
 						notificationsService.push ('alert', translation);
 					});

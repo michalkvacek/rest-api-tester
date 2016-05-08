@@ -146,6 +146,7 @@ app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translat
 			$rootScope.breadcrumbs = {};
 			$rootScope.enableLoadingDashboardTests = false;
 			$rootScope.hideProjectInBreadcrumbs = false;
+			$rootScope.currentTestResult = false;
 		});
 
 	$rootScope.$on ('$viewContentLoaded', function () {
