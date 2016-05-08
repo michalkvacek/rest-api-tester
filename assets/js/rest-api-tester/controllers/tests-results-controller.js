@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', '$translate', 'notificationsService', 'testsResultsService',
+window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', '$translate', 'notificationsService', 'testsResultsService',
 	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, $translate, notificationsService, testsResultsService) {
 
 		var self = this,

@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.service ('loginService', ['$http', '$timeout', '$rootScope', 'notificationsService', '$translate', '$q', function ($http, $timeout, $rootScope, notificationsService, $translate, $q) {
+window.app.service ('loginService', ['$http', '$timeout', '$rootScope', 'notificationsService', '$translate', '$q', function ($http, $timeout, $rootScope, notificationsService, $translate, $q) {
 
 	var lastAuth = null;
 	$rootScope.identity = {};

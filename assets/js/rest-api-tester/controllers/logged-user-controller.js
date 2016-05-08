@@ -1,4 +1,4 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('LoggedUserController', ['$scope', 'loginService', function ($scope, loginService) {
+window.app.controller ('LoggedUserController', ['$scope', 'loginService', function ($scope, loginService) {
 }]);

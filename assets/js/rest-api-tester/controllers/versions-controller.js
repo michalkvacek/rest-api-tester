@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('VersionsController', ['$scope', 'versionsService', function ($scope, versionsService) {
+window.app.controller ('VersionsController', ['$scope', 'versionsService', function ($scope, versionsService) {
 
 	var self = this;
 	self.overview = {};

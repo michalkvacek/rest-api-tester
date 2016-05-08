@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('UsersController', ['$scope', '$rootScope', '$translate', '$state', 'notificationsService', 'usersService',
+window.app.controller ('UsersController', ['$scope', '$rootScope', '$translate', '$state', 'notificationsService', 'usersService',
 	function ($scope, $rootScope, $translate, $state, notificationsService, usersService) {
 		var self = this;
 		self.profile = {};

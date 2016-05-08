@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', 'ngAnimate', 'ngSanitize', 'pascalprecht.translate']);
+window.app = angular.module ('restApiTester', ['ui.router', 'ui.gravatar', 'ngAnimate', 'ngSanitize', 'pascalprecht.translate']);
 
-app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',
+window.app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',
 	function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider) {
 
 		// interceptor

@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('RequestsController', [
+window.app.controller ('RequestsController', [
 	'$scope', '$rootScope', 'requestsService', 'headersService', 'httpParametersService', '$state', '$stateParams', "$translate", 'notificationsService',
 	function ($scope, $rootScope, requestsService, headersService, httpParametersService, $state, $stateParams, $translate, notificationsService) {
 

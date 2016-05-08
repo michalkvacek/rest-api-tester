@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('AuthenticationsController', ['$scope', '$translate', 'notificationsService', 'authenticationsService', function ($scope, $translate, notificationsService, authenticationsService) {
+window.app.controller ('AuthenticationsController', ['$scope', '$translate', 'notificationsService', 'authenticationsService', function ($scope, $translate, notificationsService, authenticationsService) {
 
 	var self = this;
 	self.overview = {};

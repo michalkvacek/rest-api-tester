@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.service ('usersService', ['$http', '$q', function ($http, $q) {
+window.app.service ('usersService', ['$http', '$q', function ($http, $q) {
 	var self = this;
 
 	self.profile = function () {

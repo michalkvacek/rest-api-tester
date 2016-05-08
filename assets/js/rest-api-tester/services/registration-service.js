@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.service ('registrationService', ['$http', '$q', function ($http, $q) {
+window.app.service ('registrationService', ['$http', '$q', function ($http, $q) {
 	return {
 		newLocalUser: function (data) {
 			var d = $q.defer ();

@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.service ('notificationsService', ['$rootScope', function ($rootScope) {
+window.app.service ('notificationsService', ['$rootScope', function ($rootScope) {
 	$rootScope.globalNotifications = [];
 
 	/**

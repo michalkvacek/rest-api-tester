@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.controller ('HeadersController', ['$scope', '$translate', '$stateParams', 'headersService', function ($scope, $translate, $stateParams, headersService) {
+window.app.controller ('HeadersController', ['$scope', '$translate', '$stateParams', 'headersService', function ($scope, $translate, $stateParams, headersService) {
 
 	var self = this;
 

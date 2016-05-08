@@ -1,6 +1,6 @@
-var app = angular.module ('restApiTester');
+// var app = angular.module ('restApiTester');
 
-app.service ('testsResultsService', ['$http', '$q', function ($http, $q) {
+window.app.service ('testsResultsService', ['$http', '$q', function ($http, $q) {
 	return {
 		getStatistics: function (testResultId) {
 			var d = $q.defer ();
