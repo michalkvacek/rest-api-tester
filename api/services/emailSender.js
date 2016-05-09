@@ -10,9 +10,9 @@ module.exports = {
 	 */
 	registrationEmail: function (password, user, callback) {
 		// try to send email
-		sails.hooks.email.send ('registration', {name: user.name, email: user.email, password: password}, {
+		sails.hooks.email.send (user.language+'/registration', {name: user.name, email: user.email, password: password}, {
 			to: user.email,
-			subject: 'User registration'
+			subject: 'Registrace uživatele'
 		}, callback)
 	},
 
@@ -24,14 +24,14 @@ module.exports = {
 	 * @param user
 	 */
 	forgottenPassword: function (res, password, user) {
-		sails.hooks.email.send ('forgottenPassword', {name: user.name, email: user.email, password: password}, {
+		sails.hooks.email.send (user.language+'/forgottenPassword', {name: user.name, email: user.email, password: password}, {
 			to: user.email,
-			subject: 'Forgotten password'
+			subject: 'Zapomenuté heslo'
 		}, function (err) {
 			if (err)
 				return res.serverError (err);
 
-			return res.ok ('password changes')
+			return res.ok ('password changed')
 		})
 	}
 };

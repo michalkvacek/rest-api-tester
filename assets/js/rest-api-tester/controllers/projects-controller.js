@@ -40,10 +40,6 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 
 				// fire event to notify any listeners that project overview was re/loaded
 				$rootScope.$broadcast ('projectOverviewLoaded');
-			}, function (response) {
-				$translate ('Nelze načíst seznam projektů. Stavový kód odpovědi: :statusCode', {statusCode: response.status}).then (function (translation) {
-					notificationsService.push ('alert', $translate.instant (translation));
-				});
 			});
 		};
 

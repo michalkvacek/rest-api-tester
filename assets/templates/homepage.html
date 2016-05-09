@@ -1,11 +1,13 @@
 
-<div ng-controller="HomepageController as homepage" ng-if="identityInitialized" ng-init="homepage.checkLoggedUser()">
+<div class="row" ng-controller="HomepageController as homepage" ng-if="identityInitialized" ng-init="homepage.checkLoggedUser()">
 
+	<div class="column with-shadow">
+		<a ui-sref="login" class="button primary expanded large">{{"Login" | translate}}</a>
+	</div>
 
-
-	<a ui-sref="login">Login</a>,
-	<a ui-sref="registration">Registrace</a>
-										 nebo <a ui-sref="projects">Projekty</a>
+	<div class="column with-shadow">
+		<a ui-sref="registration" class="button secondary expanded large">{{"Registrace" | translate}}</a>
+	</div>
 </div>
 
 
