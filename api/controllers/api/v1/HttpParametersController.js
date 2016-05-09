@@ -1,10 +1,12 @@
 module.exports = {
 	index: function (req, res) {
-		httpParameters.findAll ({
-			where: {requestsId: req.requestId}
-		}).then (function (httpParameters) {
+		permissionChecker.canManage (req, res, {requestsId: req.requestId}, function () {
+			httpParameters.findAll ({
+				where: {requestsId: req.requestId}
+			}).then (function (httpParameters) {
 
-			return res.ok (httpParameters);
+				return res.ok (httpParameters);
+			});
 		});
 	},
 
@@ -15,53 +17,76 @@ module.exports = {
 			value: req.param ('value')
 		};
 
-		httpParameters.create (parameters).then (function (httpParameter) {
-			return res.created (httpParameter);
-		}, function (err) {
-			return res.serverError (err);
+		permissionChecker.canManage (req, res, {requestsId: req.requestId, roles: ['manager', 'tester']}, function () {
+			httpParameters.create (parameters).then (function (httpParameter) {
+				return res.created (httpParameter);
+			}, function (err) {
+				return res.serverError (err);
+			});
 		});
 
 	},
 
 	delete: function (req, res) {
-		if (!req.param('httpParameterId')) return res.badRequest();
+		if (!req.param ('httpParameterId'))
+			return res.badRequest ();
 
 		httpParameters.find ({where: {id: req.param ('httpParameterId')}}).then (function (httpParameter) {
-			httpParameter.destroy ();
+			permissionChecker.canManage (req, res, {
+				requestsId: httpParameter.requestsId,
+				roles: ['manager', 'tester']
+			}, function () {
+				httpParameter.destroy ();
 
-			return res.ok ('deleted');
+				return res.ok ('deleted');
+			})
 		})
 	},
 
 	update: function (req, res) {
-		if (!req.param('httpParameterId')) return res.badRequest();
+		if (!req.param ('httpParameterId'))
+			return res.badRequest ();
 
 		httpParameters.find ({where: {id: req.param ('httpParameterId')}}).then (function (httpParameter) {
-
-			httpParameter.update ({
-				name: req.param ('name'),
-				value: req.param ('value')
-			}).then (function (edit) {
-				return res.ok (httpParameter);
+			permissionChecker.canManage (req, res, {
+				requestsId: httpParameter.requestsId,
+				roles: ['manager', 'tester']
+			}, function () {
+				httpParameter.update ({
+					name: req.param ('name'),
+					value: req.param ('value')
+				}).then (function (edit) {
+					return res.ok (httpParameter);
+				}, function (error) {
+					return res.notFound (error);
+				});
 			}, function (error) {
 				return res.notFound (error);
 			});
-		}, function (error) {
-			return res.notFound (error);
 		});
-	},
+	}
+
+	,
 
 	detail: function (req, res) {
 
-		if (!req.param('httpParameterId')) return res.badRequest();
+		if (!req.param ('httpParameterId'))
+			return res.badRequest ();
 
 		httpParameters.find ({where: {id: req.param ('httpParameterId')}}).then (function (httpParameter) {
 			if (!httpParameter)
-				return res.notFound();
-			
-			return res.ok (httpParameter);
-		}, function (error) {
-			return res.notFound (req.param ('id'));
+				return res.notFound ();
+
+			permissionChecker.canManage (req, res, {
+				requestsId: httpParameter.requestsId,
+				roles: ['manager', 'tester']
+			}, function () {
+
+				return res.ok (httpParameter);
+			}, function (error) {
+				return res.notFound (req.param ('id'));
+			});
 		});
-	},
+	}
+	,
 };

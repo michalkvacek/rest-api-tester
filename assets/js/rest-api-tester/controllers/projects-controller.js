@@ -33,20 +33,17 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 		self.initOverview = function (selectedProjectId) {
 
 			if (typeof selectedProjectId != 'undefined')
-				$rootScope.setEnvironment(undefined, selectedProjectId);
+				$rootScope.setEnvironment (undefined, selectedProjectId);
 
 			projectsService.getOverview ().then (function (response) {
-				if (response.status != 200) {
-					$translate ('Nelze načíst seznam projektů. Stavový kód odpovědi: :statusCode', {statusCode: response.status}).then (function (translation) {
-						notificationsService.push ('alert', $translate.instant (translation));
-					});
-					return;
-				}
-
 				self.overview = response.data.managedProjects;
 
 				// fire event to notify any listeners that project overview was re/loaded
 				$rootScope.$broadcast ('projectOverviewLoaded');
+			}, function (response) {
+				$translate ('Nelze načíst seznam projektů. Stavový kód odpovědi: :statusCode', {statusCode: response.status}).then (function (translation) {
+					notificationsService.push ('alert', $translate.instant (translation));
+				});
 			});
 		};
 
@@ -65,21 +62,19 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 			// load project details
 			projectsService.detail (projectId).then (function (response) {
 
+				self.detail = response.data;
+				self.formData = angular.copy (response.data);
+
+				// update breadcrumbs
+				if (updateBreadcrumbs)
+					$translate ('Nastavení').then (function (settings) {
+						$rootScope.breadcrumbs = [{
+							label: settings,
+							href: $state.href ('project_settings', {projectId: response.data.id})
+						}];
+					});
+			}, function (response) {
 				switch (response.status) {
-					case 200:
-						self.detail = response.data;
-						self.formData = angular.copy(response.data);
-
-						// update breadcrumbs
-						if (updateBreadcrumbs)
-							$translate ('Nastavení').then (function (settings) {
-								$rootScope.breadcrumbs = [{
-									label: settings,
-									href: $state.href ('project_settings', {projectId: response.data.id})
-								}];
-							});
-
-						break;
 					case 404:
 						$translate ('Požadovaný project neexistuje. Vyberte prosím jiný.').then (function (translation) {
 							notificationsService.push ('alert', $translate.instant (translation));
@@ -93,7 +88,6 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 						});
 						break;
 				}
-
 			});
 		};
 
@@ -102,15 +96,13 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 		 */
 		self.create = function () {
 			projectsService.create (self.formData).then (function (response) {
-
-				if (response.status == 201) {
-					self.initOverview ();
-					self.newProjectWindow = false;
-				} else {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-				}
+				self.initOverview ();
+				$rootScope.reinitIdentity ();
+				self.newProjectWindow = false;
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -129,15 +121,14 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 
 			projectsService.edit (self.formData.id, self.formData).then (function (response) {
 
-				switch (response.status) {
-					case 200:
-						self.loadDetail ();
-						self.initOverview(self.formData.id);
+				self.loadDetail ();
+				self.initOverview (self.formData.id);
 
-						$translate ('Úspěšně uloženo.').then (function (translation) {
-							notificationsService.push ('success', translation);
-						});
-						break;
+				$translate ('Úspěšně uloženo.').then (function (translation) {
+					notificationsService.push ('success', translation);
+				});
+			}, function (response) {
+				switch (response.status) {
 					case 403:
 						$translate ('Pro úpravu projektu nemáte dostatečné oprávnění.').then (function (translation) {
 							notificationsService.push ('alert', translation);

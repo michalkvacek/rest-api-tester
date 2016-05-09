@@ -39,26 +39,40 @@ module.exports = {
 			findCriterium.include.push ({model: httpParameters});
 		}
 
-		requests.findAll (findCriterium).then (function (data) {
-			return res.ok (data);
-		}, function (err) {
-			return res.serverError (err);
-		})
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.environmentId
+		}, function () {
+			requests.findAll (findCriterium).then (function (data) {
+				return res.ok (data);
+			}, function (err) {
+				return res.serverError (err);
+			});
+		});
 
 	},
 
+	/**
+	 * Get all assertions assigned to current request
+	 *
+	 * @param req
+	 * @param res
+	 */
 	assertions: function (req, res) {
-		requestValidatedByAssertions.findAll ({
-			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator'],
-			where: {requestsId: req.requestId},
-			include: {
-				model: assertions,
-				attributes: ['name', 'description']
-			}
-		}).then (function (assertions) {
-			return res.ok (assertions);
-		}, function (error) {
-			return res.serverError (error);
+		permissionChecker.canManage (req, res, {
+			requestsId: req.requestId
+		}, function () {
+			requestValidatedByAssertions.findAll ({
+				attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator'],
+				where: {requestsId: req.requestId},
+				include: {
+					model: assertions,
+					attributes: ['name', 'description']
+				}
+			}).then (function (assertions) {
+				return res.ok (assertions);
+			}, function (error) {
+				return res.serverError (error);
+			});
 		});
 	},
 
@@ -79,55 +93,64 @@ module.exports = {
 			methodName: req.param ('methodName', null)
 		};
 
-		requests.create (parameters).then (function (request) {
-			if (testsId) {
-				// select last sequence
-				requestsInTest.max ('position', {
-					where: {
-						testsId: testsId
-					}
-				}).then (function (position) {
-					if (!position) position = 0;
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.environmentId
+		}, function () {
+			requests.create (parameters).then (function (request) {
+				if (testsId) {
+					// select last sequence
+					requestsInTest.max ('position', {
+						where: {
+							testsId: testsId
+						}
+					}).then (function (position) {
+						if (!position) position = 0;
 
-					requestsInTest.create ({
-						testsId: testsId,
-						requestsId: request.id,
-						position: parseInt (position) + 1
-					}).then (function (assignedTest) {
+						requestsInTest.create ({
+							testsId: testsId,
+							requestsId: request.id,
+							position: parseInt (position) + 1
+						}).then (function (assignedTest) {
 
-						request = request.toJSON ();
-						request.assignedToTest = assignedTest;
+							request = request.toJSON ();
+							request.assignedToTest = assignedTest;
 
-						return res.created (request);
-					})
-				}, function (error) {
-					return res.serverError (error);
-				});
-			} else {
-				return res.created (request)
-			}
-		}, function (error) {
-			return res.serverError (error);
+							return res.created (request);
+						})
+					}, function (error) {
+						return res.serverError (error);
+					});
+				} else {
+					return res.created (request)
+				}
+			}, function (error) {
+				return res.serverError (error);
+			});
 		});
 	},
 
 	edit: function (req, res) {
-		requests.find ({where: {id: req.requestId}}).then (function (request) {
-			request.update ({
-				name: req.param ('name'),
-				description: req.param ('description'),
-				url: req.param ('url'),
-				httpMethod: req.param ('httpMethod'),
-				envelope: req.param ('envelope', null),
-				versionsId: req.param ('versionsId'),
-				authenticationsId: req.param ('authenticationsId')
-			}).then (function (edited) {
-				return res.ok (edited);
-			});
+		permissionChecker.canManage (req, res, {
+			requestsId: req.requestId,
+			roles: ['manager', 'tester']
+		}, function () {
+			requests.find ({where: {id: req.requestId}}).then (function (request) {
+				request.update ({
+					name: req.param ('name'),
+					description: req.param ('description'),
+					url: req.param ('url'),
+					httpMethod: req.param ('httpMethod'),
+					envelope: req.param ('envelope', null),
+					versionsId: req.param ('versionsId'),
+					authenticationsId: req.param ('authenticationsId')
+				}).then (function (edited) {
+					return res.ok (edited);
+				});
 
-		}, function (error) {
-			return res.serverError (error);
-		})
+			}, function (error) {
+				return res.serverError (error);
+			});
+		});
 	},
 
 	detail: function (req, res) {
@@ -171,69 +194,83 @@ module.exports = {
 			findCriterium.include.push ({model: httpParameters});
 		}
 
-		// toto predelat do service - aby se to dalo pouzit i v runnedTests, resp. pri vkladani do db.
-		requests.find (findCriterium).then (function (request) {
+		permissionChecker.canManage (req, res, {
+			requestsId: req.requestId,
+			roles: ['manager', 'tester']
+		}, function () {
+			requests.find (findCriterium).then (function (request) {
 
-			request = request.toJSON ();
+				request = request.toJSON ();
 
-			// get query string parameters
-			request.queryString = [];
-			var parts = request.url.split ('?', 2);
-			if (parts.length > 1) {
-				var qs = parts[1].split ('&'), parameters;
+				// get query string parameters
+				request.queryString = [];
+				var parts = request.url.split ('?', 2);
+				if (parts.length > 1) {
+					var qs = parts[1].split ('&'), parameters;
 
-				for (i in qs) {
-					parameters = qs[i].split ('=');
-					request.queryString.push ({name: parameters[0], value: parameters[1] || ''})
-				}
-			}
-
-			if (req.param ('withHeaders', false)) {
-				headers.findAll ({
-					where: {
-						$or: [
-							{testsId: req.param ('testsId', null)},
-							{projectsId: req.projectId},
-							{environmentsId: req.environmentId},
-							{requestsId: req.requestId}
-						]
+					for (i in qs) {
+						parameters = qs[i].split ('=');
+						request.queryString.push ({name: parameters[0], value: parameters[1] || ''})
 					}
-				}).then (function (headers) {
-					request.headers = headers;
+				}
 
+				if (req.param ('withHeaders', false)) {
+					headers.findAll ({
+						where: {
+							$or: [
+								{testsId: req.param ('testsId', null)},
+								{projectsId: req.projectId},
+								{environmentsId: req.environmentId},
+								{requestsId: req.requestId}
+							]
+						}
+					}).then (function (headers) {
+						request.headers = headers;
+
+						return res.ok (request);
+					});
+				} else {
 					return res.ok (request);
-				});
-			} else {
-				return res.ok (request);
-			}
-		}, function (err) {
-			return res.serverError (err);
+				}
+			}, function (err) {
+				return res.serverError (err);
+			});
 		});
 	},
 
 	lastResponse: function (req, res) {
-		responses.find ({
-			where: {requestsId: req.requestId},
-			order: [
-				['createdAt', 'DESC']
-			]
-		}).then (function (response) {
-			return res.ok (response);
+		permissionChecker.canManage (req, res, {
+			requestsId: req.requestId,
+			roles: ['manager', 'tester']
+		}, function () {
+			responses.find ({
+				where: {requestsId: req.requestId},
+				order: [
+					['createdAt', 'DESC']
+				]
+			}).then (function (response) {
+				return res.ok (response);
+			});
 		});
 	},
 
 	delete: function (req, res) {
-		requests.findOne ({
-			where: {id: req.requestId}
-		}).then (function (request) {
-			if (!request)
-				return res.notFound ();
+		permissionChecker.canManage (req, res, {
+			requestsId: req.requestId,
+			roles: ['manager', 'tester']
+		}, function () {
+			requests.findOne ({
+				where: {id: req.requestId}
+			}).then (function (request) {
+				if (!request)
+					return res.notFound ();
 
-			request.destroy ();
+				request.destroy ();
 
-			return res.ok ('deleted');
-		}, function (err) {
-			return res.serverError (err);
+				return res.ok ('deleted');
+			}, function (err) {
+				return res.serverError (err);
+			});
 		});
 	}
 };

@@ -86,15 +86,6 @@
 									{{'Heslo' | translate}}
 									<input type="text" ng-model="auths.formData.password">
 								</label>
-
-								<label class="required">
-									{{'Autentifikace' | translate}} type
-
-									<select required ng-model="auths.formData.type">
-										<option value="base">Base Auth</option>
-										<option value="bearer">Bearer token</option>
-									</select>
-								</label>
 							</div>
 
 							<div ng-show="auths.formData.type == 'bearer'">

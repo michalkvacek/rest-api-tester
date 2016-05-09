@@ -1,9 +1,26 @@
 // var app = angular.module ('restApiTester');
 
-window.app.service ('loginService', ['$http', '$timeout', '$rootScope', 'notificationsService', '$translate', '$q', function ($http, $timeout, $rootScope, notificationsService, $translate, $q) {
+window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$translate', '$q', function ($http, $timeout, $rootScope, $translate, $q) {
 
 	var lastAuth = null;
 	$rootScope.identity = {};
+
+	$rootScope.identityInitialized = false;
+
+	$rootScope.reinitIdentity = function () {
+		$http.get ('/api/v1/users/me').then (function (response) {
+			$rootScope.identityInitialized = true;
+			$rootScope.identity = response.data;
+
+			lastAuth = new Date();
+		}, function (response) {
+			$rootScope.identityInitialized = true;
+			$rootScope.identity = {};
+			localStorage.removeItem ('auth_token');
+
+			return false
+		});
+	};
 
 	var periodicalLogin = function (withTimeout) {
 
@@ -13,20 +30,7 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', 'notific
 		var now = new Date ();
 
 		if (now - lastAuth > 60 * 10 * 1000) {
-			$http.get ('/api/v1/users/me').then (function (response) {
-				if (response.status == 200) {
-					$rootScope.identity = response.data;
-					
-					lastAuth = now;
-
-					return true;
-				} else {
-					$rootScope.identity = {};
-					localStorage.removeItem ('auth_token');
-
-					return false
-				}
-			});
+			return $rootScope.reinitIdentity();
 		} else {
 			return true;
 		}
@@ -34,31 +38,36 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', 'notific
 
 	periodicalLogin ();
 
-	return {
-		localAuth: function (data) {
-			var d = $q.defer ();
-			$http.post ('/api/v1/login', data).then (function (response) {
-				if (response.status == 403) {
-					notificationsService.push('alert', $translate.instant('Přihlášení se nezdařilo. Zkontrolujte přihlašovací údaje, prosím.'));
-					return;
-				}
-				
-				localStorage.setItem ('auth_token', response.data.token);
+	var self = this;
 
-				// set identity
-				$rootScope.identity = response.data.user;
+	self.forgottenPassword = function (data) {
+		var d = $q.defer ();
+		$http.post ('/api/v1/forgottenPassword', data).then (d.resolve, d.reject);
+		return d.promise;
+	};
 
-				// load angular localization and new language
-				$.getScript( "/locales/i10l/angular_"+$rootScope.identity.language+".js");
-				$translate.use($rootScope.identity.language);
+	self.localAuth = function (data) {
+		var d = $q.defer ();
+		$http.post ('/api/v1/login', data).then (function (response) {
+			localStorage.setItem ('auth_token', response.data.token);
 
-				return d.resolve (response);
-			}, d.reject);
+			// set identity
+			$rootScope.identity = response.data.user;
 
-			return d.promise;
-		},
-		isAuthenticated: function () {
-			return $rootScope.identity.id != 'undefined' && localStorage.getItem ('auth_token') != null;
-		}
-	}
+			// load angular localization and new language
+			$.getScript ("/locales/i10l/angular_" + $rootScope.identity.language + ".js");
+			$translate.use ($rootScope.identity.language);
+
+			return d.resolve (response);
+		}, d.reject);
+
+		return d.promise;
+	};
+
+	self.isAuthenticated = function () {
+		return $rootScope.identity.id != 'undefined' && localStorage.getItem ('auth_token') != null;
+	};
+
+	return self;
+
 }]);

@@ -199,7 +199,7 @@
 												<td>
 													<a href="javascript:void(0)"
 														ng-if="identity.roles[currentEnvironment.id] != 'host'"
-														ng-click="asserts.openModal = true; asserts.formData = assertion"; asserts.formData.requestsId = request.id>
+														ng-click="asserts.openModal = true; asserts.formData = assertion; asserts.formData.requestsId = request.id">
 														<i class="fi-pencil" data-open="edit-assertion"></i>
 													</a>
 													<a href="javascript:void(0)"
@@ -299,7 +299,7 @@
 								{{'Nový požadavek' | translate}}</a>
 						</li>
 						<li id="existing-request-title" class="tabs-title">
-							<a ng-click="openTab('#new-request-window', '#existing-request'); reqController.initEnvironmentOverview(tests.detail.environmentsId, {ignoreTest: tests.detail.id})">
+							<a ng-click="openTab('#new-request-window', '#existing-request'); reqController.initEnvironmentOverview(tests.detail.environmentsId)">
 								{{'Požadavky vytvořené v aktuálním prostředí' | translate}}
 							</a>
 						</li>

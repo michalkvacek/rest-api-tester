@@ -14,11 +14,6 @@ window.app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$t
 					}
 
 					return config;
-				},
-				responseError: function (config) {
-					console.log (config);
-
-					return config;
 				}
 			};
 		});
@@ -138,11 +133,11 @@ window.app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$t
 
 	$rootScope.$on ('$stateChangeStart',
 		function (event, toState, toParams, fromState, fromParams, options) {
-			$rootScope.currentEnvironment = {};
-			$rootScope.currentProject = {};
-			$rootScope.currentProjectId = {};
-			$rootScope.availableEnvironments = {};
-			$rootScope.currentEnvironmentId = {};
+			// $rootScope.currentEnvironment = {};
+			// $rootScope.currentProject = {};
+			// $rootScope.currentProjectId = {};
+			// $rootScope.availableEnvironments = {};
+			// $rootScope.currentEnvironmentId = {};
 			$rootScope.breadcrumbs = {};
 			$rootScope.enableLoadingDashboardTests = false;
 			$rootScope.hideProjectInBreadcrumbs = false;

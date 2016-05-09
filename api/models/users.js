@@ -16,7 +16,7 @@ module.exports = {
 		language: {
 			type: Sequelize.ENUM ('cs', 'en'),
 			allowNull: false,
-			defaultValue: 'en'
+			defaultValue: 'cs'
 		},
 
 		password: {

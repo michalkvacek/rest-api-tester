@@ -20,54 +20,89 @@ module.exports = {
 
 		requestValidatedByAssertions.find ({
 			where: {id: assertionId},
-			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator'],
+			attributes: ['id', 'assertionType', 'requestsId', 'property', 'expectedValue', 'comparator'],
 		}).then (function (assertion) {
-			return res.ok (assertion);
-		}, function (err) {
-			return res.serverError (err);
+			permissionChecker.canManage (req, res, {requestsId: assertion.requestsId}, function () {
+				return res.ok (assertion);
+			}, function (err) {
+				return res.serverError (err);
+			});
 		});
 	},
 
+	/**
+	 * Add existing request into test
+	 *
+	 * @param req
+	 * @param res
+	 */
 	assignToRequest: function (req, res) {
 
-		requestValidatedByAssertions.create ({
+		permissionChecker.canManage (req, res, {
 			requestsId: req.requestId,
-			assertionType: req.param ('assertionType'),
-			comparator: req.param ('comparator'),
-			property: req.param ('property', null),
-			expectedValue: req.param ('expectedValue')
-		}).then (function (validation) {
-			return res.created (validation);
-		}, function (error) {
-			return res.serverError (error);
+			roles: ['manager', 'tester']
+		}, function () {
+			requestValidatedByAssertions.create ({
+				requestsId: req.requestId,
+				assertionType: req.param ('assertionType'),
+				comparator: req.param ('comparator'),
+				property: req.param ('property', null),
+				expectedValue: req.param ('expectedValue')
+			}).then (function (validation) {
+				return res.created (validation);
+			}, function (error) {
+				return res.serverError (error);
+			});
 		});
 	},
 
+	/**
+	 * Updates existing assertion
+	 *
+	 * @param req
+	 * @param res
+	 */
 	update: function (req, res) {
 		requestValidatedByAssertions.find ({
 			where: {id: req.param ('assertionId')},
-			attributes: ['id', 'assertionType', 'property', 'expectedValue', 'comparator']
+			attributes: ['id', 'requestsId', 'assertionType', 'property', 'expectedValue', 'comparator']
 		}).then (function (validation) {
-			validation.update ({
-				property: req.param ('property'),
-				comparator: req.param ('comparator'),
-				assertionType: req.param ('assertionType'),
-				expectedValue: req.param ('expectedValue')
-			}).then (function (validation) {
-				return res.ok (validation);
-			})
-		})
+			permissionChecker.canManage (req, res, {
+				requestsId: validation.requestsId,
+				roles: ['manager', 'tester']
+			}, function () {
+				validation.update ({
+					property: req.param ('property'),
+					comparator: req.param ('comparator'),
+					assertionType: req.param ('assertionType'),
+					expectedValue: req.param ('expectedValue')
+				}).then (function (validation) {
+					return res.ok (validation);
+				})
+			});
+		});
 	},
 
+	/**
+	 * Delete given assertion
+	 *
+	 * @param req
+	 * @param res
+	 */
 	delete: function (req, res) {
 		requestValidatedByAssertions.find ({
 			where: {id: req.param ('assertionId')},
-			attributes: ['id']
+			attributes: ['id', 'requestsId']
 		}).then (function (validation) {
-			validation.destroy ();
+			permissionChecker.canManage (req, res, {
+				requestsId: validation.requestsId,
+				roles: ['manager', 'tester']
+			}, function () {
+				validation.destroy ();
 
-			return res.ok ('deleted');
-		})
-	},
+				return res.ok ('deleted');
+			});
+		});
+	}
 };
 

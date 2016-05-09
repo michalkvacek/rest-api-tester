@@ -31,10 +31,6 @@ window.app.controller ('AssertionsController', ['$scope', '$stateParams', '$tran
 				requestId = $stateParams.requestId;
 
 			assertionsService.getAssertions (requestId).then (function (response) {
-				if (response.status != 200) {
-					return;
-				}
-
 				self.assertions[requestId] = response.data;
 			})
 		};
@@ -44,12 +40,12 @@ window.app.controller ('AssertionsController', ['$scope', '$stateParams', '$tran
 		 */
 		self.create = function () {
 			assertionsService.create (self.formData.requestsId, self.formData).then (function (response) {
-				switch (response.status) {
-					case 201:
-						self.initRequestAssertions (self.formData.requestsId);
+				self.initRequestAssertions (self.formData.requestsId);
 
-						self.openModal = false;
-						break;
+				self.openModal = false;
+			}, function (response) {
+				switch (response.status) {
+
 					case 403:
 						$translate ('Pro přiřazení validátoru nemáte dostatečná oprávnění.').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -68,30 +64,27 @@ window.app.controller ('AssertionsController', ['$scope', '$stateParams', '$tran
 		 * Edit assertion
 		 */
 		self.edit = function () {
-
-			console.log(self.formData);
-
 			assertionsService.edit (self.formData.id, self.formData).then (function (response) {
-					switch (response.status) {
-						case 200:
-							// update assertions list
-							self.initRequestAssertions (self.formData.requestsId);
+				// update assertions list
+				self.initRequestAssertions (self.formData.requestsId);
 
-							self.openModal = false;
-							break;
-						case 403:
-							$translate ('Pro editaci validátoru nemáte dostatečná oprávnění.').then (function (translation) {
-								notificationsService.push ('alert', translation);
-							});
-							break;
-						default:
-							$translate ('Nelze vykonat požadavek').then (function (translation) {
-								notificationsService.push ('alert', translation);
-							});
-							break;
-					}
+				self.openModal = false;
+
+			}, function (response) {
+				switch (response.status) {
+
+					case 403:
+						$translate ('Pro editaci validátoru nemáte dostatečná oprávnění.').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
+						break;
+					default:
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
+						break;
 				}
-			);
+			});
 		};
 
 		/**
@@ -103,11 +96,11 @@ window.app.controller ('AssertionsController', ['$scope', '$stateParams', '$tran
 		self.delete = function (id, requestId) {
 			if (confirm ($translate.instant ('Opravdu?'))) {
 				assertionsService.delete (id).then (function (response) {
+					// update assertions list
+					self.initRequestAssertions (requestId);
+
+				}, function (response) {
 					switch (response.status) {
-						case 200:
-							// update assertions list
-							self.initRequestAssertions (requestId);
-							break;
 						case 403:
 							$translate ('Pro odstranění validátoru nemáte dostatečná oprávnění.').then (function (translation) {
 								notificationsService.push ('alert', translation);
@@ -124,4 +117,5 @@ window.app.controller ('AssertionsController', ['$scope', '$stateParams', '$tran
 		};
 
 		return self;
-	}]);
+	}])
+;

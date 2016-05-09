@@ -1,4 +1,17 @@
-<div class="content">
+<div class="content row">
+	<div ng-show="!projects.overview.length" class="column callout warning text-center">
+		<p>
+			{{"Neexistuje žádný projekt, se kterým by bylo možné pracovat." | translate}}
+		</p>
+
+		<p>
+			<a class="button success" ng-click="projects.newProjectWindow = true">
+				<i class="fi-plus"></i>
+				{{"Nový projekt" | translate}}
+			</a>
+		</p>
+	</div>
+
 	<div class="project-overview row" data-equalizer>
 		<div class="column no-padding" ng-show="projects.overview.length"  ng-repeat="project in projects.overview">
 			<div class="with-shadow project text-center has-controls">
@@ -40,20 +53,6 @@
 				});
 			</script>
 		</div>
-
-		<div ng-show="!projects.overview.length" class="callout warning text-center">
-			<p>
-				{{"Neexistuje žádný projekt, se kterým by bylo možné pracovat." | translate}}
-			</p>
-
-			<p>
-				<a class="button success" ng-click="projects.newProjectWindow = true">
-					<i class="fi-plus"></i>
-					{{"Nový projekt" | translate}}
-				</a>
-			</p>
-		</div>
-
 	</div>
 
 	<a ng-click="projects.newProjectWindow = true" class="button success material-add-button"><i class="fi-plus"></i></a>

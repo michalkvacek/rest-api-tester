@@ -19,7 +19,19 @@ module.exports = {
 			name: req.param ('name')
 		};
 
-		return userService.registerNewUser (res, userInfo);
+		return userService.registerNewUser (userInfo, function (user) {
+			user = user.toJSON ();
+			delete user.password;
+
+			return res.created (user);
+		}, function (err) {
+
+			if (err.name == "SequelizeUniqueConstraintError") {
+				return res.badRequest ('duplemail');
+			}
+
+			return res.serverError (err);
+		});
 	},
 
 	/**
@@ -56,37 +68,42 @@ module.exports = {
 		if (!role)
 			return res.badRequest ('no role');
 
-		users.find ({where: {email: email}}).then (function (foundUser) {
-			if (!foundUser) {
-				// user with given email does not exist, create one
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.environmentId,
+			roles: ['manager']
+		}, function () {
+			users.find ({where: {email: email}}).then (function (foundUser) {
+				if (!foundUser) {
+					// user with given email does not exist, create one
 
-				var name = email.split ('@');
+					var name = email.split ('@');
 
-				userService.registerNewUser ({
-					email: email,
-					name: name[0],
-					environmentId: req.environmentId,
-					role: role
-				}, function (user) {
-					user = user.toJSON ();
+					userService.registerNewUser ({
+						email: email,
+						name: name[0],
+						environmentId: req.environmentId,
+						role: role
+					}, function (user) {
+						user = user.toJSON ();
 
-					// remove password from user's object
-					delete user.password;
+						// remove password from user's object
+						delete user.password;
 
-					return res.created (user);
-				});
-			} else {
-				userService.assignToEnvironment (foundUser.id, req.environmentId, role, function (assignedUser) {
-					return res.created (assignedUser);
-				}, function (err) {
-					// check if user was not inserted again into the same environment
+						return res.created (user);
+					});
+				} else {
+					userService.assignToEnvironment (foundUser.id, req.environmentId, role, function (assignedUser) {
+						return res.created (assignedUser);
+					}, function (err) {
+						// check if user was not inserted again into the same environment
 
-					if (err.name == 'SequelizeUniqueConstraintError')
-						return res.badRequest ('user already assigned');
+						if (err.name == 'SequelizeUniqueConstraintError')
+							return res.badRequest ('user already assigned');
 
-					return res.serverError (err);
-				});
-			}
+						return res.serverError (err);
+					});
+				}
+			});
 		})
 	},
 
@@ -142,6 +159,11 @@ module.exports = {
 				delete updated.password;
 
 				return res.ok (updated);
+			}, function (error){
+				if (error.name == 'SequelizeUniqueConstraintError')
+					return res.badRequest ('dupl-email');
+
+				return res.serverError(error);
 			});
 		});
 	}

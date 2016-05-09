@@ -67,15 +67,19 @@ module.exports = {
 	 * @param res
 	 */
 	update: function (req, res) {
-		projects.find ({where: {id: req.projectId}}).then (function (project) {
-			project.update ({
-				name: req.param ('name'),
-				description: req.param ('description')
-			}).then (function (edit) {
-				return res.ok (project);
+		permissionChecker.canManage (req, res, {
+			projectsId: req.projectId
+		}, function () {
+			projects.find ({where: {id: req.projectId}}).then (function (project) {
+				project.update ({
+					name: req.param ('name'),
+					description: req.param ('description')
+				}).then (function (edit) {
+					return res.ok (project);
+				});
+			}, function (error) {
+				return res.serverError (error);
 			});
-		}, function (error) {
-			return res.serverError (error);
 		});
 	},
 
@@ -86,10 +90,14 @@ module.exports = {
 	 * @param res
 	 */
 	delete: function (req, res) {
-		projects.findOne ({where: {id: req.projectId}}).then (function (env) {
-			env.destroy ();
+		permissionChecker.canManage (req, res, {
+			projectsId: req.projectId
+		}, function () {
+			projects.findOne ({where: {id: req.projectId}}).then (function (env) {
+				env.destroy ();
 
-			return res.ok ('deleted');
+				return res.ok ('deleted');
+			})
 		})
 	}
 };

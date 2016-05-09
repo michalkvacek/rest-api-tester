@@ -17,10 +17,12 @@
  */
 
 module.exports.policies = {
-	'*': true,
+	'app/Homepage': {
+		'*': true
+	},
 
 	'api/v1/Auth': {
-		'passwordLogin': true
+		passwordLogin: true
 	},
 	'api/v1/Projects': {
 		index: ['jwToken'],
@@ -30,6 +32,7 @@ module.exports.policies = {
 	},
 	'api/v1/Users': {
 		forgottenPassword: true,
+		create: true,
 		assignToEnvironment: ['jwToken', 'environmentIdRequired', 'manager'],
 		'*': ['jwToken']
 	},
@@ -75,6 +78,6 @@ module.exports.policies = {
 	},
 	'api/v1/Authentications': {
 		'*': ['jwToken', 'environmentIdRequired']
-	}
-}
-;
+	},
+	'*': ['jwToken']
+};

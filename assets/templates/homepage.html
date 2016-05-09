@@ -1,4 +1,12 @@
-<a ui-sref="login">Login</a>,
-<a ui-sref="registration">Registrace</a>,
-nebo <a ui-sref="projects">Projekty</a>
+
+<div ng-controller="HomepageController as homepage" ng-if="identityInitialized" ng-init="homepage.checkLoggedUser()">
+
+
+
+	<a ui-sref="login">Login</a>,
+	<a ui-sref="registration">Registrace</a>
+										 nebo <a ui-sref="projects">Projekty</a>
+</div>
+
+
 

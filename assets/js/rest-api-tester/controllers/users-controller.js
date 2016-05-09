@@ -11,17 +11,16 @@ window.app.controller ('UsersController', ['$scope', '$rootScope', '$translate',
 
 				$translate ('Uživatelský profil').then (function (settings) {
 					$rootScope.hideProjectInBreadcrumbs = true;
-						$rootScope.breadcrumbs = [{
-							label: settings,
-							href: $state.href ('environment_settings', {environmentId: response.data.id})
-						}];
+					$rootScope.breadcrumbs = [{
+						label: settings,
+						href: $state.href ('environment_settings', {environmentId: response.data.id})
+					}];
 				});
 			});
 		};
 
 		self.edit = function () {
 			usersService.edit (self.profile).then (function (response) {
-				if (response.status == 200) {
 					$rootScope.identity = response.data;
 
 					$translate ('Údaje úspěšně změněny').then (function (translation) {
@@ -30,14 +29,21 @@ window.app.controller ('UsersController', ['$scope', '$rootScope', '$translate',
 
 					$.getScript ("/locales/i10l/angular_" + $rootScope.identity.language + ".js");
 					$translate.use ($rootScope.identity.language);
-				} else {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-						$state.go ('projects');
-					});
+				}, function (response) {
+					switch (response.status) {
+						case 400:
+							$translate ("Zadaný e-mail je již registrován.").then (function (translation) {
+								notificationsService.push ('alert', translation);
+							});
+							break;
+						default:
+							$translate ('Nelze vykonat požadavek').then (function (translation) {
+								notificationsService.push ('alert', translation);
+							});
+							break;
+					}
 				}
-
-			});
+			);
 		};
 
 		return self;

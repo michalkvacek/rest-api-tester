@@ -19,12 +19,6 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 
 		// update test detail when test has changed its status (loaded from sidebar)
 		$rootScope.$on ('testResultChanged', function (event, testId) {
-
-			console.log('tests controller');
-			console.log(testId == self.currentTestId);
-			console.log('init detail? '+ self.detailInitialized);
-			console.log('------');
-
 			if (testId == self.currentTestId) {
 				if (self.detailInitialized)
 					self.initDetail (false);
@@ -54,21 +48,19 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 				environmentId: environmentId,
 				testId: testId
 			}).then (function (statistics) {
-					if (statistics.status == 200) {
-						self.statistics = statistics.data;
+				self.statistics = statistics.data;
 
-						if (testId) {
-							self.currentTestId = testId;
-						}
-
-						$rootScope.setEnvironment (environmentId);
-					} else {
-						$translate ('Nelze vykonat požadavek').then (function (translation) {
-							notificationsService.push ('alert', translation);
-						});
-					}
+				if (testId) {
+					self.currentTestId = testId;
 				}
-			);
+
+				$rootScope.setEnvironment (environmentId);
+
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
+			});
 		};
 
 		/**
@@ -80,13 +72,12 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 
 			// get data
 			testsService.getOverview (environmentId).then (function (tests) {
-				switch (tests.status) {
-					case 200:
-						self.tests = tests.data;
-						// reinit datetime picker for scheduling test
-						$rootScope.reinitDateTimePicker ();
-						break;
+				self.tests = tests.data;
+				// reinit datetime picker for scheduling test
+				$rootScope.reinitDateTimePicker ();
 
+			}, function (response) {
+				switch (tests.status) {
 					case 404:
 						$translate ('Požadované prostředí neexistuje. Vyberte prosím jiné.').then (function (translation) {
 							notificationsService.push ('alert', $translate.instant (translation));
@@ -127,46 +118,48 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 				refreshBreadcrumbs = true;
 
 			testsService.getDetail (testId).then (function (response) {
+				// currentTestId is used for reloading test detail when test is changed
+				self.currentTestId = testId;
+				self.detailInitialized = true;
+
+				var test = response.data;
+				$scope.testId = testId;
+				$scope.environmentId = test.environmentsId;
+
+				// save request ids for usage in assigning new requests
+				self.assignedRequestIds = {};
+
+				// save request ids
+				for (i in test.requests) {
+					self.assignedRequestIds[test.requests[i].id] = true;
+				}
+
+				// refresh breadcrumbs when needed
+				if (refreshBreadcrumbs)
+					$translate ('Test').then (function (translatedTest) {
+						$rootScope.breadcrumbs = [{
+							label: translatedTest + ': ' + test.name,
+							href: $state.href ('test_detail', {testId: test.id})
+						}];
+					});
+
+				$rootScope.setEnvironment (test.environmentsId);
+
+				self.detail = test;
+				self.detail.nextRunRaw = self.detail.nextRun;
+				self.detail.nextRun = $filter ('date') (self.detail.nextRun, "dd-MM-yyyy HH:mm");
+				self.detail.runInterval = "" + test.runInterval; // cast to string, because of selecting default value
+				self.detail.run = test.runInterval > 0 ? 'periodicaly' : 'once';
+			}, function (response) {
+
 				switch (response.status) {
-					case 200:
-						// currentTestId is used for reloading test detail when test is changed
-						self.currentTestId = testId;
+					case 403:
+						$translate ('Pro přístup do tohoto prostředí nemáte dostatečné oprávnění.').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
 
-						console.log('   inicializuji detail');
-
-						self.detailInitialized = true;
-
-						var test = response.data;
-						$scope.testId = testId;
-						$scope.environmentId = test.environmentsId;
-
-						// save request ids for usage in assigning new requests
-						self.assignedRequestIds = {};
-
-						// save request ids
-						for (i in test.requests) {
-							self.assignedRequestIds[test.requests[i].id] = true;
-						}
-
-						// refresh breadcrumbs when needed
-						if (refreshBreadcrumbs)
-							$translate('Test').then(function (translatedTest) {
-								$rootScope.breadcrumbs = [{
-									label: translatedTest + ': ' + test.name,
-									href: $state.href ('test_detail', {testId: test.id})
-								}];
-							});
-
-
-						$rootScope.setEnvironment (test.environmentsId);
-
-						self.detail = test;
-						self.detail.nextRunRaw = self.detail.nextRun;
-						self.detail.nextRun = $filter ('date') (self.detail.nextRun, "dd-MM-yyyy HH:mm");
-						self.detail.runInterval = "" + test.runInterval; // cast to string, because of selecting default value
-						self.detail.run = test.runInterval > 0 ? 'periodicaly' : 'once';
 						break;
-
 					case 404:
 						$translate ('Požadovaný test neexistuje. Vyberte prosím jiný.').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -190,16 +183,15 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 			var environmentId = $stateParams.environmentId;
 
 			testsService.create (environmentId, self.formData).then (function (response) {
-				switch (response.status) {
-					case 201:
-						$rootScope.setEnvironment (environmentId);
-						self.initTestOverview ();
+				$rootScope.setEnvironment (environmentId);
+				self.initTestOverview ();
 
-						self.manageTest = false;
-						break;
+				self.manageTest = false;
+			}, function (response) {
+				switch (response.status) {
 
 					case 403:
-						$translate('Pro přístup do tohoto prostředí nemáte dostatečné oprávnění.').then(function (translation) {
+						$translate ('Pro přístup do tohoto prostředí nemáte dostatečné oprávnění.').then (function (translation) {
 							notificationsService.push ('alert', translation);
 							$state.go ('projects');
 						});
@@ -240,16 +232,13 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 				delete self.scheduleData.runInterval;
 
 			testsService.schedule (self.scheduleData.testsId, self.scheduleData).then (function (response) {
-				if (response.status != 200) {
-					$translate ('Nelze naplánovat spuštění testu. Kód odpovědi ze serveru: :statusCode', {statusCode: response.status}).then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-					return;
-				}
-
 				self.initTestOverview ();
 
 				self.manageSchedule = false;
+			}, function (response) {
+				$translate ('Nelze naplánovat spuštění testu. Kód odpovědi ze serveru: :statusCode', {statusCode: response.status}).then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -272,17 +261,18 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 			delete self.formData.runnedTests;
 
 			testsService.edit (self.formData.id, self.formData).then (function (response) {
-				if (response.status != 200) {
-					$translate('Nelze uložit test. Kód odpovědi ze serveru: :statusCode', {statusCode: response.status}).then(function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-					return;
-				}
-
 				self.initDetail ();
 
 				if (closeWindow)
 					self.manageTest = false;
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
+			}, function (response) {
+				$translate ('Nelze uložit test. Kód odpovědi ze serveru: :statusCode', {statusCode: response.status}).then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			})
 		};
 
@@ -298,17 +288,14 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 			self.detail.lastRunStatus = 'waiting_for_response';
 
 			testsService.run (testId).then (function (response) {
-				if (response.status !== 200) {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-					return;
-				}
-
 				// becase of some time needed for preparing test we will display some "waiting" image before loading test list again
 				$timeout (function () {
 					$rootScope.loadTests (false);
 				}, 3 * 1000);
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -321,14 +308,11 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 			var testId = $stateParams.testId;
 
 			testsService.assignRequest (testId, requestId).then (function (response) {
-				if (response.status !== 201) {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-					return;
-				}
-
 				self.initDetail ();
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -340,17 +324,14 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 		self.removeRequest = function (requestId) {
 			var testId = $stateParams.testId;
 
-			$translate('Opravdu?').then(function (really) {
+			$translate ('Opravdu?').then (function (really) {
 				if (confirm (really)) {
 					testsService.removeRequest (testId, requestId).then (function (response) {
-						if (response.status !== 200) {
-							$translate ('Nelze vykonat požadavek').then (function (translation) {
-								notificationsService.push ('alert', translation);
-							});
-							return;
-						}
-
 						self.initDetail ();
+					}, function (response) {
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
 					});
 				}
 			});
@@ -364,17 +345,14 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 		 * Edit header and update test details
 		 */
 		self.headers.edit = function () {
-			headersService.edit (self.formData.id, self.formData.headers).then (function (response) {
-				if (response.status !== 200) {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-					return;
-				}
-
+			headersService.edit (self.formData.headers.id, self.formData.headers).then (function (response) {
 				self.initDetail ();
 
 				self.manageHeaders = false;
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -384,18 +362,15 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 		 * @param id
 		 */
 		self.headers.delete = function (id) {
-			$translate('Opravdu?').then(function (really) {
+			$translate ('Opravdu?').then (function (really) {
 				if (confirm (really)) {
 					headersService.delete (id).then (function (response) {
-						if (response.status !== 200) {
-							$translate ('Nelze vykonat požadavek').then (function (translation) {
-								notificationsService.push ('alert', translation);
-							});
-							return;
-						}
-
 						// update test detail
 						self.initDetail ();
+					}, function (response) {
+						$translate ('Nelze vykonat požadavek').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
 					});
 				}
 			});
@@ -410,15 +385,12 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 			self.formData.headers.testsId = testId;
 
 			headersService.create (self.formData.headers).then (function (response) {
-				if (response.status !== 200) {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-					return;
-				}
-
 				self.initDetail ();
 				self.manageHeaders = false
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			})
 		};
 

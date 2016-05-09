@@ -21,7 +21,11 @@ module.exports = {
 			if (!result)
 				return res.notFound ();
 
-			return res.ok (result);
+			permissionChecker.canManage (req, res, {
+				environmentsId: result.environmentsId
+			}, function () {
+				return res.ok (result);
+			});
 
 		}, function (error) {
 			return res.serverError (error);

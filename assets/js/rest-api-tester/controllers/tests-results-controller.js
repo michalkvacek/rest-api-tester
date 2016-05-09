@@ -1,5 +1,3 @@
-// var app = angular.module ('restApiTester');
-
 window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', '$translate', 'notificationsService', 'testsResultsService',
 	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, $translate, notificationsService, testsResultsService) {
 
@@ -30,7 +28,6 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 				withTimeout = true;
 
 			testsResultsService.getOverview (self.lastTestsAge).then (function (response) {
-
 				var sentEvents = {}, result = {}, lastResult = {}, broadcast = false;
 
 				// iterate over all found test responses
@@ -87,29 +84,27 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 			var resultId = $stateParams.testResultId;
 
 			testsResultsService.getDetail (resultId).then (function (response) {
+				$rootScope.setEnvironment (response.data.environmentsId);
+				$rootScope.currentTestResult = resultId;
 
+				// update breadcrumbs
+				$translate ('Test').then (function (transTest) {
+					$translate ('Výsledek z').then (function (resultFrom) {
+						$rootScope.breadcrumbs = [
+							{
+								label: transTest + ': ' + response.data.testName,
+								href: $state.href ('test_detail', {testId: response.data.testsId})
+							},
+							{
+								label: resultFrom + ' ' + $filter ('date') (response.data.updatedAt, 'short'),
+								href: $state.href ('test_result', {testResultId: response.data.id})
+							}];
+					});
+				});
+
+				self.test = response.data;
+			}, function (response) {
 				switch (response.status) {
-					case 200:
-						$rootScope.setEnvironment (response.data.environmentsId);
-						$rootScope.currentTestResult = resultId;
-
-						// update breadcrumbs
-						$translate ('Test').then (function (transTest) {
-							$translate ('Výsledek z').then (function (resultFrom) {
-								$rootScope.breadcrumbs = [
-									{
-										label: transTest + ': ' + response.data.testName,
-										href: $state.href ('test_detail', {testId: response.data.testsId})
-									},
-									{
-										label: resultFrom + ' ' + $filter ('date') (response.data.updatedAt, 'short'),
-										href: $state.href ('test_result', {testResultId: response.data.id})
-									}];
-							});
-						});
-
-						self.test = response.data;
-						break;
 					case 404:
 						$translate ('Požadovaný výsledek neexistuje.').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -139,8 +134,7 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 			var resultId = $stateParams.testResultId;
 
 			testsResultsService.getStatistics (resultId).then (function (response) {
-				if (response.status == 200)
-					self.statistics = response.data;
+				self.statistics = response.data;
 			})
 		};
 

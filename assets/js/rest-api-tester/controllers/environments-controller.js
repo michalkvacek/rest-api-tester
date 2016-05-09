@@ -158,7 +158,7 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 					case 200:
 
 						self.detail = response.data;
-						self.formData = angular.copy(response.data);
+						self.formData = angular.copy (response.data);
 
 						// update breadcrumbs
 						$translate ('Nastavení').then (function (settings) {
@@ -201,13 +201,13 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 			var projectId = $stateParams.projectId;
 
 			environmentsService.create (projectId, self.formData).then (function (response) {
+				self.initOverview ();
+
+				$rootScope.reinitIdentity ();
+
+				self.manageEnvironments = false;
+			}, function (response) {
 				switch (response.status) {
-					case 200:
-						self.initOverview ();
-
-						self.manageEnvironments = false;
-						break;
-
 					case 403:
 						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -231,25 +231,19 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 		self.edit = function () {
 			var environmentId = $stateParams.environmentId;
 
-			console.log(self.formData.name);
-			console.log(self.detail.name);
-
 			// ignore not-changed form
 			if (self.formData.name == self.detail.name && self.formData.description == self.detail.description && self.formData.apiEndpoint == self.detail.apiEndpoint)
 				return;
 
-
 			environmentsService.edit (environmentId, self.formData).then (function (data) {
+				$rootScope.refreshProjectOverview ();
+				self.loadDetail ();
+
+				$translate ('Úspěšně uloženo.').then (function (translation) {
+					notificationsService.push ('success', translation);
+				});
+			}, function (response) {
 				switch (data.status) {
-					case 200:
-						$rootScope.refreshProjectOverview ();
-						self.loadDetail ();
-
-						$translate ('Úspěšně uloženo.').then (function (translation) {
-							notificationsService.push ('success', translation);
-						});
-						break;
-
 					case 403:
 						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -274,11 +268,9 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 		self.delete = function (environmentId) {
 			if (confirm ($translate.instant ('Opravdu?'))) {
 				environmentsService.delete (environmentId).then (function (response) {
+					self.initOverview ();
+				}, function (response) {
 					switch (response.status) {
-						case 200:
-							self.initOverview ();
-							break;
-
 						case 403:
 							$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 								notificationsService.push ('alert', translation);
@@ -304,24 +296,20 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 			var environmentId = $stateParams.environmentId;
 
 			environmentsService.addUser (environmentId, self.addUser).then (function (response) {
+				self.loadDetail ();
+
+				self.manageUser = false;
+			}, function (response) {
 				switch (response.status) {
-					case 201:
-						self.loadDetail ();
-
-						self.manageUser = false;
-						break;
-
 					case 403:
 						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 							notificationsService.push ('alert', translation);
-							$state.go ('projects');
 						});
 						break;
 
 					default:
 						$translate ('Nelze vykonat požadavek').then (function (translation) {
 							notificationsService.push ('alert', translation);
-							$state.go ('projects');
 						});
 						break;
 				}
@@ -330,7 +318,7 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 
 		/**
 		 * Remove specified user from current environment
-		 * 
+		 *
 		 * @param userId
 		 */
 		self.removeUser = function (userId) {
@@ -338,11 +326,9 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 
 			if (confirm ($translate.instant ('Opravdu?'))) {
 				environmentsService.removeUser (environmentId, userId).then (function (response) {
+					self.loadDetail ();
+				}, function (response) {
 					switch (response.status) {
-						case 200:
-							self.loadDetail ();
-							break;
-
 						case 403:
 							$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 								notificationsService.push ('alert', translation);

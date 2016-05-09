@@ -21,31 +21,40 @@ module.exports = {
 		};
 
 		// create new test
-		tests.create (parameters).then (function (test) {
-			return res.created (test);
-		}, function (error) {
-			return res.serverError (error);
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.evinronmentId
+		}, function () {
+			tests.create (parameters).then (function (test) {
+				return res.created (test);
+			}, function (error) {
+				return res.serverError (error);
+			});
 		});
 	}
 	,
 
 	update: function (req, res) {
-		tests.find ({where: {id: req.testId}}).then (function (test) {
+		permissionChecker.canManage (req, res, {
+			testsId: req.testId,
+			roles: ['manager', 'tester']
+		}, function () {
+			tests.find ({where: {id: req.testId}}).then (function (test) {
 
-			var nextRun = req.param ('nextRun', false);
+				var nextRun = req.param ('nextRun', false);
 
-			test.update ({
-				name: req.param ('name'),
-				description: req.param ('description'),
-				runInterval: req.param ('runInterval'),
-				nextRun: nextRun ? new Date (nextRun) : null
-			}).then (function (edited) {
-				return res.ok (edited);
+				test.update ({
+					name: req.param ('name'),
+					description: req.param ('description'),
+					runInterval: req.param ('runInterval'),
+					nextRun: nextRun ? new Date (nextRun) : null
+				}).then (function (edited) {
+					return res.ok (edited);
+				});
+
+			}, function (error) {
+				return res.serverError (error);
 			});
-
-		}, function (error) {
-			return res.serverError (error);
-		})
+		});
 	},
 
 	/**
@@ -57,8 +66,10 @@ module.exports = {
 	 * @param res
 	 */
 	index: function (req, res) {
-		tests.findAll ({where: {environmentsId: req.environmentId}}).then (function (data) {
-			return res.ok (data);
+		permissionChecker.canManage (req, res, {environmentsId: req.environmentId}, function () {
+			tests.findAll ({where: {environmentsId: req.environmentId}}).then (function (data) {
+				return res.ok (data);
+			});
 		});
 	},
 
@@ -91,36 +102,40 @@ module.exports = {
 			})
 		}
 
-		tests.find (findCriterium).then (function (test) {
+		permissionChecker.canManage (req, res, {
+			testsId: req.testId,
+		}, function () {
+			tests.find (findCriterium).then (function (test) {
 
-			// does this test even exist?
-			if (test == null)
-				return res.notFound();
+				// does this test even exist?
+				if (test == null)
+					return res.notFound ();
 
-			// because headers may be assigned to project, environment or test itself, we need to select all these three possibilities
-			if (req.param ('withHeaders', false)) {
-				headers.findAll ({
-					where: {
-						$or: [
-							{testsId: req.testId},
-							{projectsId: req.projectId},
-							{environmentsId: req.environmentId}
-						]
-					}
-				}).then (function (allHeaders) {
-					test = test.toJSON ();
-					test.headers = allHeaders;
+				// because headers may be assigned to project, environment or test itself, we need to select all these three possibilities
+				if (req.param ('withHeaders', false)) {
+					headers.findAll ({
+						where: {
+							$or: [
+								{testsId: req.testId},
+								{projectsId: req.projectId},
+								{environmentsId: req.environmentId}
+							]
+						}
+					}).then (function (allHeaders) {
+						test = test.toJSON ();
+						test.headers = allHeaders;
+
+						return res.ok (test);
+					});
+				} else {
+					// no headers required, return current result
 
 					return res.ok (test);
-				});
-			} else {
-				// no headers required, return current result
+				}
 
-				return res.ok (test);
-			}
-
-		}, function (error) {
-			return res.serverError (error);
+			}, function (error) {
+				return res.serverError (error);
+			});
 		});
 	},
 
@@ -200,7 +215,8 @@ module.exports = {
 		}, function (error) {
 			return res.serverError (error);
 		});
-	},
+	}
+	,
 
 	/**
 	 * Assign request to test
@@ -211,25 +227,31 @@ module.exports = {
 	addRequest: function (req, res) {
 
 		// first, we need to find position for new request (may be used for some kind of sorting in the future)
-		requestsInTest.max ('position', {
-			where: {testsId: req.testId}
-		}).then (function (position) {
-			// undefined when adding new request
-			if (!position)
-				position = 0;
+		permissionChecker.canManage (req, res, {
+			testsId: req.testId,
+			roles: ['manager', 'tester']
+		}, function () {
+			requestsInTest.max ('position', {
+				where: {testsId: req.testId}
+			}).then (function (position) {
+				// undefined when adding new request
+				if (!position)
+					position = 0;
 
-			// assign to test - built-in method was throwing some weird errors
-			requestsInTest.create ({
-				testsId: req.testId,
-				requestsId: req.requestId,
-				position: parseInt (position) + 1
-			}).then (function (assignedTest) {
-				return res.created (assignedTest);
-			})
-		}, function (error) {
-			return res.serverError (error);
+				// assign to test - built-in method was throwing some weird errors
+				requestsInTest.create ({
+					testsId: req.testId,
+					requestsId: req.requestId,
+					position: parseInt (position) + 1
+				}).then (function (assignedTest) {
+					return res.created (assignedTest);
+				})
+			}, function (error) {
+				return res.serverError (error);
+			});
 		});
-	},
+	}
+	,
 
 	/**
 	 * Removes request from test
@@ -238,15 +260,21 @@ module.exports = {
 	 * @param res
 	 */
 	removeRequest: function (req, res) {
-		requestsInTest.destroy ({
-			where: {
-				testsId: req.testId,
-				requestsId: req.requestId
-			}
-		}).then (function () {
-			return res.ok ('deleted');
+		permissionChecker.canManage (req, res, {
+			testsId: req.testId,
+			roles: ['manager', 'tester']
+		}, function () {
+			requestsInTest.destroy ({
+				where: {
+					testsId: req.testId,
+					requestsId: req.requestId
+				}
+			}).then (function () {
+				return res.ok ('deleted');
+			});
 		});
-	},
+	}
+	,
 
 	/**
 	 * Add test into running queue
@@ -256,12 +284,18 @@ module.exports = {
 	 * @returns {*}
 	 */
 	run: function (req, res) {
-		testRunner.addToQueue ({id: req.testId}, console.error);
+		permissionChecker.canManage (req, res, {
+			testsId: req.testId,
+			roles: ['manager', 'tester']
+		}, function () {
+			testRunner.addToQueue ({id: req.testId}, console.error);
 
-		// do not wait until data are stored in database, suppose that everything went fine
+			// do not wait until data are stored in database, suppose that everything went fine
 
-		return res.ok ();
-	},
+			return res.ok ();
+		});
+	}
+	,
 
 	/**
 	 * Schedule test for running in the future.
@@ -272,19 +306,24 @@ module.exports = {
 	 * @param res
 	 */
 	scheduleRun: function (req, res) {
-		tests.find ({where: {id: req.testId}}).then (function (test) {
+		permissionChecker.canManage (req, res, {
+			testsId: req.testId,
+			roles: ['manager', 'tester']
+		}, function () {
+			tests.find ({where: {id: req.testId}}).then (function (test) {
 
-			var nextRun = req.param ('nextRun', null);
+				var nextRun = req.param ('nextRun', null);
 
-			test.update ({
-				runInterval: req.param ('runInterval', null),
-				nextRun: nextRun ? new Date (nextRun) : null
-			}).then (function (edit) {
-				return res.ok (edit);
-			}, function (err) {
-				return res.serverError (err);
-			})
-		})
+				test.update ({
+					runInterval: req.param ('runInterval', null),
+					nextRun: nextRun ? new Date (nextRun) : null
+				}).then (function (edit) {
+					return res.ok (edit);
+				}, function (err) {
+					return res.serverError (err);
+				});
+			});
+		});
 	}
 }
 ;

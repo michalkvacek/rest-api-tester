@@ -63,7 +63,7 @@
 								</div>
 
 								<div class="row">
-									<div class="column">
+									<div class="column" ng-if="currentProject.usersId == identity.id">
 										<label>
 											{{'Verze API' | translate}}
 											<select ng-show="versions.overview.length > 0"
@@ -77,8 +77,10 @@
 											</select>
 										</label>
 									</div>
-									<div class="column shrink align-bottom">
-										<a href="javascript:void(0)" class="button success" data-open="new-version">
+
+									<div class="column shrink align-bottom" ng-if="currentProject.usersId == identity.id">
+										<a href="javascript:void(0)" class="button success"
+											ng-click="versions.manageVersion = true; versions.formData.projectsId = request.environment.projectsId">
 											<i class="fi-plus"></i>
 										</a>
 									</div>
@@ -145,13 +147,15 @@
 										<label>
 											{{'Autentifikační token' | translate}}
 											<input type="text" ng-model="auths.formData.token">
-											<em>{{"Bude odesílán jako HTTP hlavička Authorization: Bearer *token*" | translate}}</em>
+											<em>{{"Bude odesílán jako HTTP hlavička Authorization: Bearer *token*" |
+												 translate}}</em>
 										</label>
 
 										<label>
 											{{'Query string parametr' | translate}}
 											<input type="text" ng-model="auths.formData.tokenParameter">
-											<em>{{"Pokud API očekává token jako parametr v URL, zadejte jeho jméno." | translate}}</em>
+											<em>{{"Pokud API očekává token jako parametr v URL, zadejte jeho jméno." |
+												 translate}}</em>
 										</label>
 									</div>
 
@@ -177,7 +181,8 @@
 										{{"Jméno obálky" | translate}}
 
 										<input type="text" ng-model="request.formData.envelope">
-										<em>{{'Obálka je objekt, do kterého se vloží níže definované parametry. ' | translate}} </em>
+										<em>{{'Obálka je objekt, do kterého se vloží níže definované parametry. ' |
+											 translate}} </em>
 
 									</label>
 
@@ -249,15 +254,18 @@
 										<td>{{header.name}}</td>
 										<td>{{header.value}}</td>
 										<td class="text-right">
-								<span ng-show="header.requestsId == request.formData.id">
-									<a href="javascript:void(0)"
-										ng-click="headers.manageHeaders = true; headers.formData = header">
-										<i class="fi-pencil"></i>
-									</a>
-									<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
-										<i class="fi-x"></i>
-									</a>
-								</span>
+											<span ng-show="header.projectsId != null"><em>{{'Definováno v nastavení projektu' | translate}}</em></span>
+											<span ng-show="header.environmentsId != null"><em>{{'Definováno v nastavení prostředí' | translate}}</em></span>
+
+											<span ng-show="header.requestsId == request.formData.id">
+												<a href="javascript:void(0)"
+													ng-click="headers.manageHeaders = true; headers.formData = header">
+													<i class="fi-pencil"></i>
+												</a>
+												<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
+													<i class="fi-x"></i>
+												</a>
+											</span>
 										</td>
 									</tr>
 								</table>

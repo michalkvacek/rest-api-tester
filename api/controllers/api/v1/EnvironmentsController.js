@@ -45,7 +45,7 @@ module.exports = {
 
 	/**
 	 * Get detail of selected environment
-	 * 
+	 *
 	 * @param req
 	 * @param res
 	 */
@@ -70,10 +70,12 @@ module.exports = {
 			});
 		}
 
-		environments.find (findCriterium).then (function (environments) {
-			return res.json (environments);
-		}).catch (function (err) {
-			return res.serverError (err);
+		permissionChecker.canManage (req, res, {environmentsId: req.environmentId}, function () {
+			environments.find (findCriterium).then (function (environments) {
+				return res.json (environments);
+			}).catch (function (err) {
+				return res.serverError (err);
+			});
 		});
 	},
 
@@ -96,38 +98,58 @@ module.exports = {
 		};
 
 		// create new environment with data defined above
-		environments.create (parameters).then (function (environment) {
+		permissionChecker.canManage (req, res, {
+			projectsId: req.projectId,
+			roles: ['manager']
+		}, function () {
+			environments.create (parameters).then (function (environment) {
 
-			// redirect or send json response with information about successfull creating environment
-			return res.created (environment);
-		}).catch (function (error) {
-			return res.serverError (error);
-		})
+				// redirect or send json response with information about successfull creating environment
+				return res.created (environment);
+			}).catch (function (error) {
+				return res.serverError (error);
+			});
+		});
 	},
 
+	/**
+	 * Updates given environment
+	 *
+	 * @param req
+	 * @param res
+	 */
 	update: function (req, res) {
 		environments.find ({where: {id: req.environmentId}}).then (function (environment) {
-
-			environment.update ({
-				name: req.param ('name'),
-				description: req.param ('description'),
-				apiEndpoint: req.param ('apiEndpoint')
-			}).then (function (edit) {
-				return res.ok (environment);
+			permissionChecker.canManage (req, res, {
+				environmentsId: req.environmentId,
+				roles: ['manager']
+			}, function () {
+				environment.update ({
+					name: req.param ('name'),
+					description: req.param ('description'),
+					apiEndpoint: req.param ('apiEndpoint')
+				}).then (function (edit) {
+					return res.ok (environment);
+				}, function (error) {
+					return res.notFound (error);
+				});
 			}, function (error) {
 				return res.notFound (error);
 			});
-		}, function (error) {
-			return res.notFound (error);
 		});
 	},
 
 	delete: function (req, res) {
-		environments.findOne ({where: {id: req.environmentId}}).then (function (env) {
-			env.destroy ();
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.environmentId,
+			roles: ['manager']
+		}, function () {
+			environments.findOne ({where: {id: req.environmentId}}).then (function (env) {
+				env.destroy ();
 
-			return res.ok ('deleted');
-		})
+				return res.ok ('deleted');
+			});
+		});
 	},
 
 	deleteUser: function (req, res) {
@@ -139,15 +161,20 @@ module.exports = {
 		if (userId == req.token.id)
 			return res.forbidden ('cannot delete self');
 
-		userBelongsToEnvironment.find ({
-			where: {
-				usersId: userId,
-				environmentsId: req.environmentId
-			}
-		}).then (function (data) {
-			data.destroy ();
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.environmentId,
+			roles: ['manager']
+		}, function () {
+			userBelongsToEnvironment.find ({
+				where: {
+					usersId: userId,
+					environmentsId: req.environmentId
+				}
+			}).then (function (data) {
+				data.destroy ();
 
-			return res.ok ('deleted');
+				return res.ok ('deleted');
+			});
 		});
 	},
 
@@ -158,12 +185,16 @@ module.exports = {
 	 * @param res
 	 */
 	runTests: function (req, res) {
+		permissionChecker.canManage (req, res, {
+			environmentsId: req.environmentId,
+			roles: ['manager', 'tester']
+		}, function () {
+			testRunner.addToQueue ({environmentsId: req.environmentId}, function (err) {
+				console.log (err);
+			});
 
-		testRunner.addToQueue ({environmentsId: req.environmentId}, function (err) {
-			console.log (err);
+			return res.ok ();
 		});
-
-		return res.ok ();
 	}
 };
 

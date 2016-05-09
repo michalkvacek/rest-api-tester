@@ -1,5 +1,8 @@
 <div class="row" ng-controller="UsersController as user">
 	<div class="column with-shadow">
+
+		<h3>{{"Editace profilu" | translate}}</h3>
+
 		<form ng-submit="user.edit()" ng-init="user.initProfile()">
 			<label>
 				{{'Jméno' | translate}}
@@ -17,8 +20,8 @@
 				{{'Jazyk' | translate}}
 
 				<select ng-model="user.profile.language">
-					<option value="cs">Czech</option>
-					<option value="en">English</option>
+					<option value="cs">Čeština</option>
+					<!--<option value="en">English</option>-->
 				</select>
 			</label>
 

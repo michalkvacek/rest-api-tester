@@ -20,10 +20,7 @@ window.app.controller ('RequestsController', [
 		self.formData.httpMethod = 'GET';
 
 		// prevent multiple loading (and reinitializing) the same models
-		self.initiliazed = {
-			detail: false,
-			environmentOverview: false
-		};
+		self.initiliazed = {detail: []};
 
 		/**
 		 * Load request detail
@@ -39,34 +36,40 @@ window.app.controller ('RequestsController', [
 			if (typeof updateBreadcrumbs == 'undefined')
 				updateBreadcrumbs = true;
 
-			if (self.initiliazed.detail == id)
+			if (self.initiliazed.detail.indexOf(id) >= 0)
 				return;
 
 			requestsService.detail (id, testId).then (function (response) {
+				var request = response.data;
+
+				self.detail[id] = request;
+				self.current = self.detail[id];
+				self.initiliazed.detail.push(id);
+
+				if (updateBreadcrumbs)
+					$translate ('Požadavek').then (function (translatedRequest) {
+						$rootScope.breadcrumbs = [{
+							label: translatedRequest + ': ' + request.name,
+							href: $state.href ('request', {requestId: request.id})
+						}];
+					});
+
+				$rootScope.setEnvironment (request.environmentsId);
+
+			}, function (response) {
 				switch (response.status) {
-					case 200:
-						var request = response.data;
-
-						self.detail[id] = request;
-						self.current = self.detail[id];
-						self.initiliazed.detail = id;
-
-						if (updateBreadcrumbs)
-							$translate ('Požadavek').then (function (translatedRequest) {
-								$rootScope.breadcrumbs = [{
-									label: translatedRequest + ': ' + request.name,
-									href: $state.href ('request', {requestId: request.id})
-								}];
-							});
-
-						$rootScope.setEnvironment (request.environmentsId);
-						break;
 					case 404:
 						$translate ('Požadovaný request neexistuje.').then (function (translation) {
 							notificationsService.push ('alert', translation);
 							$state.go ('projects');
 						});
 
+						break;
+					case 403:
+						$translate ('Pro zobrazení tohoho požadavku nemáte dostatečné oprávnění.').then (function (translation) {
+							notificationsService.push ('alert', translation);
+							$state.go ('projects');
+						});
 						break;
 					default:
 						$translate ($translate ('Nelze načíst požadovaný request. Status odpovědi ze serveru: :statusCode', {statusCode: response.status})).then (function (translation) {
@@ -84,33 +87,36 @@ window.app.controller ('RequestsController', [
 		self.initDetailForEdit = function () {
 			var id = $stateParams.requestId;
 
+			if (angular.equals(self.formData, self.detail))
+				return;
+
 			requestsService.detail (id).then (function (response) {
+					var request = response.data;
+
+					self.environment = response.data.environment;
+					delete response.data.environment;
+
+					// create breadcrumbs links
+					$rootScope.breadcrumbs = [
+						{
+							label: $translate.instant ('Požadavek') + ': ' + request.name,
+							href: $state.href ('request', {requestId: request.id})
+						},
+						{
+							label: $translate.instant ('Editor'),
+							href: $state.href ('request_editor', {requestId: request.id})
+						}
+					];
+
+					$rootScope.setEnvironment (request.environmentsId);
+
+					self.detail = request;
+					self.formData = angular.copy (response.data);
+					self.formData.sendInEnvelope = self.formData.envelope != null;
+					self.formData.versionsId = ""+self.formData.versionsId;
+					self.formData.authenticationsId = ""+self.formData.authenticationsId;
+				}, function (response) {
 					switch (response.status) {
-						case 200:
-							var request = response.data;
-
-							self.environment = response.data.environment;
-							delete response.data.environment;
-
-							// create breadcrumbs links
-							$rootScope.breadcrumbs = [
-								{
-									label: $translate.instant ('Požadavek') + ': ' + request.name,
-									href: $state.href ('request', {requestId: request.id})
-								},
-								{
-									label: $translate.instant ('Editor'),
-									href: $state.href ('request_editor', {requestId: request.id})
-								}
-							];
-
-							$rootScope.setEnvironment (request.environmentsId);
-
-							self.detail = request;
-							self.formData = angular.copy (response.data);
-							self.formData.sendInEnvelope = self.formData.envelope != null;
-							break;
-
 						case 404:
 							$translate ('Požadovaný request neexistuje.').then (function (translation) {
 								notificationsService.push ('alert', translation);
@@ -139,10 +145,10 @@ window.app.controller ('RequestsController', [
 				requestId = $stateParams.requestId;
 
 			requestsService.lastResponse (requestId).then (function (response) {
+				self.lastResponse = response.data;
+			}, function (response) {
 				switch (response.status) {
-					case 200:
-						self.lastResponse = response.data;
-						break;
+
 					case 404:
 						$translate ('Požadovaný request neexistuje.').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -166,19 +172,14 @@ window.app.controller ('RequestsController', [
 		 * @param options
 		 */
 		self.initEnvironmentOverview = function (environmentId, options) {
-
-			if (self.initiliazed.environmentOverview)
-				return;
-
 			if (typeof options == 'undefined')
 				options = {};
 
 			requestsService.overview (environmentId, options).then (function (response) {
+				self.environmentRequests = response.data;
+			}, function (response) {
 				switch (response.status) {
-					case 200:
-						self.environmentRequests = response.data;
-						self.initiliazed.environmentOverview = true;
-						break;
+
 					case 404:
 						$translate ('Požadované prostředí neexistuje. Vyberte prosím jiné.').then (function (translation) {
 							notificationsService.push ('alert', translation);
@@ -190,7 +191,6 @@ window.app.controller ('RequestsController', [
 						});
 						break;
 				}
-
 			});
 		};
 
@@ -210,16 +210,14 @@ window.app.controller ('RequestsController', [
 
 			// try to create new request
 			requestsService.create (environmentId, self.formData).then (function (response) {
-				if (response.status == 201) {
-					$translate ('Úspěšně vytvořeno').then (function (translation) {
-						notificationsService.push ('success', translation);
-					});
-					self.addRequestModal = false;
-				} else {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-				}
+				$translate ('Úspěšně vytvořeno').then (function (translation) {
+					notificationsService.push ('success', translation);
+				});
+				self.addRequestModal = false;
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -237,18 +235,16 @@ window.app.controller ('RequestsController', [
 				self.formData.envelope = null;
 
 			requestsService.edit (id, self.formData).then (function (response) {
-				if (response.status != 200) {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-				}
-
-				self.initDetailForEdit();
+				self.initDetailForEdit ();
 
 				$translate ('Úspěšně uloženo.').then (function (translation) {
 					notificationsService.push ('success', translation);
 				});
-			})
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
+			});
 		};
 
 		/**
@@ -263,15 +259,14 @@ window.app.controller ('RequestsController', [
 
 			if (confirm ($translate.instant ('Opravdu?')))
 				requestsService.delete (requestId).then (function (response) {
-					if (response.status == 200) {
-						notificationsService.push ('success', $translate.instant ('Požadavek úspěšně smazán'));
+					notificationsService.push ('success', $translate.instant ('Požadavek úspěšně smazán'));
 
-						$state.go ('tests', {environmentId: environmentId});
-					} else {
-						$translate ('Nelze vykonat požadavek').then (function (translation) {
-							notificationsService.push ('alert', translation);
-						});
-					}
+					$state.go ('tests', {environmentId: environmentId});
+
+				}, function (response) {
+					$translate ('Nelze vykonat požadavek').then (function (translation) {
+						notificationsService.push ('alert', translation);
+					});
 				});
 		};
 
@@ -284,19 +279,16 @@ window.app.controller ('RequestsController', [
 			var requestId = $stateParams.requestId;
 
 			httpParametersService.edit (self.httpParametersData.requestsId, self.httpParametersData.id, self.httpParametersData).then (function (response) {
-				if (response.status != 200)
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-
 				self.initDetailForEdit ();
-
 				self.manageHttpParameters = false;
 
 				$translate ('Úspěšně uloženo').then (function (translation) {
 					notificationsService.push ('success', translation);
 				});
-
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
 			});
 		};
 
@@ -311,6 +303,10 @@ window.app.controller ('RequestsController', [
 				httpParametersService.delete (requestId, id).then (function (response) {
 					// update test detail
 					self.initDetailForEdit ();
+				}, function (response) {
+					$translate ('Nelze vykonat požadavek').then (function (translation) {
+						notificationsService.push ('alert', translation);
+					});
 				});
 			}
 		};
@@ -322,22 +318,17 @@ window.app.controller ('RequestsController', [
 			var requestId = $stateParams.requestId;
 
 			httpParametersService.create (requestId, self.httpParametersData).then (function (response) {
+				self.initDetailForEdit ();
+				self.manageHttpParameters = false;
 
-				if (response.status == 201) {
-
-					self.initDetailForEdit ();
-
-					self.manageHttpParameters = false;
-
-					$translate ('Úspěšně vytvořeno').then (function (translation) {
-						notificationsService.push ('success', translation);
-					});
-				} else {
-					$translate ('Nelze vykonat požadavek').then (function (translation) {
-						notificationsService.push ('alert', translation);
-					});
-				}
-			})
+				$translate ('Úspěšně vytvořeno').then (function (translation) {
+					notificationsService.push ('success', translation);
+				});
+			}, function (response) {
+				$translate ('Nelze vykonat požadavek').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
+			});
 		};
 
 		return self;

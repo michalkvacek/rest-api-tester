@@ -1,8 +1,8 @@
-<div class="row">
-	<div class="column">
-		<h3>Login</h3>
+<div class="row align-center" ng-controller="LoginController as login">
+	<div class="column with-shadow medium-6 large-4">
+		<h3>{{"Login" | translate}}</h3>
 
-		<form ng-controller="LoginController as login" ng-submit="login.localAuth({redirect: true})">
+		<form ng-submit="login.localAuth({redirect: true})">
 			<label>
 				{{'E-mail' | translate}}
 				<input type="email" name="email" ng-model="login.formData.email" />
@@ -14,7 +14,29 @@
 				<input type="password" name="password" ng-model="login.formData.password" />
 			</label>
 
-			<button type="submit" class="submit button">Login</button>
+			<p class="text-center">
+				<a ng-click="login.forgottePasswordModal = true; login.forgottenPassword.email = login.formData.email">
+					{{"Zapomenuté heslo" | translate}}
+				</a>
+			</p>
+
+			<button type="submit" class="submit button expanded">{{"Login" | translate}}</button>
 		</form>
 	</div>
+
+	<modal show="login.forgottePasswordModal">
+
+		<h3>{{"Zapomenuté heslo" | translate}}</h3>
+
+		<form ng-submit="login.sendForgottenPassword()">
+
+			<label>
+				{{'E-mail' | translate}}
+				<input type="email" name="email" ng-model="login.forgottenPassword.email" />
+			</label>
+
+			<button type="submit" class="submit button expanded">{{"Odeslat nové heslo" | translate}}</button>
+
+		</form>
+	</modal>
 </div>

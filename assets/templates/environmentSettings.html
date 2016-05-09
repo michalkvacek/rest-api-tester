@@ -31,9 +31,9 @@
 				</li>
 			</ul>
 
-			<div class="tabs-content">
+			<div class="tabs-content" ng-if="environment.detail.id">
 				<div class="tabs-panel is-active" id="basic-info">
-					<form ng-submit="environment.edit()" ng-if="environment.detail.id">
+					<form ng-submit="environment.edit()">
 						<label>
 							{{'Jméno' | translate}}
 
@@ -56,33 +56,32 @@
 					</form>
 				</div>
 
-				<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers" ng-init="headers.initOverview({projectId: environment.detail.projectsId, environmentId: environment.detail.id})">
+				<div class="tabs-panel" id="headers" ng-controller="HeadersController as headers">
 
 					<div class="callout warning" ng-show="emptyObject(headers.overview)">
 						{{'Žádný záznam' | translate}}
 					</div>
 
-					<div class="content-holder">
+					<div class="content-holder"
+						  ng-init="headers.initOverview({projectId: environment.detail.projectsId, environmentId: environment.detail.id})">
 						<table ng-if="environment.detail.id"
 								 ng-show="!emptyObject(headers.overview)">
 							<tr ng-repeat="header in headers.overview">
 								<td>{{header.name}}</td>
 								<td>{{header.value}}</td>
 								<td class="text-right">
-
-
 									<span ng-show="header.projectsId != null"><em>{{'Definováno v nastavení projektu' | translate}}</em></span>
 
-								<span ng-show="header.environmentsId == environment.detail.id">
-									<a href="javascript:void(0)"
-										data-open="edit-header"
-										ng-click="headers.formData = header">
-										<i class="fi-pencil"></i>
-									</a>
-									<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
-										<i class="fi-x"></i>
-									</a>
-								</span>
+									<span ng-show="header.environmentsId == environment.detail.id">
+										<a href="javascript:void(0)"
+											data-open="edit-header"
+											ng-click="headers.manageHeaders = true; headers.formData = header">
+											<i class="fi-pencil"></i>
+										</a>
+										<a href="javascript:void(0)" ng-click="headers.delete(header.id)">
+											<i class="fi-x"></i>
+										</a>
+									</span>
 								</td>
 							</tr>
 						</table>
@@ -160,7 +159,7 @@
 								<select ng-model="environment.addUser.role">
 									<option value="manager">{{'Manažer' | translate}}</option>
 									<option value="tester">{{'Tester' | translate}}</option>
-									<option value="viewer">{{'Host' | translate}}</option>
+									<option value="host">{{'Host' | translate}}</option>
 								</select>
 							</label>
 

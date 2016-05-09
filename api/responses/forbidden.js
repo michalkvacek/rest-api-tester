@@ -28,6 +28,8 @@ module.exports = function forbidden (data, options) {
   }
   else sails.log.verbose('Sending 403 ("Forbidden") response');
 
+	data = "forbidde";
+
   // Only include errors in response if application environment
   // is not set to 'production'.  In production, we shouldn't
   // send back any identifying information about errors.

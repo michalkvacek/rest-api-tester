@@ -18,9 +18,7 @@ window.app.controller ('AuthenticationsController', ['$scope', '$translate', 'no
 		$scope.setEnvironment (environmentId);
 
 		authenticationsService.overview (environmentId).then (function (response) {
-			if (response.status == 200) {
-				self.overview = response.data;
-			}
+			self.overview = response.data;
 		});
 	};
 
@@ -31,11 +29,9 @@ window.app.controller ('AuthenticationsController', ['$scope', '$translate', 'no
 	 */
 	self.delete = function (authenticationId) {
 		authenticationsService.delete (self.environmentId, authenticationId).then (function (response) {
-
+			self.init (self.environmentId);
+		}, function (response) {
 			switch (response.status) {
-				case 200:
-					self.init (self.environmentId);
-					break;
 				case 403:
 					$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 						notificationsService.push ('alert', translation);
@@ -47,7 +43,6 @@ window.app.controller ('AuthenticationsController', ['$scope', '$translate', 'no
 					});
 					break;
 			}
-
 		});
 	};
 
@@ -56,12 +51,12 @@ window.app.controller ('AuthenticationsController', ['$scope', '$translate', 'no
 	 */
 	self.create = function () {
 		authenticationsService.create (self.formData.environmentsId, self.formData).then (function (response) {
-			switch (response.status) {
-				case 201:
-					self.init (self.formData.environmentsId);
+			self.init (self.formData.environmentsId);
 
-					self.manageAuth = false;
-					break;
+			self.manageAuth = false;
+		}, function (response) {
+			switch (response.status) {
+
 				case 403:
 					$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 						notificationsService.push ('alert', translation);
@@ -81,12 +76,11 @@ window.app.controller ('AuthenticationsController', ['$scope', '$translate', 'no
 	 */
 	self.edit = function () {
 		authenticationsService.edit (self.formData.environmentsId, self.formData.id, self.formData).then (function (response) {
-			switch (response.status) {
-				case 200:
-					self.init (self.formData.environmentsId);
+			self.init (self.formData.environmentsId);
 
-					self.manageAuth = false;
-					break;
+			self.manageAuth = false;
+		}, function (response) {
+			switch (response.status) {
 				case 403:
 					$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
 						notificationsService.push ('alert', translation);
