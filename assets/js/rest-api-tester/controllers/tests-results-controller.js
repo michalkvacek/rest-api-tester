@@ -10,7 +10,7 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 
 		// list of tests from last self.lastTestsAge hours
 		$rootScope.testList = [];
-		$rootScope.testAddedOrInProgress = true;
+		$rootScope.testAddedOrInProgress = false;
 		$rootScope.currentTestResult = false;
 
 		var lastTestResults = {};
