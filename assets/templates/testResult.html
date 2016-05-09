@@ -1,7 +1,7 @@
 <div ng-controller="TestsResultsController as testResult">
 	<div class="row content" ng-init="testResult.init()">
 		<div class="column with-shadow" ng-switch="testResult.test.status">
-			<h3><a ui-sref="test_detail({testId: testResult.testsId})">{{testResult.test.testName}}</a>
+			<h3><a ui-sref="test_detail({testId: testResult.test.testsId})">{{testResult.test.testName}}</a>
 				<small>({{'výsledky z' | translate}} {{testResult.test.createdAt | date : 'medium'}})</small>
 			</h3>
 

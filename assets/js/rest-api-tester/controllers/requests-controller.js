@@ -88,9 +88,6 @@ window.app.controller ('RequestsController', [
 		self.initDetailForEdit = function () {
 			var id = $stateParams.requestId;
 
-			if (angular.equals (self.formData, self.originalRequest))
-				return;
-
 			requestsService.detail (id).then (function (response) {
 					var request = response.data;
 
@@ -234,7 +231,7 @@ window.app.controller ('RequestsController', [
 			var id = $stateParams.requestId;
 
 			// ignore not-changed form
-			if (angular.equals (self.formData, self.detail))
+			if (angular.equals (self.formData, self.originalRequest))
 				return;
 
 			if (!self.formData.sendInEnvelope)
