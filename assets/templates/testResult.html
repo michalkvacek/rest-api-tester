@@ -1,11 +1,16 @@
 <div ng-controller="TestsResultsController as testResult">
 	<div class="row content" ng-init="testResult.init()">
-		<div class="column with-shadow">
-			<h3>{{testResult.test.testName}}
+		<div class="column with-shadow" ng-switch="testResult.test.status">
+			<h3><a ui-sref="test_detail({testId: testResult.testsId})">{{testResult.test.testName}}</a>
 				<small>({{'výsledky z' | translate}} {{testResult.test.createdAt | date : 'medium'}})</small>
 			</h3>
 
 			{{testResult.test.testDescription}}
+
+			<span ng-switch-when="success" class="label success fi-check"> {{'Prochází' | translate}}</span>
+			<span ng-switch-when="failed" class="label alert fi-x"> {{'Neprochází' | translate}}</span>
+			<span ng-switch-when="waiting_for_response" class="label primary fi-clock"> {{'Čeká na zpracování' | translate}}</span>
+			<span ng-switch-when="evaluating" class="label warning fi-eye"> {{'Zpracovává se' | translate}}</span>
 		</div>
 	</div>
 
@@ -70,6 +75,18 @@
 											<a ui-sref="request({requestId: response.requestsId})">{{response.requestName}}</a>
 										</h4>
 
+										<a class="button success tiny" ui-sref="request({requestId: response.requestsId})">
+											<i class="fi-magnifying-glass"></i>
+											{{'Detail' | translate}}
+										</a>
+
+										<a class="button primary tiny"
+											ui-sref="request_editor({requestId: response.requestsId})"
+											ng-if="identity.roles[currentEnvironment.id] != 'host'">
+											<i class="fi-pencil"></i>
+											{{'Upravit' | translate}}
+										</a>
+
 										<div class="row">
 											<div class="column">
 												<h5>{{'HTTP hlavičky požadavku' | translate}}</h5>
@@ -97,43 +114,56 @@
 										</div>
 									</div>
 									<div class="tabs-panel is-active" ng-attr-id="{{'assertions-'+response.id}}">
-										<table>
-											<thead>
-											<tr>
-												<th></th>
-												<th>{{'Jméno validátoru' | translate}}</th>
-												<th>{{'Vlastnost objektu' | translate}}</th>
-												<th>{{'Přijatá hodnota' | translate}}</th>
-												<th></th>
+										<div class="content-holder">
+											<table>
+												<thead>
+												<tr>
+													<th></th>
+													<th>{{'Jméno validátoru' | translate}}</th>
+													<th>{{'Vlastnost objektu' | translate}}</th>
+													<th>{{'Přijatá hodnota' | translate}}</th>
+													<th></th>
 
-												<th>{{'Očekávaná hodnota' | translate}}</th>
-											</tr>
-											</thead>
-											<tbody>
-											<tr ng-repeat="assert in response.evaluatedAssertions">
-												<td><span ng-class="assert.passed ? 'success fi-check' : 'fi-x alert'"
-															 class="badge"></span></td>
-												<td>{{assert.assertionName | translate}}</td>
-												<td>{{assert.assertionProperty}}</td>
-												<td>
-													{{assert.recievedValue | limitTo:70}}{{assert.recievedValue.length > 70 ? '...' :
-													''}}
-												</td>
+													<th>{{'Očekávaná hodnota' | translate}}</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr ng-repeat="assert in response.evaluatedAssertions">
+													<td><span ng-class="assert.passed ? 'success fi-check' : 'fi-x alert'"
+																 class="badge"></span></td>
+													<td>{{assert.assertionName | translate}}</td>
+													<td>{{assert.assertionProperty}}</td>
+													<td>
+														{{assert.recievedValue | limitTo:70}}{{assert.recievedValue.length > 70 ?
+														'...' :
+														''}}
+													</td>
 
-												<td ng-switch="assert.assertionComparator">
-													<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
-													<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
-													<span ng-switch-when="gt">{{'Více než' | translate}}</span>
-													<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
-													<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
-													<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
-													<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
-													<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
-												</td>
-												<td>{{assert.assertionExpectedValue}}</td>
-											</tr>
-											</tbody>
-										</table>
+													<td ng-switch="assert.assertionComparator">
+														<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
+														<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
+														<span ng-switch-when="gt">{{'Více než' | translate}}</span>
+														<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
+														<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
+														<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
+														<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
+														<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
+													</td>
+													<td>{{assert.assertionExpectedValue}}</td>
+												</tr>
+												</tbody>
+											</table>
+
+										</div>
+										<div class="text-right">
+											<a class="button primary tiny"
+												ui-sref="request_editor({requestId: response.requestsId})"
+												ng-if="identity.roles[currentEnvironment.id] != 'host'">
+												<i class="fi-pencil"></i>
+												{{'Upravit validátory v editoru requestu' | translate}}
+											</a>
+										</div>
+
 										<div class="clearfix"></div>
 									</div>
 									<div class="tabs-panel" ng-attr-id="{{'response-'+response.id}}">
@@ -143,7 +173,8 @@
 												<h5>{{'Status' | translate}}</h5>
 												<ul>
 													<li>{{'Status' | translate}} code: {{response.responseCode}}</li>
-													<li>{{'Velikost odpovědi' | translate}}: {{response.responseSize / 1024 | number:
+													<li>{{'Velikost odpovědi' | translate}}: {{response.responseSize / 1024 |
+														 number:
 														 1}} kB
 													</li>
 													<li>{{'Čas odpovědi' | translate}}: {{response.responseTime}} ms</li>

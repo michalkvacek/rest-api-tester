@@ -15,6 +15,7 @@ window.app.controller ('RequestsController', [
 		self.headersData = {};
 		self.headers = {};
 		self.httpParameters = {};
+		self.originalRequest = {};
 
 		// set some default values
 		self.formData.httpMethod = 'GET';
@@ -36,7 +37,7 @@ window.app.controller ('RequestsController', [
 			if (typeof updateBreadcrumbs == 'undefined')
 				updateBreadcrumbs = true;
 
-			if (self.initiliazed.detail.indexOf(id) >= 0)
+			if (self.initiliazed.detail.indexOf (id) >= 0)
 				return;
 
 			requestsService.detail (id, testId).then (function (response) {
@@ -44,7 +45,7 @@ window.app.controller ('RequestsController', [
 
 				self.detail[id] = request;
 				self.current = self.detail[id];
-				self.initiliazed.detail.push(id);
+				self.initiliazed.detail.push (id);
 
 				if (updateBreadcrumbs)
 					$translate ('Požadavek').then (function (translatedRequest) {
@@ -87,7 +88,7 @@ window.app.controller ('RequestsController', [
 		self.initDetailForEdit = function () {
 			var id = $stateParams.requestId;
 
-			if (angular.equals(self.formData, self.detail))
+			if (angular.equals (self.formData, self.originalRequest))
 				return;
 
 			requestsService.detail (id).then (function (response) {
@@ -113,8 +114,11 @@ window.app.controller ('RequestsController', [
 					self.detail = request;
 					self.formData = angular.copy (response.data);
 					self.formData.sendInEnvelope = self.formData.envelope != null;
-					self.formData.versionsId = ""+self.formData.versionsId;
-					self.formData.authenticationsId = ""+self.formData.authenticationsId;
+					self.formData.versionsId = "" + self.formData.versionsId;
+					self.formData.authenticationsId = "" + self.formData.authenticationsId;
+
+					self.originalRequest = angular.copy (self.formData);
+
 				}, function (response) {
 					switch (response.status) {
 						case 404:
@@ -207,6 +211,8 @@ window.app.controller ('RequestsController', [
 
 			self.formData.environmentsId = environmentId;
 			self.formData.testsId = testId;
+
+			self.formData = {};
 
 			// try to create new request
 			requestsService.create (environmentId, self.formData).then (function (response) {

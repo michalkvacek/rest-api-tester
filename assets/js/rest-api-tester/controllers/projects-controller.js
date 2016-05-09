@@ -94,6 +94,7 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 			projectsService.create (self.formData).then (function (response) {
 				self.initOverview ();
 				$rootScope.reinitIdentity ();
+				self.formData = {};
 				self.newProjectWindow = false;
 			}, function (response) {
 				$translate ('Nelze vykonat požadavek').then (function (translation) {

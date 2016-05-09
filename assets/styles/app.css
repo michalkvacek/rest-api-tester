@@ -18,8 +18,16 @@
 	position: fixed;
 	top: 0;
 	right: 0;
-	width: 25%;
 	font-size: 85%;
+}
+
+.menu .environment {
+	font-size: 90%;
+	font-style: italic;
+}
+
+.dropdown.menu.vertical > li.opens-right > a::after {
+	border-color:transparent transparent transparent white;
 }
 
 .notifications .notification {
@@ -99,8 +107,8 @@ table .button {
 	margin: 0;
 }
 
-.project {
-	min-width: 17em;
+.project-overview .project {
+	min-width: 23em;
 }
 
 .curson-pointer {
@@ -175,10 +183,14 @@ li.separator {
 	height: 1em;
 }
 
+.user-profile:hover {
+	text-decoration: underline;
+}
+
 .user-profile img {
 	border: solid 1px;
 	border-radius: 50%;
-	margin: .3em;
+	margin: 0 .3em;
 }
 
 .test-results {

@@ -6,6 +6,7 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 		self.formData = {};
 		self.overview = {};
 		self.addUser = {};
+		self.manageEnvironments = false;
 
 		$rootScope.enableLoadingDashboardTests = false;
 		$rootScope.dashboardTests = [];
@@ -202,8 +203,9 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 
 			environmentsService.create (projectId, self.formData).then (function (response) {
 				self.initOverview ();
-
+				$rootScope.refreshProjectOverview();
 				$rootScope.reinitIdentity ();
+				self.formData = {};
 
 				self.manageEnvironments = false;
 			}, function (response) {

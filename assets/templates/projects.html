@@ -1,5 +1,7 @@
-<div class="content row">
-	<div ng-show="!projects.overview.length" class="column callout warning text-center">
+<!--Controller defined in layout-->
+
+<div ng-show="!projects.overview.length">
+	<div class="column callout warning text-center">
 		<p>
 			{{"Neexistuje žádný projekt, se kterým by bylo možné pracovat." | translate}}
 		</p>
@@ -11,70 +13,73 @@
 			</a>
 		</p>
 	</div>
+</div>
 
-	<div class="project-overview row" data-equalizer>
-		<div class="column no-padding" ng-show="projects.overview.length"  ng-repeat="project in projects.overview">
-			<div class="with-shadow project text-center has-controls">
-				<div class="content" data-equalizer-watch>
-					<h3><a ui-sref="dashboard({projectId: project.id})">{{project.name}}</a></h3>
+<div class="project-overview row" data-equalizer>
+	<div class="column no-padding" ng-show="projects.overview.length" ng-repeat="project in projects.overview">
+		<div class="with-shadow project text-center has-controls">
+			<div class="content" data-equalizer-watch>
+				<h3><a ui-sref="dashboard({projectId: project.id})">{{project.name}}</a></h3>
 
-					<p class="description">
-						{{project.description}}
-					</p>
+				<p class="description">
+					{{project.description}}
+				</p>
 
-					<p class="column environments">
+				<p class="column environments">
 						<span ng-repeat="environment in project.environments">
 							<a class="label curson-pointer"
 								ui-sref="tests({environmentId: environment.id})">{{environment.name}}</a>
 						</span>
-						<span ng-show="!project.environments.length" class="label secondary">{{"Žádné prostředí" | translate}}</span>
-					</p>
-				</div>
-
-				<div class="row align-center controls">
-					<a ui-sref="dashboard({projectId: project.id})" class="button primary">
-						<i class="fi-graph-trend"></i>
-						{{"Přehled prostředí" | translate}}
-					</a>
-					&nbsp;
-
-					<a ui-sref="projects_settings({projectId: project.id})" ng-if="identity.id == project.usersId" class="button warning">
-						<i class="fi-wrench"></i>
-						{{"Nastavení" | translate}}
-					</a>
-				</div>
+					<span ng-show="!project.environments.length"
+							class="label secondary">{{"Žádné prostředí" | translate}}</span>
+				</p>
 			</div>
 
-			<script ng-if="$index > 0 && $last">
-				$ (function () {
-					setTimeout (function () {
-						Foundation.reInit ('equalizer');
-					}, 500);
-				});
-			</script>
+			<div class="row align-center controls">
+				<a ui-sref="dashboard({projectId: project.id})" class="button primary">
+					<i class="fi-graph-trend"></i>
+					{{"Přehled prostředí" | translate}}
+				</a>
+				&nbsp;
+
+				<a ui-sref="projects_settings({projectId: project.id})" ng-if="identity.id == project.usersId"
+					class="button warning">
+					<i class="fi-wrench"></i>
+					{{"Nastavení" | translate}}
+				</a>
+			</div>
 		</div>
+
+		<script ng-if="$index > 0 && $last">
+			$ (function () {
+				setTimeout (function () {
+					Foundation.reInit ('equalizer');
+				}, 500);
+			});
+		</script>
 	</div>
+</div>
 
-	<a ng-click="projects.newProjectWindow = true" class="button success material-add-button"><i class="fi-plus"></i></a>
+<a ng-click="projects.newProjectWindow = true" class="button success material-add-button"><i class="fi-plus"></i></a>
 
-	<modal show="projects.newProjectWindow">
-		<h3>{{"Nový projekt" | translate}}</h3>
+<modal show="projects.newProjectWindow">
+	<h3>{{"Nový projekt" | translate}}</h3>
 
-		<form ng-submit="projects.create()">
-			<label class="required">
-				{{'Jméno' | translate}}
+	<form ng-submit="projects.create()">
+		<label class="required">
+			{{'Jméno' | translate}}
 
-				<input type="text" placeholder="{{'Jméno projektu' | translate}}" required name="name" ng-model="projects.formData.name" />
-			</label>
+			<input type="text" placeholder="{{'Jméno projektu' | translate}}" required name="name"
+					 ng-model="projects.formData.name" />
+		</label>
 
-			<label>
-				{{'Popis' | translate}}
+		<label>
+			{{'Popis' | translate}}
 
 				<textarea rows="2" name="description" ng-model="projects.formData.description"
 							 placeholder="{{'Stručný popis projektu pro lepší orientaci' | translate}}"></textarea>
-			</label>
+		</label>
 
-			<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
-		</form>
-	</modal>
-</div>
+		<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
+	</form>
+</modal>

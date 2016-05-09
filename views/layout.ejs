@@ -34,8 +34,8 @@
 				</ul>
 			</div>
 			<div class="column shrink user-profile align-center">
-				<a ui-sref="user">
-					<img gravatar-src="identity.email" gravatar-size="35" alt="profile" />
+				<a ui-sref="user" ng-if="identity.email">
+					<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}} <small ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})</small>
 				</a>
 			</div>
 			<div class="column notifications cursor-pointer">
@@ -43,7 +43,7 @@
 				     ng-class="notification.type" ng-click="hideNotification($index)">
 
 					<small>
-						{{notification.time | date : format : 'short' }}
+						{{notification.time | date : format : 'HH:mm' }}
 					</small>
 
 					<p class="text-left">
@@ -59,9 +59,10 @@
 
 	<aside class="column no-padding large-2" id="side-menu" ng-show="identity.email" ng-controller="TestsResultsController as tests">
 		<div class="row">
-			<ul class="menu dropdown vertical" data-dropdown-menu>
-				<li><a href="javascript:void(0)" class="button primary">{{currentProject.name || "Vyberte projekt" |
-				                                                        translate}}</a>
+			<ul class="menu dropdown vertical" data-dropdown-menu data-disable-click="false">
+				<li class="project"><a href="javascript:void(0)" class="button primary">
+						<i class="fi-home"></i>
+						{{currentProject.name || "Vyberte projekt" | translate}}</a>
 					<ul class="menu">
 						<li ng-repeat="project in projects.overview"
 						    ng-class="currentProject.id == project.id ? 'active' : ''">
@@ -70,8 +71,12 @@
 					</ul>
 				</li>
 				<li ng-repeat="environment in availableEnvironments"
-				    ng-class="currentEnvironment.id == environment.id ? 'active' : ''">
-					<a href="javascript:void(0)" ng-click="selectEnvironment(environment, {redirectToTests: true})">{{environment.name}}</a>
+				    ng-class="currentEnvironment.id == environment.id ? 'active' : ''"
+				class="environment">
+					<a href="javascript:void(0)" ng-click="selectEnvironment(environment, {redirectToTests: true})">
+						<i class="fi-widget"></i>
+						{{environment.name}}
+					</a>
 				</li>
 				<li class="separator"></li>
 				<li class="text-center" ng-show="currentEnvironment.apiEndpoint">{{currentEnvironment.apiEndpoint}}</li>

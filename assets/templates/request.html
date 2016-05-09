@@ -165,154 +165,146 @@
 				ng-if="identity.roles[currentEnvironment.id] != 'host'">
 				<i class="fi-pencil"></i>
 				<span class="show-for-medium">{{'Upravit' | translate}}</span></a>
-
-			&nbsp;
-			<a href="javascript:void(0)" ng-click="request.delete(request.current.environmentsId, request.current.id)"
-				ng-if="identity.roles[currentEnvironment.id] != 'host'"
-				class="alert tiny button">
-				<i class="fi-x"></i>
-				<span class="show-for-medium">{{'Smazat' | translate}}</span>
-			</a>
-		</div>
-	</div>
-
-	<div class="row" ng-controller="AssertionsController as asserts">
-		<div class="column with-shadow has-controls" ng-init="asserts.initRequestAssertions()">
-			<div class="content-holder">
-				<div class="callout warning"
-					  ng-show="asserts.assertions[request.current.id].length == 0">
-					{{'Žádný záznam' | translate}}
-				</div>
-
-				<table ng-show="asserts.assertions[request.current.id].length != 0">
-					<thead>
-					<tr>
-						<th>{{'Jméno validátoru' | translate}}</th>
-						<th>{{'Vlastnost objektu' | translate}}</th>
-						<th>{{'Porovnání' | translate}}</th>
-						<th>{{'Očekávaná hodnota' | translate}}</th>
-						<th></th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr ng-repeat="assertion in asserts.assertions[request.current.id]">
-						<td>{{assertion.assertion.name}}</td>
-						<td>{{assertion.property}}</td>
-						<td ng-switch="assertion.comparator">
-							<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
-							<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
-							<span ng-switch-when="gt">{{'Více než' | translate}}</span>
-							<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
-							<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
-							<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
-							<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
-							<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
-						</td>
-						<td>{{assertion.expectedValue}}</td>
-						<td>
-							<a href="javascript:void(0)"
-								ng-if="identity.roles[currentEnvironment.id] != 'host'"
-								ng-click="asserts.openModal = true; asserts.formData = assertion">
-								<i class="fi-pencil" data-open="edit-assertion"></i>
-							</a>
-							<a href="javascript:void(0)"
-								ng-if="identity.roles[currentEnvironment.id] != 'host'"
-								ng-click="asserts.delete(assertion.id, request.current.id)">
-								<i class="fi-x"></i>
-							</a>
-						</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="row controls align-right">
-				<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id, assertionType: 'status_code', comparator: 'eq'}"
-					ng-if="identity.roles[currentEnvironment.id] != 'host'"
-					class="button tiny success float-right">
-					<i class="fi-plus"></i>
-					<span class="show-for-medium"> {{'Nový validátor' | translate}}</span>
-				</a>
-			</div>
 		</div>
 
-		<modal show="asserts.openModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
-			<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
-			<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
+		<div class="row" ng-controller="AssertionsController as asserts">
+			<div class="column with-shadow has-controls" ng-init="asserts.initRequestAssertions()">
+				<div class="content-holder">
+					<div class="callout warning"
+						  ng-show="asserts.assertions[request.current.id].length == 0">
+						{{'Žádný záznam' | translate}}
+					</div>
 
-			<form ng-submit="asserts.formData.id ? asserts.edit() : asserts.create()">
-				<label ng-if="asserts.openModal" ng-init="asserts.initTypes()">
-					{{'Typ validátoru' | translate}}
-
-					<select name="input-type" ng-model="asserts.formData.assertionType">
-						<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name | translate}}</option>
-					</select>
-				</label>
-
-				<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
-					{{'Vlastnost objektu' | translate}}
-
-					<input type="text" name="property" placeholder="{{'Vlastnost objektu' | translate}}"
-							 ng-model="asserts.formData.property" />
-				</label>
-
-				<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
-					{{'Porovnání' | translate}}
-
-					<select required ng-model="asserts.formData.comparator">
-						<option value="eq">{{'Odpovídá' | translate}}</option>
-						<option value="lt">{{'Méně než' | translate}}</option>
-						<option value="gt">{{'Více než' | translate}}</option>
-						<option value="le">{{'Méně nebo stejně' | translate}}</option>
-						<option value="ge">{{'Více nebo stejně' | translate}}</option>
-						<option value="ne">{{'Neodpovídá' | translate}}</option>
-						<option value="in">{{'Obsahuje' | translate}}</option>
-						<option value="not_in">{{'Neobsahuje' | translate}}</option>
-					</select>
-				</label>
-
-				<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
-					{{'Hodnota' | translate}}
-
-					<input type="text" name="value" placeholder="{{'Vlastnost objektu' | translate}} value"
-							 ng-model="asserts.formData.expectedValue" />
-				</label>
-
-				<button type="submit" class="button success">{{'Uložit' | translate}}</button>
-			</form>
-		</modal>
-	</div>
-
-	<div class="row" ng-init="request.initLastResponse()" ng-show="request.lastResponse.id > 0">
-		<div class="column with-shadow">
-			<h4>{{'Výsledek posledního dotazu' | translate}}</h4>
-
-			<div class="row">
-				<div class="column">
-					<h5>{{'Status' | translate}}</h5>
-					<ul>
-						<li>{{'Status' | translate}} code: {{request.lastResponse.responseCode}}</li>
-						<li>{{'Velikost odpovědi' | translate}}: {{request.lastResponse.responseSize / 1024 | number: 1}} kB
-						</li>
-						<li>{{'Čas odpovědi' | translate}}: {{request.lastResponse.responseTime}} ms</li>
-					</ul>
+					<table ng-show="asserts.assertions[request.current.id].length != 0">
+						<thead>
+						<tr>
+							<th>{{'Jméno validátoru' | translate}}</th>
+							<th>{{'Vlastnost objektu' | translate}}</th>
+							<th>{{'Porovnání' | translate}}</th>
+							<th>{{'Očekávaná hodnota' | translate}}</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="assertion in asserts.assertions[request.current.id]">
+							<td>{{assertion.assertion.name}}</td>
+							<td>{{assertion.property}}</td>
+							<td ng-switch="assertion.comparator">
+								<span ng-switch-when="eq">{{'Odpovídá' | translate}}</span>
+								<span ng-switch-when="lt">{{'Méně než' | translate}}</span>
+								<span ng-switch-when="gt">{{'Více než' | translate}}</span>
+								<span ng-switch-when="le">{{'Méně nebo stejně' | translate}}</span>
+								<span ng-switch-when="ge">{{'Více nebo stejně' | translate}}</span>
+								<span ng-switch-when="ne">{{'Neodpovídá' | translate}}</span>
+								<span ng-switch-when="in">{{'Obsahuje' | translate}}</span>
+								<span ng-switch-when="not_in">{{'Neobsahuje' | translate}}</span>
+							</td>
+							<td>{{assertion.expectedValue}}</td>
+							<td>
+								<a href="javascript:void(0)"
+									ng-if="identity.roles[currentEnvironment.id] != 'host'"
+									ng-click="asserts.openModal = true; asserts.formData = assertion">
+									<i class="fi-pencil" data-open="edit-assertion"></i>
+								</a>
+								<a href="javascript:void(0)"
+									ng-if="identity.roles[currentEnvironment.id] != 'host'"
+									ng-click="asserts.delete(assertion.id, request.current.id)">
+									<i class="fi-x"></i>
+								</a>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				</div>
-				<div class="column">
-					<h5>{{'HTTP hlavičky odpovědi' | translate}}</h5>
 
-					<ul>
-						<li ng-repeat="(header, value) in request.lastResponse.responseHeaders">
-							<strong>{{header}}</strong>: {{value}}
-						</li>
-					</ul>
+				<div class="row controls align-right">
+					<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id, assertionType: 'status_code', comparator: 'eq'}"
+						ng-if="identity.roles[currentEnvironment.id] != 'host'"
+						class="button tiny success float-right">
+						<i class="fi-plus"></i>
+						<span class="show-for-medium"> {{'Nový validátor' | translate}}</span>
+					</a>
 				</div>
 			</div>
 
-			<h5>{{'Tělo odpovědi' | translate}}</h5>
+			<modal show="asserts.openModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
+				<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
+				<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
-			<code class="response">
-				{{request.lastResponse.responseBodyRaw}}
-			</code>
+				<form ng-submit="asserts.formData.id ? asserts.edit() : asserts.create()">
+					<label ng-if="asserts.openModal" ng-init="asserts.initTypes()">
+						{{'Typ validátoru' | translate}}
+
+						<select name="input-type" ng-model="asserts.formData.assertionType">
+							<option ng-repeat="type in asserts.types" value="{{type.type}}">{{type.name | translate}}</option>
+						</select>
+					</label>
+
+					<label ng-show="asserts.formData.assertionType != 'status_code' && asserts.formData.assertionType != 'response_time'">
+						{{'Vlastnost objektu' | translate}}
+
+						<input type="text" name="property" placeholder="{{'Vlastnost objektu' | translate}}"
+								 ng-model="asserts.formData.property" />
+					</label>
+
+					<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
+						{{'Porovnání' | translate}}
+
+						<select required ng-model="asserts.formData.comparator">
+							<option value="eq">{{'Odpovídá' | translate}}</option>
+							<option value="lt">{{'Méně než' | translate}}</option>
+							<option value="gt">{{'Více než' | translate}}</option>
+							<option value="le">{{'Méně nebo stejně' | translate}}</option>
+							<option value="ge">{{'Více nebo stejně' | translate}}</option>
+							<option value="ne">{{'Neodpovídá' | translate}}</option>
+							<option value="in">{{'Obsahuje' | translate}}</option>
+							<option value="not_in">{{'Neobsahuje' | translate}}</option>
+						</select>
+					</label>
+
+					<label ng-show="asserts.formData.assertionType != 'property_exists' && asserts.formData.assertionType != 'property_not_exist'">
+						{{'Hodnota' | translate}}
+
+						<input type="text" name="value" placeholder="{{'Vlastnost objektu' | translate}} value"
+								 ng-model="asserts.formData.expectedValue" />
+					</label>
+
+					<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+				</form>
+			</modal>
+		</div>
+
+		<div class="row" ng-init="request.initLastResponse()" ng-show="request.lastResponse.id > 0">
+			<div class="column with-shadow">
+				<h4>{{'Výsledek posledního dotazu' | translate}}</h4>
+
+				<div class="row">
+					<div class="column">
+						<h5>{{'Status' | translate}}</h5>
+						<ul>
+							<li>{{'Status' | translate}} code: {{request.lastResponse.responseCode}}</li>
+							<li>{{'Velikost odpovědi' | translate}}: {{request.lastResponse.responseSize / 1024 | number: 1}}
+								 kB
+							</li>
+							<li>{{'Čas odpovědi' | translate}}: {{request.lastResponse.responseTime}} ms</li>
+						</ul>
+					</div>
+					<div class="column">
+						<h5>{{'HTTP hlavičky odpovědi' | translate}}</h5>
+
+						<ul>
+							<li ng-repeat="(header, value) in request.lastResponse.responseHeaders">
+								<strong>{{header}}</strong>: {{value}}
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<h5>{{'Tělo odpovědi' | translate}}</h5>
+
+				<code class="response">
+					{{request.lastResponse.responseBodyRaw}}
+				</code>
+			</div>
 		</div>
 	</div>
-</div>

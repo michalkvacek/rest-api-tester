@@ -12,8 +12,14 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 		$rootScope.testList = [];
 		$rootScope.testAddedOrInProgress = false;
 		$rootScope.currentTestResult = false;
+		$rootScope.lastTestResults = {};
 
-		var lastTestResults = {};
+		$rootScope.$on('testResultChanged', function (event, testsId, resultId) {
+			if (resultId == $rootScope.currentTestResult) {
+				self.init ();
+				self.initStatistics();
+			}
+		});
 
 		/**
 		 * Load last tests into sidebar
@@ -33,12 +39,12 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 				// iterate over all found test responses
 				for (i in response.data) {
 					result = response.data[i];
-					lastResult = lastTestResults[result.id];
+					lastResult = $rootScope.lastTestResults[result.id];
 
 					broadcast = false;
 
 					if (typeof lastResult == 'undefined') {
-						lastTestResults[result.id] = {
+						$rootScope.lastTestResults[result.id] = {
 							status: result.status,
 							position: $rootScope.testList.length
 						};
@@ -52,13 +58,13 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 
 						broadcast = true;
 
-						lastTestResults[result.id].status = result.status;
+						$rootScope.lastTestResults[result.id].status = result.status;
 						$rootScope.testList[lastResult.position] = result;
 					}
 
 					// send event about changed test
 					if (broadcast && !testResultsFirstRun && sentEvents[result.testsId] == undefined) {
-						$rootScope.$broadcast ('testResultChanged', result.testsId);
+						$rootScope.$broadcast ('testResultChanged', result.testsId, result.id);
 						sentEvents[result.testsId] = true;
 						broadcast = true;
 					}

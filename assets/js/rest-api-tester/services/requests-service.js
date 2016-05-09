@@ -37,6 +37,16 @@ window.app.service ('requestsService', ['$http', '$q', '$rootScope', function ($
 		edit: function (requestId, data) {
 			var d = $q.defer ();
 
+			// because these values are casted to string (because of select)
+			if (data.authenticationsId == 'null')
+				data.authenticationsId = null;
+
+			if (data.runInterval == 'null')
+				data.runInterval = null;
+
+			if (data.versionsId == 'null')
+				data.versionsId = null;
+
 			$http.put ('/api/v1/requests/' + requestId, data).then (d.resolve, d.reject);
 
 			return d.promise;
@@ -52,6 +62,16 @@ window.app.service ('requestsService', ['$http', '$q', '$rootScope', function ($
 
 		create: function (environmentId, data) {
 			var d = $q.defer ();
+
+			// because these values are casted to string (because of select)
+			if (data.authenticationsId == 'null')
+				data.authenticationsId = null;
+
+			if (data.runInterval == 'null')
+				data.runInterval = null;
+
+			if (data.versionsId == 'null')
+				data.versionsId = null;
 
 			$http.post ('/api/v1/environments/' + environmentId + '/requests', data).then (function (response) {
 				$rootScope.$broadcast ('addedRequestIntoTest', response.data);
