@@ -10,54 +10,45 @@
 -- -- object: test_rest_api | type: DATABASE --
 -- -- DROP DATABASE IF EXISTS test_rest_api;
 -- CREATE DATABASE test_rest_api
+-- 	ENCODING = 'UTF8'
+-- 	LC_COLLATE = 'cs_CZ.UTF8'
+-- 	LC_CTYPE = 'cs_CZ.UTF8'
+-- 	TABLESPACE = pg_default
+-- 	OWNER = postgres
 -- ;
 -- -- ddl-end --
 -- 
 
--- object: public.users | type: TABLE --
--- DROP TABLE IF EXISTS public.users CASCADE;
-CREATE TABLE public.users(
-	id serial NOT NULL,
-	"createdAt" timestamp with time zone,
-	"updatedAt" timestamp with time zone,
-	name varchar(128) NOT NULL,
-	email varchar(256) NOT NULL,
-	password varchar(256) NOT NULL,
-	active boolean NOT NULL DEFAULT false,
-	CONSTRAINT primary_key PRIMARY KEY (id),
-	CONSTRAINT unique_email UNIQUE (email)
-
-);
+-- object: public.languages | type: TYPE --
+-- DROP TYPE IF EXISTS public.languages CASCADE;
+CREATE TYPE public.languages AS
+ ENUM ('cs','en');
 -- ddl-end --
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TYPE public.languages OWNER TO postgres;
 -- ddl-end --
 
--- object: active_user | type: INDEX --
--- DROP INDEX IF EXISTS public.active_user CASCADE;
-CREATE INDEX active_user ON public.users
-	USING btree
-	(
-	  active
-	);
+-- object: public.projects_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.projects_id_seq CASCADE;
+CREATE SEQUENCE public.projects_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
 -- ddl-end --
-
--- object: email | type: INDEX --
--- DROP INDEX IF EXISTS public.email CASCADE;
-CREATE INDEX email ON public.users
-	USING btree
-	(
-	  email
-	);
+ALTER SEQUENCE public.projects_id_seq OWNER TO postgres;
 -- ddl-end --
 
 -- object: public.projects | type: TABLE --
 -- DROP TABLE IF EXISTS public.projects CASCADE;
 CREATE TABLE public.projects(
-	id serial NOT NULL,
+	id integer NOT NULL DEFAULT nextval('public.projects_id_seq'::regclass),
 	"usersId" integer NOT NULL,
 	"createdAt" timestamp with time zone,
 	"updatedAt" timestamp with time zone,
-	name varchar(256) NOT NULL,
+	name character varying(256) NOT NULL,
 	description text,
 	CONSTRAINT id PRIMARY KEY (id)
 
@@ -66,180 +57,36 @@ CREATE TABLE public.projects(
 ALTER TABLE public.projects OWNER TO postgres;
 -- ddl-end --
 
--- object: public.enviroments | type: TABLE --
--- DROP TABLE IF EXISTS public.enviroments CASCADE;
-CREATE TABLE public.enviroments(
-	id serial NOT NULL,
+-- object: public.environments_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.environments_id_seq CASCADE;
+CREATE SEQUENCE public.environments_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.environments_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.environments | type: TABLE --
+-- DROP TABLE IF EXISTS public.environments CASCADE;
+CREATE TABLE public.environments(
+	id integer NOT NULL DEFAULT nextval('public.environments_id_seq'::regclass),
 	"projectsId" integer NOT NULL,
+	"usersId" integer NOT NULL,
 	"createdAt" timestamp with time zone,
 	"updatedAt" timestamp with time zone,
 	"apiEndpoint" text NOT NULL,
-	name varchar(256) NOT NULL,
+	name character varying(256) NOT NULL,
 	description text,
 	CONSTRAINT primary_key_4 PRIMARY KEY (id)
 
 );
 -- ddl-end --
-ALTER TABLE public.enviroments OWNER TO postgres;
--- ddl-end --
-
--- object: public.tests | type: TABLE --
--- DROP TABLE IF EXISTS public.tests CASCADE;
-CREATE TABLE public.tests(
-	id serial NOT NULL,
-	"environmentsId" integer NOT NULL,
-	"usersId" integer NOT NULL,
-	"createdAt" timestamp with time zone DEFAULT NOW(),
-	"updatedAt" timestamp with time zone,
-	name varchar(128) NOT NULL,
-	description text,
-	"nextRun" timestamp,
-	"runInterval" tinterval,
-	active boolean DEFAULT true,
-	CONSTRAINT primary_key_3 PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public.tests OWNER TO postgres;
--- ddl-end --
-
--- object: next_test_run | type: INDEX --
--- DROP INDEX IF EXISTS public.next_test_run CASCADE;
-CREATE INDEX next_test_run ON public.tests
-	USING btree
-	(
-	  "nextRun"
-	);
--- ddl-end --
-
--- object: is_test_active | type: INDEX --
--- DROP INDEX IF EXISTS public.is_test_active CASCADE;
-CREATE INDEX is_test_active ON public.tests
-	USING btree
-	(
-	  active
-	);
--- ddl-end --
-
--- object: public."testParts" | type: TABLE --
--- DROP TABLE IF EXISTS public."testParts" CASCADE;
-CREATE TABLE public."testParts"(
-	id serial NOT NULL,
-	"usersId" integer,
-	"parentTestPartId" integer,
-	"createdAt" timestamp with time zone,
-	"updatedAt" timestamp with time zone,
-	name varchar(126) NOT NULL,
-	description text,
-	CONSTRAINT test_part_pk PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public."testParts" OWNER TO postgres;
--- ddl-end --
-
--- object: public.versions | type: TABLE --
--- DROP TABLE IF EXISTS public.versions CASCADE;
-CREATE TABLE public.versions(
-	id serial NOT NULL,
-	"usersId" integer NOT NULL,
-	"createdAt" timestamp with time zone,
-	"updatedAt" timestamp with time zone,
-	name varchar(126) NOT NULL,
-	description text,
-	"urlSegment" varchar(64),
-	CONSTRAINT primary_key_1 PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public.versions OWNER TO postgres;
--- ddl-end --
-
--- object: public."responseHeaders" | type: TABLE --
--- DROP TABLE IF EXISTS public."responseHeaders" CASCADE;
-CREATE TABLE public."responseHeaders"(
-	id serial NOT NULL,
-	"responsesId" integer NOT NULL,
-	name varchar(256),
-	value varchar(256),
-	CONSTRAINT response_header_primary_key PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public."responseHeaders" OWNER TO postgres;
--- ddl-end --
-
--- object: public."evaluatedAsserions" | type: TABLE --
--- DROP TABLE IF EXISTS public."evaluatedAsserions" CASCADE;
-CREATE TABLE public."evaluatedAsserions"(
-	id serial NOT NULL,
-	"responsesId" integer NOT NULL,
-	"requestsId" integer NOT NULL,
-	"createdAt" timestamp with time zone,
-	"assertionType" varchar(64) NOT NULL,
-	"assertionName" varchar(126) NOT NULL,
-	"assertionProperty" text,
-	"assertionExpectedValue" text,
-	"assertionExtraCode" text,
-	"recievedValue" text,
-	passed boolean NOT NULL,
-	CONSTRAINT evaluated_assertions_primary_key PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public."evaluatedAsserions" OWNER TO postgres;
--- ddl-end --
-
--- object: public."requestHeaders" | type: TABLE --
--- DROP TABLE IF EXISTS public."requestHeaders" CASCADE;
-CREATE TABLE public."requestHeaders"(
-	id serial NOT NULL,
-	"responsesId" integer NOT NULL,
-	name varchar(256),
-	value varchar(256),
-	CONSTRAINT response_header_primary_key_1 PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public."requestHeaders" OWNER TO postgres;
--- ddl-end --
-
--- object: public.assertions | type: TABLE --
--- DROP TABLE IF EXISTS public.assertions CASCADE;
-CREATE TABLE public.assertions(
-	id serial NOT NULL,
-	type varchar(64) NOT NULL,
-	name varchar(126) NOT NULL,
-	description text,
-	"extraCode" text,
-	CONSTRAINT assertion_primary_key PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public.assertions OWNER TO postgres;
--- ddl-end --
-
--- object: public.requests | type: TABLE --
--- DROP TABLE IF EXISTS public.requests CASCADE;
-CREATE TABLE public.requests(
-	id serial NOT NULL,
-	"versionsId" integer,
--- 	"usersId" integer,
--- 	"parentTestPartId" integer,
--- 	"createdAt" timestamp with time zone,
--- 	"updatedAt" timestamp with time zone,
--- 	name varchar(126) NOT NULL,
--- 	description text,
-	url text NOT NULL,
-	"resourceName" varchar(256),
-	"methodName" varchar(256),
-	"httpMethod" varchar(126),
-	CONSTRAINT requests_pk PRIMARY KEY (id)
-
-) INHERITS(public."testParts")
-;
--- ddl-end --
-ALTER TABLE public.requests OWNER TO postgres;
+ALTER TABLE public.environments OWNER TO postgres;
 -- ddl-end --
 
 -- object: public.response_status | type: TYPE --
@@ -250,6 +97,167 @@ CREATE TYPE public.response_status AS
 ALTER TYPE public.response_status OWNER TO postgres;
 -- ddl-end --
 
+-- object: public.versions_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.versions_id_seq CASCADE;
+CREATE SEQUENCE public.versions_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.versions_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.versions | type: TABLE --
+-- DROP TABLE IF EXISTS public.versions CASCADE;
+CREATE TABLE public.versions(
+	id integer NOT NULL DEFAULT nextval('public.versions_id_seq'::regclass),
+	"usersId" integer NOT NULL,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	name character varying(126) NOT NULL,
+	description text,
+	"urlSegment" character varying(64),
+	"projectsId" integer NOT NULL,
+	CONSTRAINT primary_key_1 PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public.versions OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.assertion_comparator | type: TYPE --
+-- DROP TYPE IF EXISTS public.assertion_comparator CASCADE;
+CREATE TYPE public.assertion_comparator AS
+ ENUM ('eq','lt','gt','le','ge','ne','in','not_in');
+-- ddl-end --
+ALTER TYPE public.assertion_comparator OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."evaluatedAsserions_id_seq" | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public."evaluatedAsserions_id_seq" CASCADE;
+CREATE SEQUENCE public."evaluatedAsserions_id_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public."evaluatedAsserions_id_seq" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."evaluatedAssertions" | type: TABLE --
+-- DROP TABLE IF EXISTS public."evaluatedAssertions" CASCADE;
+CREATE TABLE public."evaluatedAssertions"(
+	id integer NOT NULL DEFAULT nextval('public."evaluatedAsserions_id_seq"'::regclass),
+	"responsesId" integer NOT NULL,
+	"createdAt" timestamp with time zone,
+	"assertionType" character varying(64) NOT NULL,
+	"assertionName" character varying(126) NOT NULL,
+	"assertionProperty" text,
+	"assertionExpectedValue" text,
+	"recievedValue" text,
+	passed boolean NOT NULL,
+	"assertionComparator" public.assertion_comparator NOT NULL,
+	CONSTRAINT evaluated_assertions_primary_key PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public."evaluatedAssertions" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.assertions | type: TABLE --
+-- DROP TABLE IF EXISTS public.assertions CASCADE;
+CREATE TABLE public.assertions(
+	type character varying(64) NOT NULL,
+	name character varying(126) NOT NULL,
+	description text,
+	CONSTRAINT assertions_type PRIMARY KEY (type)
+
+);
+-- ddl-end --
+ALTER TABLE public.assertions OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.requests_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.requests_id_seq CASCADE;
+CREATE SEQUENCE public.requests_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.requests_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.requests | type: TABLE --
+-- DROP TABLE IF EXISTS public.requests CASCADE;
+CREATE TABLE public.requests(
+	id integer NOT NULL DEFAULT nextval('public.requests_id_seq'::regclass),
+	"usersId" integer,
+	"environmentsId" integer NOT NULL,
+	"versionsId" integer,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	name character varying(128) NOT NULL,
+	url text NOT NULL,
+	"httpMethod" character varying(128) NOT NULL,
+	"resourceName" character varying(256),
+	"methodName" character varying(256),
+	description text,
+	"lastRunStatus" public.response_status,
+	"authenticationsId" integer,
+	envelope character varying(64),
+	CONSTRAINT requests_pk PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public.requests OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.tests_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.tests_id_seq CASCADE;
+CREATE SEQUENCE public.tests_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.tests_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.tests | type: TABLE --
+-- DROP TABLE IF EXISTS public.tests CASCADE;
+CREATE TABLE public.tests(
+	id integer NOT NULL DEFAULT nextval('public.tests_id_seq'::regclass),
+	"environmentsId" integer NOT NULL,
+	"usersId" integer NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT now(),
+	"updatedAt" timestamp with time zone,
+	name character varying(128) NOT NULL,
+	description text,
+	"nextRun" timestamp with time zone,
+	"lastRun" timestamp with time zone,
+	"lastRunStatus" public.response_status,
+	"runInterval" integer,
+	CONSTRAINT primary_key_3 PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public.tests OWNER TO postgres;
+-- ddl-end --
+
 -- object: public.users_roles | type: TYPE --
 -- DROP TYPE IF EXISTS public.users_roles CASCADE;
 CREATE TYPE public.users_roles AS
@@ -258,28 +266,46 @@ CREATE TYPE public.users_roles AS
 ALTER TYPE public.users_roles OWNER TO postgres;
 -- ddl-end --
 
--- object: public.response | type: TABLE --
--- DROP TABLE IF EXISTS public.response CASCADE;
-CREATE TABLE public.response(
-	id serial NOT NULL,
+-- object: public.responses_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.responses_id_seq CASCADE;
+CREATE SEQUENCE public.responses_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.responses_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.responses | type: TABLE --
+-- DROP TABLE IF EXISTS public.responses CASCADE;
+CREATE TABLE public.responses(
+	id integer NOT NULL DEFAULT nextval('public.responses_id_seq'::regclass),
 	"requestsId" integer NOT NULL,
+	"runnedTestsId" integer,
 	"createdAt" timestamp with time zone,
 	"requestUrl" text NOT NULL,
-	"requestQueryString" json,
 	"requestHttpParameters" json,
-	"responseTime" integer NOT NULL,
-	"reponseCode" smallint NOT NULL,
-	"responseSize" integer NOT NULL,
-	"responseBodyJson" json,
-	"responseBodyXml" xml,
-	"responseBodyRaw" text NOT NULL,
+	"responseTime" integer,
+	"responseCode" smallint,
+	"responseSize" integer,
+	"responseBodyRaw" text,
 	"passedAssertions" boolean,
 	status public.response_status NOT NULL,
+	"environmentsId" integer NOT NULL,
+	"requestHeaders" json,
+	"responseHeaders" json,
+	"testsId" integer NOT NULL,
+	"requestMethod" character varying(64) NOT NULL,
+	"requestName" text NOT NULL,
 	CONSTRAINT response_primary_key PRIMARY KEY (id)
 
 );
 -- ddl-end --
-ALTER TABLE public.response OWNER TO postgres;
+ALTER TABLE public.responses OWNER TO postgres;
 -- ddl-end --
 
 -- object: public.comparision_operator | type: TYPE --
@@ -290,210 +316,88 @@ CREATE TYPE public.comparision_operator AS
 ALTER TYPE public.comparision_operator OWNER TO postgres;
 -- ddl-end --
 
--- object: public."requestConditions" | type: TABLE --
--- DROP TABLE IF EXISTS public."requestConditions" CASCADE;
-CREATE TABLE public."requestConditions"(
--- 	id integer NOT NULL,
--- 	"usersId" integer,
--- 	"parentTestPartId" integer,
--- 	"createdAt" timestamp with time zone,
--- 	"updatedAt" timestamp with time zone,
--- 	name varchar(126) NOT NULL,
--- 	description text,
-	property text NOT NULL,
-	operator public.comparision_operator NOT NULL,
-	value text
-) INHERITS(public."testParts")
-;
+-- object: public.headers_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.headers_id_seq CASCADE;
+CREATE SEQUENCE public.headers_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
 -- ddl-end --
-ALTER TABLE public."requestConditions" OWNER TO postgres;
--- ddl-end --
-
--- object: public.delays | type: TABLE --
--- DROP TABLE IF EXISTS public.delays CASCADE;
-CREATE TABLE public.delays(
--- 	id integer NOT NULL,
--- 	"usersId" integer,
--- 	"parentTestPartId" integer,
--- 	"createdAt" timestamp with time zone,
--- 	"updatedAt" timestamp with time zone,
--- 	name varchar(126) NOT NULL,
--- 	description text,
-	seconds integer
-) INHERITS(public."testParts")
-;
--- ddl-end --
-ALTER TABLE public.delays OWNER TO postgres;
--- ddl-end --
-
--- object: public."testPartsInTest" | type: TABLE --
--- DROP TABLE IF EXISTS public."testPartsInTest" CASCADE;
-CREATE TABLE public."testPartsInTest"(
-
-);
--- ddl-end --
-
--- object: "testsId" | type: COLUMN --
--- ALTER TABLE public."testPartsInTest" DROP COLUMN IF EXISTS "testsId" CASCADE;
-ALTER TABLE public."testPartsInTest" ADD COLUMN "testsId" integer;
--- ddl-end --
-
-
--- object: "testPartsId" | type: COLUMN --
--- ALTER TABLE public."testPartsInTest" DROP COLUMN IF EXISTS "testPartsId" CASCADE;
-ALTER TABLE public."testPartsInTest" ADD COLUMN "testPartsId" integer;
--- ddl-end --
-
-
--- object: "position" | type: COLUMN --
--- ALTER TABLE public."testPartsInTest" DROP COLUMN IF EXISTS "position" CASCADE;
-ALTER TABLE public."testPartsInTest" ADD COLUMN "position" integer NOT NULL;
--- ddl-end --
-
--- object: "testPartsInTest_pk" | type: CONSTRAINT --
--- ALTER TABLE public."testPartsInTest" DROP CONSTRAINT IF EXISTS "testPartsInTest_pk" CASCADE;
-ALTER TABLE public."testPartsInTest" ADD CONSTRAINT "testPartsInTest_pk" PRIMARY KEY ("testsId","testPartsId");
--- ddl-end --
-
--- object: pos_larger_than_zero | type: CONSTRAINT --
--- ALTER TABLE public."testPartsInTest" DROP CONSTRAINT IF EXISTS pos_larger_than_zero CASCADE;
-ALTER TABLE public."testPartsInTest" ADD CONSTRAINT pos_larger_than_zero CHECK (position > 0);
--- ddl-end --
-
-
--- object: tests_fk | type: CONSTRAINT --
--- ALTER TABLE public."testPartsInTest" DROP CONSTRAINT IF EXISTS tests_fk CASCADE;
-ALTER TABLE public."testPartsInTest" ADD CONSTRAINT tests_fk FOREIGN KEY ("testsId")
-REFERENCES public.tests (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: "testParts_fk" | type: CONSTRAINT --
--- ALTER TABLE public."testPartsInTest" DROP CONSTRAINT IF EXISTS "testParts_fk" CASCADE;
-ALTER TABLE public."testPartsInTest" ADD CONSTRAINT "testParts_fk" FOREIGN KEY ("testPartsId")
-REFERENCES public."testParts" (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: public.tags | type: TABLE --
--- DROP TABLE IF EXISTS public.tags CASCADE;
-CREATE TABLE public.tags(
-	id serial NOT NULL,
-	"projectsId" integer NOT NULL,
-	tag varchar(64) NOT NULL,
-	CONSTRAINT tags_pk PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public.tags OWNER TO postgres;
+ALTER SEQUENCE public.headers_id_seq OWNER TO postgres;
 -- ddl-end --
 
 -- object: public.headers | type: TABLE --
 -- DROP TABLE IF EXISTS public.headers CASCADE;
 CREATE TABLE public.headers(
-	id serial NOT NULL,
+	id integer NOT NULL DEFAULT nextval('public.headers_id_seq'::regclass),
 	"projectsId" integer,
 	"environmentsId" integer,
 	"testsId" integer,
 	"requestsId" integer,
-	name varchar(256),
-	value varchar(256),
+	name character varying(256),
+	value character varying(256),
 	CONSTRAINT headers_pk PRIMARY KEY (id),
-	CONSTRAINT at_least_one_not_null_resource CHECK ("projectsId" IS NOT NULL OR "environmentsId" IS NOT NULL OR "testsId" IS NOT NULL OR "requestsId" IS NOT NULL)
+	CONSTRAINT at_least_one_not_null_resource CHECK ((("projectsId" IS NOT NULL) OR ("environmentsId" IS NOT NULL) OR ("testsId" IS NOT NULL) OR ("requestsId" IS NOT NULL)))
 
 );
 -- ddl-end --
 ALTER TABLE public.headers OWNER TO postgres;
 -- ddl-end --
 
--- object: public.variables | type: TABLE --
--- DROP TABLE IF EXISTS public.variables CASCADE;
-CREATE TABLE public.variables(
-	id serial NOT NULL,
-	"usersId" integer NOT NULL,
-	"testsId" integer NOT NULL,
-	"requestsId" integer NOT NULL,
+-- object: public.users_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.users_id_seq CASCADE;
+CREATE SEQUENCE public.users_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.users | type: TABLE --
+-- DROP TABLE IF EXISTS public.users CASCADE;
+CREATE TABLE public.users(
+	id integer NOT NULL DEFAULT nextval('public.users_id_seq'::regclass),
 	"createdAt" timestamp with time zone,
 	"updatedAt" timestamp with time zone,
-	name varchar(64) NOT NULL,
-	property varchar(128),
-	"defaultValue" text,
-	CONSTRAINT variables_pk PRIMARY KEY (id)
+	language public.languages,
+	name character varying(128) NOT NULL,
+	email character varying(256) NOT NULL,
+	password character varying(256) NOT NULL,
+	CONSTRAINT primary_key PRIMARY KEY (id),
+	CONSTRAINT unique_email UNIQUE (email)
 
 );
 -- ddl-end --
-ALTER TABLE public.variables OWNER TO postgres;
+ALTER TABLE public.users OWNER TO postgres;
 -- ddl-end --
 
--- object: public."requestsHaveTags" | type: TABLE --
--- DROP TABLE IF EXISTS public."requestsHaveTags" CASCADE;
-CREATE TABLE public."requestsHaveTags"(
-	id_tags integer,
-	id_requests integer,
-	CONSTRAINT "requestsHaveTags_pk" PRIMARY KEY (id_tags,id_requests)
-
-);
+-- object: public."httpParameters_id_seq" | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public."httpParameters_id_seq" CASCADE;
+CREATE SEQUENCE public."httpParameters_id_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
 -- ddl-end --
-
--- object: tags_fk | type: CONSTRAINT --
--- ALTER TABLE public."requestsHaveTags" DROP CONSTRAINT IF EXISTS tags_fk CASCADE;
-ALTER TABLE public."requestsHaveTags" ADD CONSTRAINT tags_fk FOREIGN KEY (id_tags)
-REFERENCES public.tags (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: requests_fk | type: CONSTRAINT --
--- ALTER TABLE public."requestsHaveTags" DROP CONSTRAINT IF EXISTS requests_fk CASCADE;
-ALTER TABLE public."requestsHaveTags" ADD CONSTRAINT requests_fk FOREIGN KEY (id_requests)
-REFERENCES public.requests (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: public."userBelongsToEnvironment" | type: TABLE --
--- DROP TABLE IF EXISTS public."userBelongsToEnvironment" CASCADE;
-CREATE TABLE public."userBelongsToEnvironment"(
-	"usersId" integer,
-	"enviromentsId" integer,
-	user_role public.users_roles NOT NULL,
-	CONSTRAINT "userBelongsToEnvironment_pk" PRIMARY KEY ("usersId","enviromentsId")
-
-);
--- ddl-end --
-
--- object: users_fk | type: CONSTRAINT --
--- ALTER TABLE public."userBelongsToEnvironment" DROP CONSTRAINT IF EXISTS users_fk CASCADE;
-ALTER TABLE public."userBelongsToEnvironment" ADD CONSTRAINT users_fk FOREIGN KEY ("usersId")
-REFERENCES public.users (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: enviroments_fk | type: CONSTRAINT --
--- ALTER TABLE public."userBelongsToEnvironment" DROP CONSTRAINT IF EXISTS enviroments_fk CASCADE;
-ALTER TABLE public."userBelongsToEnvironment" ADD CONSTRAINT enviroments_fk FOREIGN KEY ("enviromentsId")
-REFERENCES public.enviroments (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: public.notifications | type: TABLE --
--- DROP TABLE IF EXISTS public.notifications CASCADE;
-CREATE TABLE public.notifications(
-	id serial NOT NULL,
-	"usersId" integer,
-	"createdAt" timestamp with time zone,
-	type text NOT NULL,
-	content text,
-	"actionLink" text,
-	CONSTRAINT notification_pl PRIMARY KEY (id)
-
-);
--- ddl-end --
-ALTER TABLE public.notifications OWNER TO postgres;
+ALTER SEQUENCE public."httpParameters_id_seq" OWNER TO postgres;
 -- ddl-end --
 
 -- object: public."httpParameters" | type: TABLE --
 -- DROP TABLE IF EXISTS public."httpParameters" CASCADE;
 CREATE TABLE public."httpParameters"(
-	id serial NOT NULL,
+	id integer NOT NULL DEFAULT nextval('public."httpParameters_id_seq"'::regclass),
 	"requestsId" integer NOT NULL,
 	name text NOT NULL,
 	value text,
@@ -504,33 +408,245 @@ CREATE TABLE public."httpParameters"(
 ALTER TABLE public."httpParameters" OWNER TO postgres;
 -- ddl-end --
 
--- object: public."queryStringParameters" | type: TABLE --
--- DROP TABLE IF EXISTS public."queryStringParameters" CASCADE;
-CREATE TABLE public."queryStringParameters"(
-	id serial NOT NULL,
-	"requestId" integer NOT NULL,
-	name text NOT NULL,
-	value text,
-	CONSTRAINT "queryStringParameterPK" PRIMARY KEY (id)
+-- object: public."requestsInTest" | type: TABLE --
+-- DROP TABLE IF EXISTS public."requestsInTest" CASCADE;
+CREATE TABLE public."requestsInTest"(
+	"requestsId" integer NOT NULL,
+	"testsId" integer NOT NULL,
+	"position" integer DEFAULT 1,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	CONSTRAINT "requestsInTest_pk" PRIMARY KEY ("requestsId","testsId")
 
 );
 -- ddl-end --
-ALTER TABLE public."queryStringParameters" OWNER TO postgres;
+ALTER TABLE public."requestsInTest" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."runnedTests_id_seq" | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public."runnedTests_id_seq" CASCADE;
+CREATE SEQUENCE public."runnedTests_id_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public."runnedTests_id_seq" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."runnedTests" | type: TABLE --
+-- DROP TABLE IF EXISTS public."runnedTests" CASCADE;
+CREATE TABLE public."runnedTests"(
+	id integer NOT NULL DEFAULT nextval('public."runnedTests_id_seq"'::regclass),
+	"testsId" integer,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	status public.response_status,
+	"testName" character varying(128),
+	"testDescription" text,
+	"environmentsId" integer,
+	CONSTRAINT runned_tests_pk PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public."runnedTests" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."documentationPages_id_seq" | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public."documentationPages_id_seq" CASCADE;
+CREATE SEQUENCE public."documentationPages_id_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public."documentationPages_id_seq" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."documentationPages" | type: TABLE --
+-- DROP TABLE IF EXISTS public."documentationPages" CASCADE;
+CREATE TABLE public."documentationPages"(
+	id integer NOT NULL DEFAULT nextval('public."documentationPages_id_seq"'::regclass),
+	language public.languages,
+	title character varying,
+	content text
+);
+-- ddl-end --
+ALTER TABLE public."documentationPages" OWNER TO postgres;
+-- ddl-end --
+
+-- object: public."userBelongsToEnvironments" | type: TABLE --
+-- DROP TABLE IF EXISTS public."userBelongsToEnvironments" CASCADE;
+CREATE TABLE public."userBelongsToEnvironments"(
+	"usersId" integer NOT NULL,
+	"environmentsId" integer NOT NULL,
+	"userRole" public.users_roles NOT NULL,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	CONSTRAINT "userBelongsToEnvironments_pk" PRIMARY KEY ("usersId","environmentsId")
+
+);
+-- ddl-end --
+ALTER TABLE public."userBelongsToEnvironments" OWNER TO postgres;
+-- ddl-end --
+
+-- object: email | type: INDEX --
+-- DROP INDEX IF EXISTS public.email CASCADE;
+CREATE INDEX email ON public.users
+	USING btree
+	(
+	  email
+	)	WITH (FILLFACTOR = 90);
+-- ddl-end --
+
+-- object: next_test_run | type: INDEX --
+-- DROP INDEX IF EXISTS public.next_test_run CASCADE;
+CREATE INDEX next_test_run ON public.tests
+	USING btree
+	(
+	  "nextRun"
+	)	WITH (FILLFACTOR = 90);
+-- ddl-end --
+
+-- object: is_test_active | type: INDEX --
+-- DROP INDEX IF EXISTS public.is_test_active CASCADE;
+CREATE INDEX is_test_active ON public.tests
+	USING btree
+	(
+	  "lastRunStatus"
+	)	WITH (FILLFACTOR = 90);
+-- ddl-end --
+
+-- object: public."requestValidatedByAssertions_id_seq" | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public."requestValidatedByAssertions_id_seq" CASCADE;
+CREATE SEQUENCE public."requestValidatedByAssertions_id_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public."requestValidatedByAssertions_id_seq" OWNER TO postgres;
 -- ddl-end --
 
 -- object: public."requestValidatedByAssertions" | type: TABLE --
 -- DROP TABLE IF EXISTS public."requestValidatedByAssertions" CASCADE;
 CREATE TABLE public."requestValidatedByAssertions"(
-	id serial NOT NULL,
+	id integer NOT NULL DEFAULT nextval('public."requestValidatedByAssertions_id_seq"'::regclass),
 	"requestsId" integer NOT NULL,
-	"assertionsId" integer NOT NULL,
+	"assertionType" character varying(64) NOT NULL,
 	property text,
 	"expectedValue" text,
+	"createdAt" timestamp with time zone NOT NULL,
+	"updatedAt" timestamp with time zone NOT NULL,
+	comparator public.assertion_comparator NOT NULL,
 	CONSTRAINT "requestValidatedByAssertionsPK" PRIMARY KEY (id)
 
 );
 -- ddl-end --
 ALTER TABLE public."requestValidatedByAssertions" OWNER TO postgres;
+-- ddl-end --
+
+-- object: "requestValidatedByAssertions_assertionType" | type: INDEX --
+-- DROP INDEX IF EXISTS public."requestValidatedByAssertions_assertionType" CASCADE;
+CREATE INDEX "requestValidatedByAssertions_assertionType" ON public."requestValidatedByAssertions"
+	USING btree
+	(
+	  "assertionType"
+	)	WITH (FILLFACTOR = 90);
+-- ddl-end --
+
+-- object: public.authentication_types | type: TYPE --
+-- DROP TYPE IF EXISTS public.authentication_types CASCADE;
+CREATE TYPE public.authentication_types AS
+ ENUM ('base','bearer');
+-- ddl-end --
+ALTER TYPE public.authentication_types OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.authentications_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.authentications_id_seq CASCADE;
+CREATE SEQUENCE public.authentications_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.authentications_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.authentications | type: TABLE --
+-- DROP TABLE IF EXISTS public.authentications CASCADE;
+CREATE TABLE public.authentications(
+	id integer NOT NULL DEFAULT nextval('public.authentications_id_seq'::regclass),
+	"environmentsId" integer NOT NULL,
+	"usersId" integer NOT NULL,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	type public.authentication_types NOT NULL,
+	username text,
+	password text,
+	name text NOT NULL,
+	token text,
+	"tokenParameter" character varying(64),
+	CONSTRAINT authentications_pk PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public.authentications OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.variables_id_seq | type: SEQUENCE --
+-- DROP SEQUENCE IF EXISTS public.variables_id_seq CASCADE;
+CREATE SEQUENCE public.variables_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+-- ddl-end --
+ALTER SEQUENCE public.variables_id_seq OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.variables | type: TABLE --
+-- DROP TABLE IF EXISTS public.variables CASCADE;
+CREATE TABLE public.variables(
+	id integer NOT NULL DEFAULT nextval('public.variables_id_seq'::regclass),
+	"usersId" integer NOT NULL,
+	"testsId" integer NOT NULL,
+	"requestsId" integer NOT NULL,
+	"createdAt" timestamp with time zone,
+	"updatedAt" timestamp with time zone,
+	name character varying(64) NOT NULL,
+	property character varying(128),
+	"defaultValue" text,
+	CONSTRAINT variables_pk PRIMARY KEY (id)
+
+);
+-- ddl-end --
+ALTER TABLE public.variables OWNER TO postgres;
+-- ddl-end --
+
+-- object: "requestValidatedByAssertions_requestsId" | type: INDEX --
+-- DROP INDEX IF EXISTS public."requestValidatedByAssertions_requestsId" CASCADE;
+CREATE INDEX "requestValidatedByAssertions_requestsId" ON public."requestValidatedByAssertions"
+	USING btree
+	(
+	  "requestsId"
+	)	WITH (FILLFACTOR = 90);
 -- ddl-end --
 
 -- object: project_author | type: CONSTRAINT --
@@ -541,16 +657,93 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
 -- object: environment_in_project | type: CONSTRAINT --
--- ALTER TABLE public.enviroments DROP CONSTRAINT IF EXISTS environment_in_project CASCADE;
-ALTER TABLE public.enviroments ADD CONSTRAINT environment_in_project FOREIGN KEY ("projectsId")
+-- ALTER TABLE public.environments DROP CONSTRAINT IF EXISTS environment_in_project CASCADE;
+ALTER TABLE public.environments ADD CONSTRAINT environment_in_project FOREIGN KEY ("projectsId")
 REFERENCES public.projects (id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: environment_author | type: CONSTRAINT --
+-- ALTER TABLE public.environments DROP CONSTRAINT IF EXISTS environment_author CASCADE;
+ALTER TABLE public.environments ADD CONSTRAINT environment_author FOREIGN KEY ("usersId")
+REFERENCES public.users (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "versions_projectsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public.versions DROP CONSTRAINT IF EXISTS "versions_projectsId_fkey" CASCADE;
+ALTER TABLE public.versions ADD CONSTRAINT "versions_projectsId_fkey" FOREIGN KEY ("projectsId")
+REFERENCES public.projects (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "versions_usersId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public.versions DROP CONSTRAINT IF EXISTS "versions_usersId_fkey" CASCADE;
+ALTER TABLE public.versions ADD CONSTRAINT "versions_usersId_fkey" FOREIGN KEY ("usersId")
+REFERENCES public.users (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: version_author | type: CONSTRAINT --
+-- ALTER TABLE public.versions DROP CONSTRAINT IF EXISTS version_author CASCADE;
+ALTER TABLE public.versions ADD CONSTRAINT version_author FOREIGN KEY ("usersId")
+REFERENCES public.users (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: version_in_project_fk | type: CONSTRAINT --
+-- ALTER TABLE public.versions DROP CONSTRAINT IF EXISTS version_in_project_fk CASCADE;
+ALTER TABLE public.versions ADD CONSTRAINT version_in_project_fk FOREIGN KEY ("projectsId")
+REFERENCES public.projects (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "evaluatedAssertions_responsesId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public."evaluatedAssertions" DROP CONSTRAINT IF EXISTS "evaluatedAssertions_responsesId_fkey" CASCADE;
+ALTER TABLE public."evaluatedAssertions" ADD CONSTRAINT "evaluatedAssertions_responsesId_fkey" FOREIGN KEY ("responsesId")
+REFERENCES public.responses (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: version | type: CONSTRAINT --
+-- ALTER TABLE public.requests DROP CONSTRAINT IF EXISTS version CASCADE;
+ALTER TABLE public.requests ADD CONSTRAINT version FOREIGN KEY ("versionsId")
+REFERENCES public.versions (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: request_author | type: CONSTRAINT --
+-- ALTER TABLE public.requests DROP CONSTRAINT IF EXISTS request_author CASCADE;
+ALTER TABLE public.requests ADD CONSTRAINT request_author FOREIGN KEY ("usersId")
+REFERENCES public.users (id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: request_in_environment | type: CONSTRAINT --
+-- ALTER TABLE public.requests DROP CONSTRAINT IF EXISTS request_in_environment CASCADE;
+ALTER TABLE public.requests ADD CONSTRAINT request_in_environment FOREIGN KEY ("environmentsId")
+REFERENCES public.environments (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "requests_authenticationsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public.requests DROP CONSTRAINT IF EXISTS "requests_authenticationsId_fkey" CASCADE;
+ALTER TABLE public.requests ADD CONSTRAINT "requests_authenticationsId_fkey" FOREIGN KEY ("authenticationsId")
+REFERENCES public.authentications (id) MATCH SIMPLE
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: authentication_request_fk | type: CONSTRAINT --
+-- ALTER TABLE public.requests DROP CONSTRAINT IF EXISTS authentication_request_fk CASCADE;
+ALTER TABLE public.requests ADD CONSTRAINT authentication_request_fk FOREIGN KEY ("authenticationsId")
+REFERENCES public.authentications (id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: environment | type: CONSTRAINT --
 -- ALTER TABLE public.tests DROP CONSTRAINT IF EXISTS environment CASCADE;
 ALTER TABLE public.tests ADD CONSTRAINT environment FOREIGN KEY ("environmentsId")
-REFERENCES public.enviroments (id) MATCH FULL
+REFERENCES public.environments (id) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
@@ -561,73 +754,45 @@ REFERENCES public.users (id) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: test_part_author | type: CONSTRAINT --
--- ALTER TABLE public."testParts" DROP CONSTRAINT IF EXISTS test_part_author CASCADE;
-ALTER TABLE public."testParts" ADD CONSTRAINT test_part_author FOREIGN KEY ("usersId")
-REFERENCES public.users (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
--- ddl-end --
-
--- object: parent_part | type: CONSTRAINT --
--- ALTER TABLE public."testParts" DROP CONSTRAINT IF EXISTS parent_part CASCADE;
-ALTER TABLE public."testParts" ADD CONSTRAINT parent_part FOREIGN KEY ("parentTestPartId")
-REFERENCES public."testParts" (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
--- ddl-end --
-
--- object: version_author | type: CONSTRAINT --
--- ALTER TABLE public.versions DROP CONSTRAINT IF EXISTS version_author CASCADE;
-ALTER TABLE public.versions ADD CONSTRAINT version_author FOREIGN KEY ("usersId")
-REFERENCES public.users (id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
--- object: belonging_to_response | type: CONSTRAINT --
--- ALTER TABLE public."responseHeaders" DROP CONSTRAINT IF EXISTS belonging_to_response CASCADE;
-ALTER TABLE public."responseHeaders" ADD CONSTRAINT belonging_to_response FOREIGN KEY ("responsesId")
-REFERENCES public.response (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: source_response | type: CONSTRAINT --
--- ALTER TABLE public."evaluatedAsserions" DROP CONSTRAINT IF EXISTS source_response CASCADE;
-ALTER TABLE public."evaluatedAsserions" ADD CONSTRAINT source_response FOREIGN KEY ("responsesId")
-REFERENCES public.response (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: evaluated_request | type: CONSTRAINT --
--- ALTER TABLE public."evaluatedAsserions" DROP CONSTRAINT IF EXISTS evaluated_request CASCADE;
-ALTER TABLE public."evaluatedAsserions" ADD CONSTRAINT evaluated_request FOREIGN KEY ("requestsId")
-REFERENCES public.requests (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: belonging_to_response | type: CONSTRAINT --
--- ALTER TABLE public."requestHeaders" DROP CONSTRAINT IF EXISTS belonging_to_response CASCADE;
-ALTER TABLE public."requestHeaders" ADD CONSTRAINT belonging_to_response FOREIGN KEY ("responsesId")
-REFERENCES public.response (id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
-
--- object: version | type: CONSTRAINT --
--- ALTER TABLE public.requests DROP CONSTRAINT IF EXISTS version CASCADE;
-ALTER TABLE public.requests ADD CONSTRAINT version FOREIGN KEY ("versionsId")
-REFERENCES public.versions (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
--- ddl-end --
-
 -- object: belongs_to_request | type: CONSTRAINT --
--- ALTER TABLE public.response DROP CONSTRAINT IF EXISTS belongs_to_request CASCADE;
-ALTER TABLE public.response ADD CONSTRAINT belongs_to_request FOREIGN KEY ("requestsId")
+-- ALTER TABLE public.responses DROP CONSTRAINT IF EXISTS belongs_to_request CASCADE;
+ALTER TABLE public.responses ADD CONSTRAINT belongs_to_request FOREIGN KEY ("requestsId")
 REFERENCES public.requests (id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: tags_in_project | type: CONSTRAINT --
--- ALTER TABLE public.tags DROP CONSTRAINT IF EXISTS tags_in_project CASCADE;
-ALTER TABLE public.tags ADD CONSTRAINT tags_in_project FOREIGN KEY ("projectsId")
-REFERENCES public.projects (id) MATCH FULL
+-- object: test_result_id | type: CONSTRAINT --
+-- ALTER TABLE public.responses DROP CONSTRAINT IF EXISTS test_result_id CASCADE;
+ALTER TABLE public.responses ADD CONSTRAINT test_result_id FOREIGN KEY ("runnedTestsId")
+REFERENCES public."runnedTests" (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "responses_environmentsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public.responses DROP CONSTRAINT IF EXISTS "responses_environmentsId_fkey" CASCADE;
+ALTER TABLE public.responses ADD CONSTRAINT "responses_environmentsId_fkey" FOREIGN KEY ("environmentsId")
+REFERENCES public.environments (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "responses_testsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public.responses DROP CONSTRAINT IF EXISTS "responses_testsId_fkey" CASCADE;
+ALTER TABLE public.responses ADD CONSTRAINT "responses_testsId_fkey" FOREIGN KEY ("testsId")
+REFERENCES public.tests (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: response_environment_fk | type: CONSTRAINT --
+-- ALTER TABLE public.responses DROP CONSTRAINT IF EXISTS response_environment_fk CASCADE;
+ALTER TABLE public.responses ADD CONSTRAINT response_environment_fk FOREIGN KEY ("environmentsId")
+REFERENCES public.environments (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: response_in_test_fk | type: CONSTRAINT --
+-- ALTER TABLE public.responses DROP CONSTRAINT IF EXISTS response_in_test_fk CASCADE;
+ALTER TABLE public.responses ADD CONSTRAINT response_in_test_fk FOREIGN KEY ("testsId")
+REFERENCES public.tests (id) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
@@ -641,7 +806,7 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 -- object: header_in_environment | type: CONSTRAINT --
 -- ALTER TABLE public.headers DROP CONSTRAINT IF EXISTS header_in_environment CASCADE;
 ALTER TABLE public.headers ADD CONSTRAINT header_in_environment FOREIGN KEY ("environmentsId")
-REFERENCES public.enviroments (id) MATCH FULL
+REFERENCES public.environments (id) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
@@ -659,6 +824,104 @@ REFERENCES public.requests (id) MATCH FULL
 ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
+-- object: parameter_belongs_to_request | type: CONSTRAINT --
+-- ALTER TABLE public."httpParameters" DROP CONSTRAINT IF EXISTS parameter_belongs_to_request CASCADE;
+ALTER TABLE public."httpParameters" ADD CONSTRAINT parameter_belongs_to_request FOREIGN KEY ("requestsId")
+REFERENCES public.requests (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "requestsInTest_requestsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public."requestsInTest" DROP CONSTRAINT IF EXISTS "requestsInTest_requestsId_fkey" CASCADE;
+ALTER TABLE public."requestsInTest" ADD CONSTRAINT "requestsInTest_requestsId_fkey" FOREIGN KEY ("requestsId")
+REFERENCES public.requests (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "requestsInTest_testsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public."requestsInTest" DROP CONSTRAINT IF EXISTS "requestsInTest_testsId_fkey" CASCADE;
+ALTER TABLE public."requestsInTest" ADD CONSTRAINT "requestsInTest_testsId_fkey" FOREIGN KEY ("testsId")
+REFERENCES public.tests (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: requests_fk | type: CONSTRAINT --
+-- ALTER TABLE public."requestsInTest" DROP CONSTRAINT IF EXISTS requests_fk CASCADE;
+ALTER TABLE public."requestsInTest" ADD CONSTRAINT requests_fk FOREIGN KEY ("requestsId")
+REFERENCES public.requests (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: tests_fk | type: CONSTRAINT --
+-- ALTER TABLE public."requestsInTest" DROP CONSTRAINT IF EXISTS tests_fk CASCADE;
+ALTER TABLE public."requestsInTest" ADD CONSTRAINT tests_fk FOREIGN KEY ("testsId")
+REFERENCES public.tests (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: test_id_fk | type: CONSTRAINT --
+-- ALTER TABLE public."runnedTests" DROP CONSTRAINT IF EXISTS test_id_fk CASCADE;
+ALTER TABLE public."runnedTests" ADD CONSTRAINT test_id_fk FOREIGN KEY ("testsId")
+REFERENCES public.tests (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "runnedTests_environmentsId_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public."runnedTests" DROP CONSTRAINT IF EXISTS "runnedTests_environmentsId_fkey" CASCADE;
+ALTER TABLE public."runnedTests" ADD CONSTRAINT "runnedTests_environmentsId_fkey" FOREIGN KEY ("environmentsId")
+REFERENCES public.environments (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: users_fk | type: CONSTRAINT --
+-- ALTER TABLE public."userBelongsToEnvironments" DROP CONSTRAINT IF EXISTS users_fk CASCADE;
+ALTER TABLE public."userBelongsToEnvironments" ADD CONSTRAINT users_fk FOREIGN KEY ("usersId")
+REFERENCES public.users (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: environments_fk | type: CONSTRAINT --
+-- ALTER TABLE public."userBelongsToEnvironments" DROP CONSTRAINT IF EXISTS environments_fk CASCADE;
+ALTER TABLE public."userBelongsToEnvironments" ADD CONSTRAINT environments_fk FOREIGN KEY ("environmentsId")
+REFERENCES public.environments (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: validated_request_fk | type: CONSTRAINT --
+-- ALTER TABLE public."requestValidatedByAssertions" DROP CONSTRAINT IF EXISTS validated_request_fk CASCADE;
+ALTER TABLE public."requestValidatedByAssertions" ADD CONSTRAINT validated_request_fk FOREIGN KEY ("requestsId")
+REFERENCES public.requests (id) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: "requestValidatedByAssertions_assertionType_fkey" | type: CONSTRAINT --
+-- ALTER TABLE public."requestValidatedByAssertions" DROP CONSTRAINT IF EXISTS "requestValidatedByAssertions_assertionType_fkey" CASCADE;
+ALTER TABLE public."requestValidatedByAssertions" ADD CONSTRAINT "requestValidatedByAssertions_assertionType_fkey" FOREIGN KEY ("assertionType")
+REFERENCES public.assertions (type) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: assertion_type_fk | type: CONSTRAINT --
+-- ALTER TABLE public."requestValidatedByAssertions" DROP CONSTRAINT IF EXISTS assertion_type_fk CASCADE;
+ALTER TABLE public."requestValidatedByAssertions" ADD CONSTRAINT assertion_type_fk FOREIGN KEY ("assertionType")
+REFERENCES public.assertions (type) MATCH FULL
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: auth_in_environment_fk | type: CONSTRAINT --
+-- ALTER TABLE public.authentications DROP CONSTRAINT IF EXISTS auth_in_environment_fk CASCADE;
+ALTER TABLE public.authentications ADD CONSTRAINT auth_in_environment_fk FOREIGN KEY ("environmentsId")
+REFERENCES public.environments (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: auth_author_fk | type: CONSTRAINT --
+-- ALTER TABLE public.authentications DROP CONSTRAINT IF EXISTS auth_author_fk CASCADE;
+ALTER TABLE public.authentications ADD CONSTRAINT auth_author_fk FOREIGN KEY ("usersId")
+REFERENCES public.users (id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
 -- object: variable_defined_for_test | type: CONSTRAINT --
 -- ALTER TABLE public.variables DROP CONSTRAINT IF EXISTS variable_defined_for_test CASCADE;
 ALTER TABLE public.variables ADD CONSTRAINT variable_defined_for_test FOREIGN KEY ("testsId")
@@ -671,41 +934,6 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE public.variables ADD CONSTRAINT variable_author FOREIGN KEY ("usersId")
 REFERENCES public.users (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
--- object: reciever_of_notification | type: CONSTRAINT --
--- ALTER TABLE public.notifications DROP CONSTRAINT IF EXISTS reciever_of_notification CASCADE;
-ALTER TABLE public.notifications ADD CONSTRAINT reciever_of_notification FOREIGN KEY ("usersId")
-REFERENCES public.users (id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
--- object: parameter_belongs_to_request | type: CONSTRAINT --
--- ALTER TABLE public."httpParameters" DROP CONSTRAINT IF EXISTS parameter_belongs_to_request CASCADE;
-ALTER TABLE public."httpParameters" ADD CONSTRAINT parameter_belongs_to_request FOREIGN KEY ("requestsId")
-REFERENCES public.requests (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
--- ddl-end --
-
--- object: parameter_belongs_to_request | type: CONSTRAINT --
--- ALTER TABLE public."queryStringParameters" DROP CONSTRAINT IF EXISTS parameter_belongs_to_request CASCADE;
-ALTER TABLE public."queryStringParameters" ADD CONSTRAINT parameter_belongs_to_request FOREIGN KEY ("requestId")
-REFERENCES public.requests (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
--- ddl-end --
-
--- object: validated_request_fk | type: CONSTRAINT --
--- ALTER TABLE public."requestValidatedByAssertions" DROP CONSTRAINT IF EXISTS validated_request_fk CASCADE;
-ALTER TABLE public."requestValidatedByAssertions" ADD CONSTRAINT validated_request_fk FOREIGN KEY ("requestsId")
-REFERENCES public.requests (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
--- ddl-end --
-
--- object: validating_assertion_fk | type: CONSTRAINT --
--- ALTER TABLE public."requestValidatedByAssertions" DROP CONSTRAINT IF EXISTS validating_assertion_fk CASCADE;
-ALTER TABLE public."requestValidatedByAssertions" ADD CONSTRAINT validating_assertion_fk FOREIGN KEY ("assertionsId")
-REFERENCES public.assertions (id) MATCH FULL
-ON DELETE CASCADE ON UPDATE CASCADE;
 -- ddl-end --
 
 
