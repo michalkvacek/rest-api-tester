@@ -77,10 +77,11 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 				$rootScope.reinitDateTimePicker ();
 
 			}, function (response) {
-				switch (tests.status) {
+				switch (response.status) {
 					case 404:
 						$translate ('Požadované prostředí neexistuje. Vyberte prosím jiné.').then (function (translation) {
 							notificationsService.push ('alert', $translate.instant (translation));
+							$rootScope.refreshProjectOverview();
 							$state.go ('projects');
 						});
 						break;
@@ -88,6 +89,7 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 					case 403:
 						$translate ('Pro přístup do tohoto testu nemáte dostatečné oprávnění.').then (function (translation) {
 							notificationsService.push ('alert', $translate.instant (translation));
+							$rootScope.refreshProjectOverview();
 							$state.go ('projects');
 						});
 
