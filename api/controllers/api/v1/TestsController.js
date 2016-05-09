@@ -22,7 +22,7 @@ module.exports = {
 
 		// create new test
 		permissionChecker.canManage (req, res, {
-			environmentsId: req.evinronmentId
+			environmentsId: req.environmentId
 		}, function () {
 			tests.create (parameters).then (function (test) {
 				return res.created (test);
