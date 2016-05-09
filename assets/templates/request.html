@@ -108,7 +108,7 @@
 					</modal>
 
 				</div>
-				<div class="column">
+				<div class="column" ng-show="request.current.headers.length">
 					<h5>{{'HTTP hlavičky' | translate}}</h5>
 					<ul>
 						<li ng-repeat="header in request.current.headers">

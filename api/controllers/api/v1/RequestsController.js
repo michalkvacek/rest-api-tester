@@ -218,10 +218,30 @@ module.exports = {
 					headers.findAll ({
 						where: {
 							$or: [
-								{testsId: req.param ('testsId', null)},
-								{projectsId: req.projectId},
-								{environmentsId: req.environmentId},
-								{requestsId: req.requestId}
+								{
+									testsId: req.param ('testsId', null),
+									projectsId: null,
+									environmentsId: null,
+									requestsId: null
+								},
+								{
+									projectsId: req.projectId,
+									environmentsId: null,
+									requestsId: null,
+									testsId: null
+								},
+								{
+									environmentsId: req.environmentId,
+									projectsId: null,
+									testsId: null,
+									requestsId: null
+								},
+								{
+									requestsId: req.requestId,
+									projectsId: null,
+									testsId: null,
+									environmentsId: null
+								}
 							]
 						}
 					}).then (function (headers) {
