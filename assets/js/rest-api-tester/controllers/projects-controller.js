@@ -192,13 +192,20 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 		 * Set project
 		 *
 		 * @param project
+		 * @param options
 		 */
-		$rootScope.selectProject = function (project) {
+		$rootScope.selectProject = function (project, options) {
 			$rootScope.currentProject = project;
+
+			if (typeof options == "undefined")
+				options = {};
 
 			if (typeof project != 'undefined') {
 				$rootScope.currentProjectId = project.id;
 				$rootScope.availableEnvironments = project.environments;
+
+				if (options.redirect)
+					$state.go('dashboard', {projectId: project.id});
 			}
 		};
 

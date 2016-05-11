@@ -129,6 +129,7 @@
   "host": "Host",
   "Upravit validátory v editoru requestu": "Upravit validátory v editoru requestu",
   "Rozšiřující parametry API ve formátu foo=bar&prop=val (poslané jako query string parametry)": "Rozšiřující parametry API ve formátu foo=bar&prop=val (poslané jako query string parametry)",
+  "Přehled testů":"Přehled testů",
   "Smazat": "Smazat",
   "Spustit nyní": "Spustit nyní",
   "Spustit...": "Spustit...",

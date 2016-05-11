@@ -43,8 +43,12 @@
 					<ul class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
 						<li class="accordion-item" data-accordion-item ng-repeat="response in testResult.test.responses">
 							<a href="javascript:void(0)" class="accordion-title">
-								<h5><span ng-class="response.status == 'success' ? 'fi-check success' : 'fi-x alert'"
-											 class="label"> {{response.requestName}}</span>
+								<h5 ng-switch="response.status">
+									<span ng-switch-when="success" class="label success fi-check"> {{response.requestName}}</span>
+									<span ng-switch-when="failed" class="label alert fi-x"> {{response.requestName}}</span>
+									<span ng-switch-when="evaluating" class="label warning fi-eye"> {{response.requestName}}</span>
+									<span ng-switch-default class="label secondary"> {{response.requestName}}</span>
+
 									<small>({{response.requestMethod}} {{response.requestUrl}})</small>
 								</h5>
 							</a>

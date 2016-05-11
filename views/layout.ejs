@@ -35,7 +35,8 @@
 			</div>
 			<div class="column shrink user-profile align-center">
 				<a ui-sref="user" ng-if="identity.email">
-					<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}} <small ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})</small>
+					<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}}
+					<small ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})</small>
 				</a>
 			</div>
 			<div class="column notifications cursor-pointer">
@@ -57,7 +58,8 @@
 
 <div class="row ui-view-container" id="content" ng-controller="LoggedUserController as loggedUser">
 
-	<aside class="column no-padding large-2" id="side-menu" ng-show="identity.email" ng-controller="TestsResultsController as tests">
+	<aside class="column no-padding large-2" id="side-menu" ng-show="identity.email"
+	       ng-controller="TestsResultsController as tests">
 		<div class="row">
 			<ul class="menu dropdown vertical" data-dropdown-menu data-disable-click="false">
 				<li class="project"><a href="javascript:void(0)" class="button primary">
@@ -66,28 +68,54 @@
 					<ul class="menu">
 						<li ng-repeat="project in projects.overview"
 						    ng-class="currentProject.id == project.id ? 'active' : ''">
-							<a href="javascript:void(0)" ng-click="selectProject(project)">{{project.name}}</a>
+							<a href="javascript:void(0)" ng-click="selectProject(project, {redirect: true})">{{project.name}}</a>
 						</li>
 					</ul>
 				</li>
 				<li ng-repeat="environment in availableEnvironments"
 				    ng-class="currentEnvironment.id == environment.id ? 'active' : ''"
-				class="environment">
+				    class="environment">
 					<a href="javascript:void(0)" ng-click="selectEnvironment(environment, {redirectToTests: true})">
 						<i class="fi-widget"></i>
 						{{environment.name}}
 					</a>
 				</li>
-				<li class="separator"></li>
 				<li class="text-center" ng-show="currentEnvironment.apiEndpoint">{{currentEnvironment.apiEndpoint}}</li>
-				<li class="separator"></li>
-				<li ng-controller="EnvironmentsController as environment" ng-show="currentEnvironment.id && identity.roles[currentEnvironment.id] != 'host'">
+				<li ng-if="currentProject.id" class="separator line"></li>
+				<li ui-sref-active="active"
+				    ng-if="currentProject.usersId && identity.id && currentProject.usersId == identity.id">
+					<a ui-sref="projects_settings({projectId: currentProject.id})">
+						<i class="fi-wrench"></i>
+						{{"Nastavení projektu" | translate}}
+					</a>
+				</li>
+				<li ui-sref-active="active" ng-if="currentProject.id">
+					<a ui-sref="dashboard({projectId: currentProject.id})">
+						<i class="fi-list-thumbnails"></i>
+						{{"Přehled prostředí" | translate}}
+					</a>
+				</li>
+				<li ng-if="currentProject.id" class="separator line"></li>
+				<li ui-sref-active="active"
+				    ng-if="currentEnvironment.id && identity.id && identity.roles[currentEnvironment.id] == 'manager'">
+					<a ui-sref="environment_settings({environmentId: currentEnvironment.id})">
+						<i class="fi-wrench"></i>
+						{{"Nastavení prostředí" | translate}}
+					</a>
+				</li>
+				<li ui-sref-active="active" ng-if="currentEnvironment.id">
+					<a ui-sref="tests({environmentId: currentEnvironment.id})">
+						<i class="fi-list"></i> {{"Přehled testů" | translate}}
+					</a>
+				</li>
+				<li ng-if="currentEnvironment.id" class="separator line"></li>
+				<li ng-controller="EnvironmentsController as environment"
+				    ng-show="currentEnvironment.id && identity.roles[currentEnvironment.id] != 'host'">
 					<a href="javascript:void(0)"
 					   ng-click="runEnvironmentTests(currentEnvironmentId)" class="button success">
 						<i class="fi-play"> {{"Spustit všechny testy" | translate}}</i>
 					</a>
 				</li>
-				<li class="separator"></li>
 			</ul>
 		</div>
 
@@ -98,7 +126,8 @@
 				<em>{{"Žádné testy" | translate:'{hours: '+tests.lastTestsAge+'}'}}</em>
 			</li>
 
-			<li ng-show="!emptyObject(testList)" ng-repeat="result in testList | orderBy: '-id'" ng-class="result.id == currentTestResult ? 'active' : ''">
+			<li ng-show="!emptyObject(testList)" ng-repeat="result in testList | orderBy: '-id'"
+			    ng-class="result.id == currentTestResult ? 'active' : ''">
 				<a ui-sref="test_result({testResultId: result.id})" ng-switch="result.status">
 					<span ng-switch-when="success" class="badge success fi-check"></span>
 					<span ng-switch-when="failed" class="badge alert fi-x"></span>
