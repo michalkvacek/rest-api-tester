@@ -3,7 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "description": "Webová služba pro testování REST API podporující práci v týmu",
-  "keywords": ["rest api", "testování", "nodejs"],
+  "keywords": [
+    "rest api",
+    "testování",
+    "nodejs"
+  ],
   "dependencies": {
     "bcrypt": "^0.8.6",
     "bcryptjs": "^2.3.0",
@@ -37,6 +41,7 @@
     "sails-hook-sequelize": "^1.0.1",
     "sails-hook-subscriber": "^1.0.1",
     "sequelize": "^3.22.0",
+    "sequelize-cli": "^2.4.0",
     "underscore": "^1.8.3"
   },
   "scripts": {
