@@ -92,8 +92,11 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 		 */
 		self.create = function () {
 			projectsService.create (self.formData).then (function (response) {
-				self.initOverview ();
-				$rootScope.reinitIdentity ();
+				$rootScope.reinitIdentity (function () {
+					self.initOverview ();
+
+					$state.go ('dashboard', {projectId: response.data.id});
+				});
 				self.formData = {};
 				self.newProjectWindow = false;
 			}, function (response) {
@@ -205,7 +208,7 @@ window.app.controller ('ProjectsController', ['$rootScope', '$state', '$statePar
 				$rootScope.availableEnvironments = project.environments;
 
 				if (options.redirect)
-					$state.go('dashboard', {projectId: project.id});
+					$state.go ('dashboard', {projectId: project.id});
 			}
 		};
 

@@ -7,18 +7,23 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$transl
 
 	$rootScope.identityInitialized = false;
 
-	$rootScope.reinitIdentity = function () {
+	$rootScope.reinitIdentity = function (callback) {
 		$http.get ('/api/v1/users/me').then (function (response) {
 			$rootScope.identityInitialized = true;
 			$rootScope.identity = response.data;
 
-			lastAuth = new Date();
+			lastAuth = new Date ();
+			
+			if (typeof callback != 'undefined')
+				callback();
+			
 		}, function (response) {
-			$rootScope.identityInitialized = true;
-			$rootScope.identity = {};
-			localStorage.removeItem ('auth_token');
 
-			return false
+			if (response.status == 403) {
+				$rootScope.identityInitialized = true;
+				$rootScope.identity = {};
+				localStorage.removeItem ('auth_token');
+			}
 		});
 	};
 
@@ -30,7 +35,7 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$transl
 		var now = new Date ();
 
 		if (now - lastAuth > 60 * 10 * 1000) {
-			return $rootScope.reinitIdentity();
+			return $rootScope.reinitIdentity ();
 		} else {
 			return true;
 		}
@@ -49,6 +54,9 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$transl
 	self.localAuth = function (data) {
 		var d = $q.defer ();
 		$http.post ('/api/v1/login', data).then (function (response) {
+
+			alert (JSON.stringify (response));
+
 			localStorage.setItem ('auth_token', response.data.token);
 
 			// set identity

@@ -182,11 +182,18 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 		 * Create new test in given environment
 		 */
 		self.newTest = function () {
-			var environmentId = $stateParams.environmentId;
+			var environmentId = self.formData.environmentsId || $stateParams.environmentId;
+
+			if (typeof environmentId == 'undefined') {
+				$translate ('Není zvoleno prostředí, do kterého má být test vytvořen. Nelze pokračovat.').then (function (translation) {
+					notificationsService.push ('alert', translation);
+				});
+				return;
+			}
 
 			testsService.create (environmentId, self.formData).then (function (response) {
 				$rootScope.setEnvironment (environmentId);
-				self.initTestOverview ();
+				$state.go('test_detail', {testId: response.data.id});
 
 				self.manageTest = false;
 			}, function (response) {

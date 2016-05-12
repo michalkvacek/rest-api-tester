@@ -2,7 +2,8 @@
 <html ng-app="restApiTester">
 <head>
 	<!-- Viewport mobile tag for sensible mobile support -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>REST API testing tool</title>
 	<link href='http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css' rel='stylesheet'
 	      type='text/css'>
@@ -18,7 +19,10 @@
 <div class="column no-padding" data-sticky-container>
 	<header class="sticky" data-sticky data-options="marginTop:0;" style="width:100%">
 		<nav id="main-menu" class="row title-bar">
-			<div class="column">
+			<div class="column shrink" data-responsive-toggle="side-menu" data-hide-for="large">
+				<button class="button menu-toggler" data-toggle><i class="fi-list"></i></button>
+			</div>
+			<div class="column show-for-medium">
 				<ul class="menu">
 					<li class="menu-text">
 						<ul class="breadcrumbs">
@@ -33,7 +37,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="column shrink user-profile align-center">
+			<div class="column shrink user-profile align-center show-for-large">
 				<a ui-sref="user" ng-if="identity.email">
 					<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}}
 					<small ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})</small>
@@ -58,10 +62,17 @@
 
 <div class="row ui-view-container" id="content" ng-controller="LoggedUserController as loggedUser">
 
-	<aside class="column no-padding large-2" id="side-menu" ng-show="identity.email"
+	<aside class="column no-padding small-12 large-2" data-hide-for="medium" id="side-menu" ng-show="identity.email"
 	       ng-controller="TestsResultsController as tests">
-		<div class="row">
-			<ul class="menu dropdown vertical" data-dropdown-menu data-disable-click="false">
+		<div class="row" ng-controller="TestsController as test">
+			<ul data-responsive-menu="drilldown large-dropdown" class="menu vertical" data-dropdown-menu data-disable-click="false">
+				<li ui-sref-active="active" class="hide-for-large user-profile align-center">
+					<a ui-sref="user" ng-if="identity.email">
+						<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}}
+						<span ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})</span>
+					</a>
+				</li>
+				<li class="hide-for-large separator line"></li>
 				<li class="project"><a href="javascript:void(0)" class="button primary">
 						<i class="fi-home"></i>
 						{{currentProject.name || "Vyberte projekt" | translate}}</a>
@@ -82,6 +93,14 @@
 				</li>
 				<li class="text-center" ng-show="currentEnvironment.apiEndpoint">{{currentEnvironment.apiEndpoint}}</li>
 				<li ng-if="currentProject.id" class="separator line"></li>
+
+				<li ui-sref-active="active" ng-if="currentProject.id">
+					<a ui-sref="projects">
+						<i class="fi-thumbnails"></i>
+						{{"Přehled projektů" | translate}}
+					</a>
+				</li>
+
 				<li ui-sref-active="active"
 				    ng-if="currentProject.usersId && identity.id && currentProject.usersId == identity.id">
 					<a ui-sref="projects_settings({projectId: currentProject.id})">
@@ -91,7 +110,7 @@
 				</li>
 				<li ui-sref-active="active" ng-if="currentProject.id">
 					<a ui-sref="dashboard({projectId: currentProject.id})">
-						<i class="fi-list-thumbnails"></i>
+						<i class="fi-graph-trend"></i>
 						{{"Přehled prostředí" | translate}}
 					</a>
 				</li>
@@ -108,6 +127,11 @@
 						<i class="fi-list"></i> {{"Přehled testů" | translate}}
 					</a>
 				</li>
+				<li ui-sref-active="active" ng-if="currentEnvironment.id">
+					<a ng-click="test.manageTest = true; test.formData.environmentsId = currentEnvironment.id">
+						<i class="fi-plus"></i> {{"Vytvořit nový test" | translate}}
+					</a>
+				</li>
 				<li ng-if="currentEnvironment.id" class="separator line"></li>
 				<li ng-controller="EnvironmentsController as environment"
 				    ng-show="currentEnvironment.id && identity.roles[currentEnvironment.id] != 'host'">
@@ -117,6 +141,32 @@
 					</a>
 				</li>
 			</ul>
+
+			<modal show="test.manageTest" ng-if="identity.roles[currentEnvironment.id] != 'host'" class="large">
+				<h3>{{"Vytvořit nový test" | translate}}</h3>
+
+				<form ng-submit="test.newTest()">
+
+					<label class="required">
+						{{"Jméno" | translate}}
+
+						<input type="text" required ng-model="test.formData.name" name="name" />
+					</label>
+
+					<label>
+						{{'Popis' | translate}}
+
+						<textarea rows="2" ng-model="test.formData.description" name="description"></textarea>
+					</label>
+
+					<div class="row">
+						<div class="column">
+							<button type="submit" class="button success float-right">{{"Vytvořit" | translate;}}</button>
+						</div>
+					</div>
+				</form>
+			</modal>
+
 		</div>
 
 		<ul class="test-results menu vertical">

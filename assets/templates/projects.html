@@ -36,14 +36,14 @@
 			</div>
 
 			<div class="row align-center controls">
-				<a ui-sref="dashboard({projectId: project.id})" class="button primary">
+				<a ui-sref="dashboard({projectId: project.id})" class="button small primary">
 					<i class="fi-graph-trend"></i>
 					{{"Přehled prostředí" | translate}}
 				</a>
 				&nbsp;
 
 				<a ui-sref="projects_settings({projectId: project.id})" ng-if="identity.id == project.usersId"
-					class="button warning">
+					class="button secondary small">
 					<i class="fi-wrench"></i>
 					{{"Nastavení" | translate}}
 				</a>
@@ -60,7 +60,22 @@
 	</div>
 </div>
 
-<a ng-click="projects.newProjectWindow = true" class="button success material-add-button"><i class="fi-plus"></i></a>
+<div class="row">
+	<div class="column align-center text-center no-padding" ng-show="projects.overview.length">
+		<div class="with-shadow project">
+			<div class="content">
+				<h4>{{"Nový projekt" | translate}}</h4>
+
+				<a ng-click="projects.newProjectWindow = true;" class="button success">
+					{{"Vytvořit nový projekt" | translate}}
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<a ng-click="projects.newProjectWindow = true" class="hide-for-large button success material-add-button"><i
+		  class="fi-plus"></i></a>
 
 <modal show="projects.newProjectWindow">
 	<h3>{{"Nový projekt" | translate}}</h3>

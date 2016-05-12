@@ -17,7 +17,12 @@ window.app.controller ('LoginController', ['$scope', '$rootScope', '$state', '$t
 			if (typeof options == "undefined")
 				options = {};
 
+			alert(JSON.stringify(self.formData));
+
 			loginService.localAuth (self.formData).then (function (response) {
+
+				alert(JSON.stringify(response));
+
 				if (options.redirect)
 					$translate ('Přihlášení bylo úspěšné').then (function (translation) {
 						$state.go ('projects');

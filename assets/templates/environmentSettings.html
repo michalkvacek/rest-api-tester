@@ -133,7 +133,7 @@
 							<td><img gravatar-src="user.email" alt="avatar" /></td>
 							<td>{{user.name}}</td>
 							<td>{{user.email}}</td>
-							<td>{{user.userBelongsToEnvironment.userRole}}</td>
+							<td>{{user.userBelongsToEnvironment.userRole | translate}}</td>
 							<td class="text-right">
 								<a href="javascript:void(0)" ng-if="identity.id != user.id"
 									ng-click="environment.removeUser(user.id)"

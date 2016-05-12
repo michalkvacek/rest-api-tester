@@ -53,25 +53,25 @@
 						<thead>
 						<tr>
 							<th>{{'Jméno prostředí' | translate}}</th>
-							<th>{{'Popis' | translate}}</th>
-							<th>{{'Adresa API serveru' | translate}}</th>
+							<th class="show-for-large">{{'Popis' | translate}}</th>
+							<th class="show-for-medium-up">{{'Adresa API serveru' | translate}}</th>
 							<th></th>
 						</tr>
 						</thead>
 						<tbody>
 						<tr ng-repeat="environment in environments.overview">
 							<td>{{environment.name}}</td>
-							<td>{{environment.description}}</td>
+							<td class="show-for-large">{{environment.description}}</td>
 							<td>{{environment.apiEndpoint}}</td>
-							<td class="text-right">
-								<a ui-sref="environment_settings({environmentId: environment.id})" class="button tiny warning">
+							<td class="show-for-medium-up text-right">
+								<a ui-sref="environment_settings({environmentId: environment.id})" ng-if="identity.roles[environment.id] == 'manager'" class="button tiny secondary">
 									<i class="fi-wrench"></i>
-									{{'Nastavení prostředí' | translate}}
+									<span class="show-for-large">{{'Nastavení prostředí' | translate}}</span>
 								</a>
 								<a href="javascript:void(0)" class="button tiny alert"
 									ng-click="environments.delete(environment.id)">
 									<i class="fi-x"></i>
-									{{'Smazat' | translate}}
+									<span class="show-for-large">{{'Smazat' | translate}}</span>
 								</a>
 							</td>
 						</tr>

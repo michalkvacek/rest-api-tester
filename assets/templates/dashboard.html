@@ -1,4 +1,14 @@
-<div class="row content align-center dashboard" ng-controller="EnvironmentsController as environments"
+
+<div class="row">
+	<div class="column no-padding">
+		<div class="column with-shadow">
+			<h3>{{currentProject.name}}</h3>
+			<p>{{currentProject.description}}</p>
+		</div>
+	</div>
+</div>
+
+<div class="row content dashboard" ng-controller="EnvironmentsController as environments"
 	  ng-init="environments.initOverview(); " data-equalizer>
 	<div class="environment column no-padding " ng-repeat="environment in environments.overview">
 		<div class="with-shadow has-controls">
@@ -51,7 +61,7 @@
 
 				<a ui-sref="environment_settings({environmentId: environment.id})"
 					ng-if="identity.roles[environment.id] == 'manager'"
-					class="warning button tiny">
+					class="secondary button tiny">
 					<i class="fi-wrench"></i> {{"Nastavení prostředí" | translate}}</a>
 			</div>
 		</div>

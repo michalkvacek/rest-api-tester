@@ -58,6 +58,17 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 
 						broadcast = true;
 
+						// send notification if test passed or not
+						if (result.status == 'success') {
+							$translate ('Test :name proběhl úspěšně!', {name: result.testName}).then (function (translation) {
+								notificationsService.push ('success', translation);
+							});
+						} else if (result.status == 'failed') {
+							$translate ('Test :name selhal!', {name: result.testName}).then (function (translation) {
+								notificationsService.push ('alert', translation);
+							});
+						}
+						
 						$rootScope.lastTestResults[result.id].status = result.status;
 						$rootScope.testList[lastResult.position] = result;
 					}

@@ -202,10 +202,12 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 			var projectId = $stateParams.projectId;
 
 			environmentsService.create (projectId, self.formData).then (function (response) {
-				self.initOverview ();
-				$rootScope.refreshProjectOverview();
-				$rootScope.reinitIdentity ();
 				self.formData = {};
+
+				$rootScope.refreshProjectOverview ();
+				$rootScope.reinitIdentity (function () {
+					$state.go ('environment', {environmentId: response.data.id});
+				});
 
 				self.manageEnvironments = false;
 			}, function (response) {
@@ -300,11 +302,19 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 			environmentsService.addUser (environmentId, self.addUser).then (function (response) {
 				self.loadDetail ();
 
+				self.addUser = {};
+
 				self.manageUser = false;
 			}, function (response) {
 				switch (response.status) {
 					case 403:
 						$translate ('Pro tuto akci nemáte dostatečná oprávnění').then (function (translation) {
+							notificationsService.push ('alert', translation);
+						});
+						break;
+
+					case 400:
+						$translate ('Uživatel je k prostředí již přiřazen.').then (function (translation) {
 							notificationsService.push ('alert', translation);
 						});
 						break;

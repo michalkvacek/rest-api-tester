@@ -1,7 +1,7 @@
 <div ng-controller="TestsController as tests">
 	<div class="row content" ng-init="tests.initStatistics(tests.statisticsButton)">
 		<div class="column with-shadow has-controls">
-			<div class="row text-center" ng-show="tests.statistics.testedRequests > 0">
+			<div class="row statistics text-center" ng-show="tests.statistics.testedRequests > 0">
 				<div class="column">
 					<h4>{{tests.statistics.health | number : 1}} %</h4>
 					<small>{{'Zdraví' | translate}}</small>
@@ -43,12 +43,12 @@
 				&nbsp;
 				<a href="javascript:void(0)" ng-click="runEnvironmentTests(currentEnvironmentId)"
 					class="button success tiny"><i
-						  class="fi-play"> {{'Spustit všechny testy' | translate}}</i></a>
+						  class="fi-play"> <span class="show-for-medium">{{'Spustit všechny testy' | translate}}</span></i></a>
 			</div>
 		</div>
 	</div>
 
-	<div class="row" data-equalizer ng-init="tests.initTestOverview()">
+	<div class="row tests-overview" data-equalizer ng-init="tests.initTestOverview()">
 		<div class="column no-padding large-4 test" ng-repeat="test in tests.tests">
 			<div class="with-shadow has-controls">
 
@@ -87,7 +87,7 @@
 						<span class="show-for-medium">{{'Spustit nyní' | translate}}</span>
 					</a>
 					&nbsp;
-					<a href="javascript:void(0)" class="button tiny warning"
+					<a href="javascript:void(0)" class="button tiny secondary"
 						ng-if="identity.roles[currentEnvironment.id] != 'host'" ng-click="tests.setupSchedule(test)">
 						<i class="fi-calendar"></i>
 						<span class="show-for-medium">{{'Naplánovat spuštění' | translate}}</span></a>
@@ -142,9 +142,8 @@
 		</form>
 	</modal>
 
-	<!--Button for creating new resource-->
 	<a id="add-test" ng-if="identity.roles[currentEnvironment.id] != 'host'" ng-click="tests.manageTest = true"
-		class="button success material-add-button"><i
+		class="button success hide-for-large material-add-button"><i
 			  class="fi-plus"></i></a>
 
 	<modal show="tests.manageTest" ng-if="identity.roles[currentEnvironment.id] != 'host'" class="large">

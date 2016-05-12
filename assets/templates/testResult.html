@@ -5,7 +5,9 @@
 				<small>({{'výsledky z' | translate}} {{testResult.test.createdAt | date : 'medium'}})</small>
 			</h3>
 
-			{{testResult.test.testDescription}}
+			<p>
+				{{testResult.test.testDescription}}
+			</p>
 
 			<span ng-switch-when="success" class="label success fi-check"> {{'Prochází' | translate}}</span>
 			<span ng-switch-when="failed" class="label alert fi-x"> {{'Neprochází' | translate}}</span>
@@ -16,7 +18,7 @@
 
 	<div class="row" ng-init="testResult.initStatistics()">
 		<div class="column with-shadow">
-			<div class="row text-center">
+			<div class="row statistics text-center">
 				<div class="column">
 					<h4>{{testResult.statistics.health | number : 1}} %</h4>
 					<small>{{'Úspěšných požadavků' | translate}}</small>

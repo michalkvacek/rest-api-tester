@@ -38,7 +38,7 @@
 
 	<div class="row" ng-init="tests.initStatistics(tests.statisticsButton)">
 		<div class="column with-shadow has-controls">
-			<div class="row text-center" ng-show="tests.statistics.testedRequests > 0">
+			<div class="row statistics text-center" ng-show="tests.statistics.testedRequests > 0">
 				<div class="column">
 					<h4>{{tests.statistics.health | number : 1 || '--'}} %</h4>
 					<small>{{'Zdraví' | translate}}</small>

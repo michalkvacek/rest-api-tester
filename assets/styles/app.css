@@ -1,3 +1,10 @@
+html {
+	min-width: 420px;
+}
+
+.no-js {
+	display: none;
+}
 .row {
 	max-width: 100% !important;
 }
@@ -64,6 +71,23 @@
 
 #main-menu .title-bar-right .menu {
 	justify-content: flex-end;
+}
+
+#side-menu .user-profile a {
+	line-height: 40px;
+}
+
+.statistics .column {
+	min-width: 8em;
+}
+
+.tests-overview .test {
+	min-width: 15em;
+}
+
+
+.menu-toggler {
+	margin: 0;
 }
 
 #loaded-view {
@@ -293,4 +317,22 @@ footer {
 .ng-enter-active {
 	transition: .5s;
 	opacity: 1;
+}
+
+@media screen and (max-width: 1300px) {
+	.ng-modal .reveal-modal {
+		width: 75%;
+		left: 12.5%;
+	}
+	.ng-modal.large .reveal-modal {
+		width: 95%;
+		left: 2.5%;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.ng-modal.reveal-modal {
+		width: 95%;
+		left: 2.5%;
+	}
 }
