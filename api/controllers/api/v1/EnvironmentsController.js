@@ -141,8 +141,7 @@ module.exports = {
 
 	delete: function (req, res) {
 		permissionChecker.canManage (req, res, {
-			environmentsId: req.environmentId,
-			roles: ['manager']
+			projectsId: req.projectId
 		}, function () {
 			environments.findOne ({where: {id: req.environmentId}}).then (function (env) {
 				env.destroy ();
