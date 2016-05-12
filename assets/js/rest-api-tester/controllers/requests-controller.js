@@ -209,14 +209,14 @@ window.app.controller ('RequestsController', [
 			self.formData.environmentsId = environmentId;
 			self.formData.testsId = testId;
 
-			self.formData = {};
-
 			// try to create new request
 			requestsService.create (environmentId, self.formData).then (function (response) {
 				$translate ('Úspěšně vytvořeno').then (function (translation) {
 					notificationsService.push ('success', translation);
 				});
 				self.addRequestModal = false;
+				self.formData = {};
+
 			}, function (response) {
 				$translate ('Nelze vykonat požadavek').then (function (translation) {
 					notificationsService.push ('alert', translation);
