@@ -159,7 +159,8 @@ module.exports = {
 				break;
 
 			case 'property_exists':
-				return evaluator.getProperty (body, requestAssertion.property) != false;
+				var property = evaluator.getProperty (body, requestAssertion.property);
+				return property != false && property != null;
 				break;
 			case 'property_value':
 				return evaluator.getProperty (body, requestAssertion.property);
