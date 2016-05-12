@@ -11,19 +11,28 @@ module.exports = {
 		require ('crypto').randomBytes (4, function (err, buffer) {
 			userInfo.password = buffer.toString ('hex');
 
+			var environmentId = userInfo.environmentId;
+			delete userInfo.environmentId;
+
+			console.log (userInfo);
+
 			// create user
 			users.create (userInfo).then (function (user) {
 
 				if (userInfo.environmentId && userInfo.role) {
-					userService.assignToEnvironment (user.id, userInfo.environmentId, userInfo.role);
+					userService.assignToEnvironment (user.id, environmentId, console.log, console.error);
 				}
+
+				console.log(typeof callbackErr);
+
 
 				// send email
 				emailSender.registrationEmail (userInfo.password, user, function (err, email) {
 					if (err) {
-						callbackErr();
+						callbackErr (err);
+					} else {
+						callback (user);
 					}
-					callback (user);
 				});
 
 			}, callbackErr);

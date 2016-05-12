@@ -90,6 +90,8 @@ module.exports = {
 						delete user.password;
 
 						return res.created (user);
+					}, function (err) {
+						return res.serverError (err);
 					});
 				} else {
 					userService.assignToEnvironment (foundUser.id, req.environmentId, role, function (assignedUser) {
@@ -159,11 +161,11 @@ module.exports = {
 				delete updated.password;
 
 				return res.ok (updated);
-			}, function (error){
+			}, function (error) {
 				if (error.name == 'SequelizeUniqueConstraintError')
 					return res.badRequest ('dupl-email');
 
-				return res.serverError(error);
+				return res.serverError (error);
 			});
 		});
 	}
