@@ -29,6 +29,8 @@ module.exports = {
 			}, function (error) {
 				return res.serverError (error);
 			});
+		}, function (error) {
+			return res.serverError(error);
 		});
 	}
 	,
@@ -49,6 +51,10 @@ module.exports = {
 					nextRun: nextRun ? new Date (nextRun) : null
 				}).then (function (edited) {
 					return res.ok (edited);
+				}, function (error) {
+					console.log(req.param('runInterval'));
+					console.log(req.param('nextRun'));
+					return res.serverError(error);
 				});
 
 			}, function (error) {
@@ -272,6 +278,8 @@ module.exports = {
 			}).then (function () {
 				return res.ok ('deleted');
 			});
+		}, function (error) {
+			return res.serverError(error);
 		});
 	}
 	,
@@ -323,6 +331,8 @@ module.exports = {
 					return res.serverError (err);
 				});
 			});
+		}, function (error) {
+			return res.serverError(error);
 		});
 	}
 }
