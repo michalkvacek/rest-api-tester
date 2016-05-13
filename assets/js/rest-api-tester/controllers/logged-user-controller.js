@@ -1,4 +1,9 @@
-// var app = angular.module ('restApiTester');
+window.app.controller ('LoggedUserController', ['$rootScope', 'loginService', '$state', '$translate', 'notificationsService',
+	function ($rootScope, loginService, $state, $translate, notificationsService) {
+		$rootScope.logoutAndRedirect = function () {
+			$rootScope.logout ();
 
-window.app.controller ('LoggedUserController', ['$scope', 'loginService', function ($scope, loginService) {
-}]);
+			$state.go ('login');
+		}
+	}
+]);

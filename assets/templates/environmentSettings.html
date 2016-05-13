@@ -89,12 +89,12 @@
 					<div class="row controls align-right">
 						<a href="javascript:void(0)"
 							ng-click="headers.manageHeaders = true; headers.formData = {environmentsId: environment.detail.id}"
-							data-open="new-header" class="success tiny button">
+							id="new-header-btn" class="success tiny button">
 							<i class="fi-plus"></i>
 							<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
 					</div>
 
-					<modal show="headers.manageHeaders">
+					<modal show="headers.manageHeaders" id="headers-modal">
 						<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
 						<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
 
@@ -113,7 +113,7 @@
 									</label>
 								</div>
 							</div>
-							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+							<button type="submit" id="header-btn" class="button success">{{'Uložit' | translate}}</button>
 						</form>
 					</modal>
 				</div>
@@ -137,8 +137,8 @@
 							<td class="text-right">
 								<a href="javascript:void(0)" ng-if="identity.id != user.id"
 									ng-click="environment.removeUser(user.id)"
-									class="button small warning">
-									<i class="fi-lock"></i>
+									class="button small alert">
+									<i class="fi-x"></i>
 									{{'Odebrat uživatele' | translate}}
 								</a>
 							</td>
@@ -147,12 +147,12 @@
 
 					<div class="text-right">
 						<a href="javascript:void(0)"
-							ng-click="environment.manageUser=true" class="success  button">
+							ng-click="environment.manageUser=true" id="new-user-btn" class="success  button">
 							<i class="fi-plus"></i>
 							<span class="show-for-medium"> {{'Přidat uživatele' | translate}}</span></a>
 					</div>
 
-					<modal show="environment.manageUser">
+					<modal show="environment.manageUser" id="new-user-modal">
 						<h4>{{'Přidat uživatele' | translate}}</h4>
 						<form ng-submit="environment.assignUser()">
 							<label>{{'Role' | translate}}
@@ -168,7 +168,7 @@
 								<input type="email" ng-model="environment.addUser.email">
 							</label>
 
-							<button type="submit" class="float-right button primary">{{'Přidat' | translate}}</button>
+							<button type="submit" id="assign-user-btn" class="float-right button primary">{{'Přidat' | translate}}</button>
 
 						</form>
 					</modal>

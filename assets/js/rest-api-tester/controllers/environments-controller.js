@@ -1,6 +1,6 @@
 // var app = angular.module ('restApiTester');
-window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$timeout', '$translate', 'notificationsService', 'testsResultsService', 'environmentsService', 'testsService', '$stateParams',
-	function ($scope, $rootScope, $state, $timeout, $translate, notificationsService, testsResultsService, environmentsService, testsService, $stateParams) {
+window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$state', '$interval', '$translate', 'notificationsService', 'testsResultsService', 'environmentsService', 'testsService', '$stateParams',
+	function ($scope, $rootScope, $state, $interval, $translate, notificationsService, testsResultsService, environmentsService, testsService, $stateParams) {
 		var self = this;
 
 		self.formData = {};
@@ -16,18 +16,13 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 		 * Load list of dasboard tests.
 		 *
 		 * Currently using AJAX polling... :(
-		 *
-		 * @param withTimeout
 		 */
-		$rootScope.loadDashboardTests = function (withTimeout) {
+		$rootScope.loadDashboardTests = function () {
 			var projectId = $stateParams.projectId, test = {};
 
 			// turn off loading results for dashboard
 			if (!$rootScope.enableLoadingDashboardTests)
 				return;
-
-			if (typeof withTimeout == 'undefined')
-				withTimeout = true;
 
 			// load results for past 7 days in current project
 			testsResultsService.getOverview (7 * 24, projectId).then (function (response) {
@@ -44,14 +39,11 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 					if (test.status == 'failed')
 						$rootScope.failedDasboardTests[test.environmentsId].push (test);
 				}
-
-				// run again after 30 seconds - if wanted
-				if (withTimeout)
-					$timeout ($rootScope.loadDashboardTests, 30 * 1000);
 			});
 		};
 
 		$rootScope.loadDashboardTests ();
+		$interval ($rootScope.loadDashboardTests, 30 * 1000);
 
 		/**
 		 * Add tests from given environment into queue for testing
@@ -198,15 +190,22 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 		/**
 		 * Create new environment in current project
 		 */
-		self.create = function () {
+		self.create = function (options) {
 			var projectId = $stateParams.projectId;
+
+			if (typeof options == 'undefined')
+				options = {};
 
 			environmentsService.create (projectId, self.formData).then (function (response) {
 				self.formData = {};
 
 				$rootScope.refreshProjectOverview ();
 				$rootScope.reinitIdentity (function () {
-					$state.go ('environment', {environmentId: response.data.id});
+					if (options.redirect) {
+						$state.go ('test', {environmentId: response.data.id});
+					} else {
+						self.initOverview (projectId, undefined, false);
+					}
 				});
 
 				self.manageEnvironments = false;
@@ -272,7 +271,11 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 		self.delete = function (environmentId) {
 			if (confirm ($translate.instant ('Opravdu?'))) {
 				environmentsService.delete (environmentId).then (function (response) {
-					self.initOverview ();
+
+					$rootScope.refreshProjectOverview ();
+					$rootScope.reinitIdentity (function () {
+						self.initOverview (undefined, undefined, false);
+					});
 				}, function (response) {
 					switch (response.status) {
 						case 403:

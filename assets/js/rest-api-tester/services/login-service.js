@@ -1,6 +1,6 @@
 // var app = angular.module ('restApiTester');
 
-window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$translate', '$q', function ($http, $timeout, $rootScope, $translate, $q) {
+window.app.service ('loginService', ['$http', '$interval', '$rootScope', '$translate', '$q', function ($http, $interval, $rootScope, $translate, $q) {
 
 	var lastAuth = null;
 	$rootScope.identity = {};
@@ -13,35 +13,33 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$transl
 			$rootScope.identity = response.data;
 
 			lastAuth = new Date ();
-			
-			if (typeof callback != 'undefined')
-				callback();
-			
-		}, function (response) {
 
+			if (typeof callback != 'undefined')
+				callback ();
+
+		}, function (response) {
 			if (response.status == 403) {
-				$rootScope.identityInitialized = true;
-				$rootScope.identity = {};
-				localStorage.removeItem ('auth_token');
+				$rootScope.logout();
 			}
 		});
 	};
 
-	var periodicalLogin = function (withTimeout) {
+	$rootScope.logout = function () {
+		$rootScope.identityInitialized = true;
+		$rootScope.identity = {};
+		localStorage.removeItem ('auth_token');
+	};
 
-		if (typeof withTimeout == 'undefined' || withTimeout)
-			$timeout (periodicalLogin, 5 * 60 * 1000);
-
+	var periodicalLogin = function () {
 		var now = new Date ();
 
 		if (now - lastAuth > 60 * 10 * 1000) {
-			return $rootScope.reinitIdentity ();
-		} else {
-			return true;
+			$rootScope.reinitIdentity ();
 		}
 	};
 
-	periodicalLogin ();
+	periodicalLogin();
+	$interval (periodicalLogin, 5 * 60 * 1000);
 
 	var self = this;
 
@@ -54,9 +52,6 @@ window.app.service ('loginService', ['$http', '$timeout', '$rootScope', '$transl
 	self.localAuth = function (data) {
 		var d = $q.defer ();
 		$http.post ('/api/v1/login', data).then (function (response) {
-
-			alert (JSON.stringify (response));
-
 			localStorage.setItem ('auth_token', response.data.token);
 
 			// set identity

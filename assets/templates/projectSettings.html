@@ -64,7 +64,8 @@
 							<td class="show-for-large">{{environment.description}}</td>
 							<td>{{environment.apiEndpoint}}</td>
 							<td class="show-for-medium-up text-right">
-								<a ui-sref="environment_settings({environmentId: environment.id})" ng-if="identity.roles[environment.id] == 'manager'" class="button tiny secondary">
+								<a ui-sref="environment_settings({environmentId: environment.id})"
+									ng-if="identity.roles[environment.id] == 'manager'" class="button tiny secondary">
 									<i class="fi-wrench"></i>
 									<span class="show-for-large">{{'Nastavení prostředí' | translate}}</span>
 								</a>
@@ -78,10 +79,11 @@
 						</tbody>
 					</table>
 
-					<a href="javascript:void(0)" class="button success" ng-click="environments.manageEnvironments = true">
+					<a href="javascript:void(0)" class="button success" id="new-environment"
+						ng-click="environments.manageEnvironments = true">
 						<i class="fi-plus"></i> {{'Vytvořit nové prostředí' | translate}}</a>
 
-					<modal show="environments.manageEnvironments" ng-if="true">
+					<modal show="environments.manageEnvironments" id="new-environment-modal">
 						<h3>{{'Nové prostředí' | translate}}</h3>
 
 						<form ng-submit="environments.create()">
@@ -107,7 +109,9 @@
 									 placeholder="Some brief description of this API environment"></textarea>
 							</label>
 
-							<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
+							<button type="submit" class="button success float-right" id="create-environment-btn">
+								{{'Vytvořit' | translate}}
+							</button>
 						</form>
 					</modal>
 				</div>
@@ -138,12 +142,12 @@
 					<div class="row controls align-right">
 						<a href="javascript:void(0)"
 							ng-click="headers.manageHeaders = true; headers.formData = {projectsId: project.detail.id}"
-							data-open="new-header" class="success tiny button">
+							id="new-header-btn" class="success tiny button">
 							<i class="fi-plus"></i>
 							<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
 					</div>
 
-					<modal show="headers.manageHeaders">
+					<modal show="headers.manageHeaders" id="headers-modal">
 						<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
 						<h3 ng-show="!headers.formData.id">{{'Vytvořit novou HTTP hlavičku' | translate}}</h3>
 
@@ -164,7 +168,7 @@
 									</label>
 								</div>
 							</div>
-							<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+							<button type="submit" id="header-btn" class="button success">{{'Uložit' | translate}}</button>
 						</form>
 					</modal>
 				</div>

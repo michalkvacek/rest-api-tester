@@ -37,11 +37,19 @@
 					</li>
 				</ul>
 			</div>
-			<div class="column shrink user-profile align-center show-for-large">
-				<a ui-sref="user" ng-if="identity.email">
-					<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}}
-					<small ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})</small>
-				</a>
+			<div class="column shrink user-profile align-center show-for-large" ng-if="identity.email">
+				<ul class="menu">
+					<li><a ui-sref="user">
+							<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}}
+							<small ng-if="currentEnvironment.id">({{identity.roles[currentEnvironment.id] | translate}})
+							</small>
+						</a></li>
+					<li class="separator"></li>
+
+					<li class="logout">
+						<a ng-click="logoutAndRedirect()" id="logout-btn"><i class="fi-power"></i></a>
+					</li>
+				</ul>
 			</div>
 			<div class="column notifications cursor-pointer">
 				<div ng-repeat="notification in globalNotifications" class="notification text-right"
@@ -65,7 +73,8 @@
 	<aside class="column no-padding small-12 large-2" data-hide-for="medium" id="side-menu" ng-show="identity.email"
 	       ng-controller="TestsResultsController as tests">
 		<div class="row" ng-controller="TestsController as test">
-			<ul data-responsive-menu="drilldown large-dropdown" class="menu vertical" data-dropdown-menu data-disable-click="false">
+			<ul data-responsive-menu="drilldown large-dropdown" class="menu vertical" data-dropdown-menu
+			    data-disable-click="false">
 				<li ui-sref-active="active" class="hide-for-large user-profile align-center">
 					<a ui-sref="user" ng-if="identity.email">
 						<img gravatar-src="identity.email" gravatar-size="35" alt="profile" /> {{identity.name}}
@@ -79,7 +88,8 @@
 					<ul class="menu">
 						<li ng-repeat="project in projects.overview"
 						    ng-class="currentProject.id == project.id ? 'active' : ''">
-							<a href="javascript:void(0)" ng-click="selectProject(project, {redirect: true})">{{project.name}}</a>
+							<a href="javascript:void(0)"
+							   ng-click="selectProject(project, {redirect: true})">{{project.name}}</a>
 						</li>
 					</ul>
 				</li>
@@ -128,7 +138,7 @@
 					</a>
 				</li>
 				<li ui-sref-active="active" ng-if="currentEnvironment.id">
-					<a ng-click="test.manageTest = true; test.formData.environmentsId = currentEnvironment.id">
+					<a id="new-test-btn" ng-click="test.manageTest = true; test.formData.environmentsId = currentEnvironment.id">
 						<i class="fi-plus"></i> {{"Vytvořit nový test" | translate}}
 					</a>
 				</li>
@@ -142,7 +152,7 @@
 				</li>
 			</ul>
 
-			<modal show="test.manageTest" ng-if="identity.roles[currentEnvironment.id] != 'host'" class="large">
+			<modal show="test.manageTest" id="new-test-modal" ng-if="identity.roles[currentEnvironment.id] != 'host'" class="large">
 				<h3>{{"Vytvořit nový test" | translate}}</h3>
 
 				<form ng-submit="test.newTest()">
@@ -161,7 +171,7 @@
 
 					<div class="row">
 						<div class="column">
-							<button type="submit" class="button success float-right">{{"Vytvořit" | translate;}}</button>
+							<button type="submit" id="create-test-btn" class="button success float-right">{{"Vytvořit" | translate;}}</button>
 						</div>
 					</div>
 				</form>
@@ -171,7 +181,9 @@
 
 		<ul class="test-results menu vertical">
 			<!--loading img from http://www.ajaxload.info/-->
-			<li ng-show="testAddedOrInProgress" class="text-center"><img src="images/loading.gif" alt="loading..." /></li>
+			<li ng-show="testAddedOrInProgress" class="text-center">
+				<img class="waiting-img" id="waiting-for-tests" src="images/loading.gif" alt="loading..." />
+			</li>
 			<li ng-if="tests.lastTestsAge" ng-show="emptyObject(testList)" class="text-center">
 				<em>{{"Žádné testy" | translate:'{hours: '+tests.lastTestsAge+'}'}}</em>
 			</li>

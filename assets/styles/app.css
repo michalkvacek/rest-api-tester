@@ -73,8 +73,22 @@ html {
 	justify-content: flex-end;
 }
 
-#side-menu .user-profile a {
-	line-height: 40px;
+.user-profile a:hover {
+	text-decoration: underline;
+}
+
+.user-profile img {
+	border: solid 1px;
+	border-radius: 50%;
+	margin: 0 .3em;
+}
+.user-profile .logout a:hover {
+	color: red;
+}
+
+.user-profile a {
+	line-height: 40px !important;
+	padding: 0 1em 0 0 !important;
 }
 
 .statistics .column {
@@ -212,16 +226,6 @@ li.separator.line {
 	border-bottom: 1px solid #ddd;
 	margin: 1em 0;
 	height: 0;
-}
-
-.user-profile:hover {
-	text-decoration: underline;
-}
-
-.user-profile img {
-	border: solid 1px;
-	border-radius: 50%;
-	margin: 0 .3em;
 }
 
 .test-results {

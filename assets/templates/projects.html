@@ -66,7 +66,7 @@
 			<div class="content">
 				<h4>{{"Nový projekt" | translate}}</h4>
 
-				<a ng-click="projects.newProjectWindow = true;" class="button success">
+				<a ng-click="projects.newProjectWindow = true;" id='new-project-btn' class="button success">
 					{{"Vytvořit nový projekt" | translate}}
 				</a>
 			</div>
@@ -77,7 +77,7 @@
 <a ng-click="projects.newProjectWindow = true" class="hide-for-large button success material-add-button"><i
 		  class="fi-plus"></i></a>
 
-<modal show="projects.newProjectWindow">
+<modal show="projects.newProjectWindow" id="new-project">
 	<h3>{{"Nový projekt" | translate}}</h3>
 
 	<form ng-submit="projects.create()">
@@ -95,6 +95,6 @@
 							 placeholder="{{'Stručný popis projektu pro lepší orientaci' | translate}}"></textarea>
 		</label>
 
-		<button type="submit" class="button success float-right">{{'Vytvořit' | translate}}</button>
+		<button type="submit" id="create-project" class="button success float-right">{{'Vytvořit' | translate}}</button>
 	</form>
 </modal>

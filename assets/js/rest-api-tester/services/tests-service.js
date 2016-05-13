@@ -36,6 +36,9 @@ window.app.service ('testsService', ['$http', '$rootScope', '$q', function ($htt
 		edit: function (testId, data) {
 			var d = $q.defer ();
 
+			if (data.runInterval == 'null')
+				data.runInterval = null;
+
 			$http.put ('/api/v1/tests/' + testId, data).then (d.resolve, d.reject);
 
 			return d.promise;
@@ -43,6 +46,9 @@ window.app.service ('testsService', ['$http', '$rootScope', '$q', function ($htt
 
 		schedule: function (testId, data) {
 			var d = $q.defer ();
+
+			if (data.runInterval == 'null')
+				data.runInterval = null;
 
 			$http.put ('/api/v1/tests/' + testId + '/schedule', data).then (d.resolve, d.reject);
 
@@ -67,6 +73,9 @@ window.app.service ('testsService', ['$http', '$rootScope', '$q', function ($htt
 
 		create: function (environmentId, data) {
 			var d = $q.defer ();
+
+			if (data.runInterval == 'null')
+				data.runInterval = null;
 
 			$http.post ('/api/v1/environments/' + environmentId + '/tests', data).then (d.resolve, d.reject);
 

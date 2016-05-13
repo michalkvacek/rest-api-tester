@@ -12,13 +12,14 @@
 
 				<div ng-show="identity.roles[currentEnvironment.id] != 'host'">
 					<ul class="tabs" data-tabs id="request-editor">
-						<li class="tabs-title is-active"><a href="#basic-info" aria-selected="true">{{'Základní informace' |
-																															 translate}}</a></li>
-						<li class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
+						<li id="basic-info-title" class="tabs-title is-active"><a href="#basic-info" aria-selected="true">
+							{{'Základní informace' | translate}}</a>
+						</li>
+						<li id="request-parameters-title"class="tabs-title" ng-show="request.formData.httpMethod != 'GET'">
 							<a href="#request-parameters">{{"HTTP parametry" | translate}}</a>
 						</li>
-						<li class="tabs-title"><a href="#headers">{{'HTTP hlavičky' | translate}}</a></li>
-						<li class="tabs-title">
+						<li id="headers-title" class="tabs-title"><a href="#headers">{{'HTTP hlavičky' | translate}}</a></li>
+						<li id="assertions-title" class="tabs-title">
 							<a href="#assertions">
 								{{'Validátory' | translate}}
 							</a>
@@ -219,11 +220,13 @@
 							<div class="row controls align-right">
 								<a href="javascript:void(0)"
 									ng-click="request.manageHttpParameters = true; request.httpParametersData = {}"
+									id="new-parameter-btn"
 									class="success tiny button"><i class="fi-plus"></i> <span
 										  class="show-for-medium"> {{'Nový parametr' | translate}}</span></a>
 							</div>
 
 							<modal ng-if="identity.roles[currentEnvironment.id] != 'host' && request.formData.httpMethod"
+									 id="http-parameters-modal"
 									 show="request.manageHttpParameters">
 								<h3 ng-show="request.httpParametersData.id">{{'Upravit HTTP parametr' | translate}}</h3>
 								<h3 ng-show="!request.httpParametersData.id">{{'Vytvořit nový HTTP parametr' | translate}}</h3>
@@ -243,7 +246,7 @@
 											</label>
 										</div>
 									</div>
-									<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+									<button type="submit" id="save-parameter-btn" class="button success">{{'Uložit' | translate}}</button>
 								</form>
 							</modal>
 
@@ -284,12 +287,13 @@
 							<div class="row controls align-right">
 								<a href="javascript:void(0)"
 									ng-click="headers.manageHeaders = true; headers.formData= {requestsId: request.formData.id}"
+									id="new-header-btn"
 									class="success tiny button">
 									<i class="fi-plus"></i>
 									<span class="show-for-medium"> {{'Přidat' | translate}}</span></a>
 							</div>
 
-							<modal show="headers.manageHeaders">
+							<modal show="headers.manageHeaders" id="headers-modal">
 								<h3 ng-show="headers.formData.id">{{'Upravit HTTP hlavičku' | translate}}</h3>
 								<h3 ng-show="!headers.formData.id">{{'Vytvořit HTTP hlavičku' | translate}}</h3>
 
@@ -308,7 +312,7 @@
 											</label>
 										</div>
 									</div>
-									<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+									<button type="submit" id="header-btn" class="button success">{{'Uložit' | translate}}</button>
 								</form>
 							</modal>
 
@@ -367,13 +371,14 @@
 							<div class="row controls align-right">
 								<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.detail.id, assertionType: 'status_code', comparator: 'eq'}"
 									ng-if="identity.roles[currentEnvironment.id] != 'host'"
+									id="new-assertion-btn"
 									class="button tiny success float-right">
 									<i class="fi-plus"></i>
 									<span class="show-for-medium"> {{'Nový validátor' | translate}}</span>
 								</a>
 							</div>
 
-							<modal show="asserts.openModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
+							<modal show="asserts.openModal" id="new-assertion-modal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
 								<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
 								<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
@@ -417,7 +422,7 @@
 												 ng-model="asserts.formData.expectedValue" />
 									</label>
 
-									<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+									<button type="submit" id="save-assertion-btn" class="button success">{{'Uložit' | translate}}</button>
 								</form>
 							</modal>
 

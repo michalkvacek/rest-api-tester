@@ -1,5 +1,5 @@
-window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$timeout', '$translate', 'notificationsService', 'testsResultsService',
-	function ($scope, $rootScope, $stateParams, $state, $filter, $timeout, $translate, notificationsService, testsResultsService) {
+window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stateParams', '$state', '$filter', '$interval', '$translate', 'notificationsService', 'testsResultsService',
+	function ($scope, $rootScope, $stateParams, $state, $filter, $interval, $translate, notificationsService, testsResultsService) {
 
 		var self = this,
 			testResultsFirstRun = true;
@@ -14,10 +14,10 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 		$rootScope.currentTestResult = false;
 		$rootScope.lastTestResults = {};
 
-		$rootScope.$on('testResultChanged', function (event, testsId, resultId) {
+		$rootScope.$on ('testResultChanged', function (event, testsId, resultId) {
 			if (resultId == $rootScope.currentTestResult) {
 				self.init ();
-				self.initStatistics();
+				self.initStatistics ();
 			}
 		});
 
@@ -25,14 +25,8 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 		 * Load last tests into sidebar
 		 *
 		 * Currently using AJAX polling... :(
-		 *
-		 * @param withTimeout
 		 */
-		$rootScope.loadTests = function (withTimeout) {
-
-			if (typeof withTimeout == 'undefined')
-				withTimeout = true;
-
+		$rootScope.loadTests = function () {
 			testsResultsService.getOverview (self.lastTestsAge).then (function (response) {
 				var sentEvents = {}, result = {}, lastResult = {}, broadcast = false;
 
@@ -68,7 +62,7 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 								notificationsService.push ('alert', translation);
 							});
 						}
-						
+
 						$rootScope.lastTestResults[result.id].status = result.status;
 						$rootScope.testList[lastResult.position] = result;
 					}
@@ -84,15 +78,11 @@ window.app.controller ('TestsResultsController', ['$scope', '$rootScope', '$stat
 				$rootScope.testAddedOrInProgress = false;
 
 				testResultsFirstRun = false;
-
-				if (withTimeout) {
-					$timeout ($rootScope.loadTests, 30 * 1000);
-					return;
-				}
 			});
 		};
 
-		$rootScope.loadTests ();
+		$rootScope.loadTests();
+		$interval ($rootScope.loadTests, 30 * 1000);
 
 		/**
 		 * Load test result

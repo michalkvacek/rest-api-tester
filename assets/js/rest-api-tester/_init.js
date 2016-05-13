@@ -114,7 +114,7 @@ window.app.config (['$stateProvider', '$urlRouterProvider', '$httpProvider', '$t
 	$rootScope.reinitDateTimePicker = function () {
 		$ ('input[type=datetime]').fdatepicker ({
 			pickTime: true,
-			format: 'mm-dd-yyyy hh:ii'
+			format: 'yyyy-mm-dd hh:ii'
 		});
 	};
 

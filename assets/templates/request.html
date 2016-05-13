@@ -161,7 +161,8 @@
 			</div>
 		</div>
 		<div class="row controls align-right">
-			<a ui-sref="request_editor({requestId: request.current.id})" class="warning tiny button"
+			<a ui-sref="request_editor({requestId: request.current.id})" class="secondary tiny button"
+				id="edit-request-btn"
 				ng-if="identity.roles[currentEnvironment.id] != 'host'">
 				<i class="fi-pencil"></i>
 				<span class="show-for-medium">{{'Upravit' | translate}}</span></a>
@@ -204,7 +205,7 @@
 								<a href="javascript:void(0)"
 									ng-if="identity.roles[currentEnvironment.id] != 'host'"
 									ng-click="asserts.openModal = true; asserts.formData = assertion">
-									<i class="fi-pencil" data-open="edit-assertion"></i>
+									<i class="fi-pencil"></i>
 								</a>
 								<a href="javascript:void(0)"
 									ng-if="identity.roles[currentEnvironment.id] != 'host'"
@@ -220,6 +221,7 @@
 				<div class="row controls align-right">
 					<a ng-click="asserts.openModal = true; asserts.formData = {requestsId: request.current.id, assertionType: 'status_code', comparator: 'eq'}"
 						ng-if="identity.roles[currentEnvironment.id] != 'host'"
+						id="new-assertion-btn"
 						class="button tiny success float-right">
 						<i class="fi-plus"></i>
 						<span class="show-for-medium"> {{'Nový validátor' | translate}}</span>
@@ -227,7 +229,7 @@
 				</div>
 			</div>
 
-			<modal show="asserts.openModal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
+			<modal show="asserts.openModal" id="new-assertion-modal" ng-if="identity.roles[currentEnvironment.id] != 'host'">
 				<h3 ng-show="asserts.formData.id">{{'Upravit validátor' | translate}}</h3>
 				<h3 ng-show="!asserts.formData.id">{{'Nový validátor' | translate}}</h3>
 
@@ -269,7 +271,7 @@
 								 ng-model="asserts.formData.expectedValue" />
 					</label>
 
-					<button type="submit" class="button success">{{'Uložit' | translate}}</button>
+					<button type="submit" id="save-assertion-btn" class="button success">{{'Uložit' | translate}}</button>
 				</form>
 			</modal>
 		</div>

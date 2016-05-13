@@ -83,7 +83,7 @@
 
 		<h3>{{"Nové prostředí" | translate}}</h3>
 
-		<form ng-submit="environments.create()">
+		<form ng-submit="environments.create({redirect: true})">
 			<label class="required">
 				{{"Jméno" | translate}}
 

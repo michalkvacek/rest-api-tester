@@ -149,7 +149,7 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 
 				self.detail = test;
 				self.detail.nextRunRaw = self.detail.nextRun;
-				self.detail.nextRun = $filter ('date') (self.detail.nextRun, "dd-MM-yyyy HH:mm");
+				self.detail.nextRun = $filter ('date') (self.detail.nextRun, "yyyy-MM-dd HH:mm");
 				self.detail.runInterval = "" + test.runInterval; // cast to string, because of selecting default value
 				self.detail.run = test.runInterval > 0 ? 'periodicaly' : 'once';
 			}, function (response) {
@@ -226,7 +226,7 @@ window.app.controller ('TestsController', ['$scope', '$rootScope', '$timeout', '
 			self.manageSchedule = true;
 
 			self.scheduleData.testsId = test.id;
-			self.scheduleData.nextRun = $filter ('date') (test.nextRun, "dd-MM-yyyy HH:mm");
+			self.scheduleData.nextRun = $filter ('date') (test.nextRun, "yyyy-MM-dd HH:mm");
 			self.scheduleData.runInterval = "" + test.runInterval; // cast to string, because of selecting default value
 			self.scheduleData.run = test.runInterval > 0 ? 'periodicaly' : 'once';
 		};

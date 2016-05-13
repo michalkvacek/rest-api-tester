@@ -5,15 +5,17 @@
 				<div class="column no-padding">
 					<h3>{{tests.detail.name}}</h3>
 
-					{{tests.detail.description}}
+					<p class="test-description">
+						{{tests.detail.description}}
+					</p>
 				</div>
 				<div class="column shrink" ng-switch="tests.detail.lastRunStatus">
 					<p>
 						<span ng-if="identity.roles[currentEnvironment.id] != 'host'"
 								ng-show="tests.detail.lastRunStatus == 'success' || tests.detail.lastRunStatus == 'failed' || tests.detail.lastRunStatus == null ">
-						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)"
+						<a href="javascript:void(0)" ng-click="tests.run(tests.detail.id)" id="run-test"
 							class="button success small fi-play"> {{'Spustit nyní' | translate}}</a>
-						<a href="javascript:void(0)" ng-click="tests.manageTest = true; tests.formData = tests.detail"
+						<a href="javascript:void(0)" id="edit-test-btn" ng-click="tests.manageTest = true; tests.formData = tests.detail"
 							class="button primary small fi-pencil"> {{'Upravit' | translate}}</a>
 						</span>
 
@@ -157,11 +159,11 @@
 											{{'Upravit' | translate}}
 										</a>
 
-										<a class="button alert tiny" ng-click="tests.removeRequest(request.id)"
+										<button class="button alert tiny" ng-click="tests.removeRequest(request.id)"
 											ng-if="identity.roles[currentEnvironment.id] != 'host'">
 											<i class="fi-x"></i>
 											{{'Odebrat z testu' | translate}}
-										</a>
+										</button>
 
 									</div>
 									<div class="tabs-panel" ng-attr-id="{{ 'assertions-'+request.id }}">
@@ -281,6 +283,7 @@
 
 			<div class="row controls align-right">
 				<a href="javascript:void(0)" ng-click="reqController.addRequestModal=true"
+					id="new-request-btn"
 					ng-if="identity.roles[currentEnvironment.id] != 'host'"
 					class="success tiny button">
 					<i class="fi-plus"></i>
@@ -289,6 +292,7 @@
 			</div>
 
 			<modal class="large" show="reqController.addRequestModal"
+					 id="new-request-modal"
 					 ng-if="identity.roles[currentEnvironment.id] != 'host'">
 				<div id="new-request-window">
 					<h3>{{'Nový požadavek' | translate}}</h3>
@@ -345,7 +349,7 @@
 								</div>
 								<div class="row">
 									<div class="column">
-										<button type="submit" class="button success float-right">{{"Uložit" | translate}}</button>
+										<button type="submit" class="button success float-right" id="create-request-btn">{{"Uložit" | translate}}</button>
 									</div>
 								</div>
 							</form>
@@ -498,7 +502,7 @@
 			</div>
 			<div class="row">
 				<div class="column">
-					<button type="submit" class="button success float-right">{{'Uložit' | translate}}</button>
+					<button type="submit" id="save-test-btn" class="button success float-right">{{'Uložit' | translate}}</button>
 				</div>
 			</div>
 		</form>
