@@ -201,12 +201,14 @@ window.app.controller ('EnvironmentsController', ['$scope', '$rootScope', '$stat
 
 				$rootScope.refreshProjectOverview ();
 				$rootScope.reinitIdentity (function () {
-					if (options.redirect) {
-						$state.go ('test', {environmentId: response.data.id});
-					} else {
+					if (!options.redirect) {
 						self.initOverview (projectId, undefined, false);
 					}
 				});
+
+				if (options.redirect) {
+					$state.go ('tests', {environmentId: response.data.id});
+				}
 
 				self.manageEnvironments = false;
 			}, function (response) {
